@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta content="Common,Latin" name="scripts">
 <meta content="initial-scale=1.0" name="viewport">
-<title>Explicitly excluding RPSL objects from RPSL set objects</title>
+<title>Explicitly excluding objects from RPSL sets</title>
 <meta content="James Bensley" name="author">
-<meta content='
-       This document updates RFC2622 and RFC4012 by specifying  excl-members , a new attribute on as-set and route-set objects in the Routing Policy Specification Language (RPSL). This new attribute enables the exclusion of objects from a set, which allows operators to overcome the implicit "include everything" approach of existing syntax. 
-    ' name="description">
+<meta content="
+       This document updates   and   by defining the  excl-members  attribute on as-set and route-set classes in the Routing Policy Specification Language (RPSL). This new attribute allows operators to overcome limitations of the existing syntax, which currently only supports the implicit inclusion of everything contained within an as-set or route-set. 
+    " name="description">
 <meta content="xml2rfc 3.28.0" name="generator">
 <meta content="draft-bensley-rpsl-exclude-members-00" name="ietf.draft">
 <!-- Generator version information:
@@ -1208,7 +1208,7 @@ li > p:last-of-type:only-child {
 <table class="ears">
 <thead><tr>
 <td class="left">Internet-Draft</td>
-<td class="center">Explicitly excluding RPSL objects from R</td>
+<td class="center">Explicitly excluding objects from RPSL s</td>
 <td class="right">March 2025</td>
 </tr></thead>
 <tfoot><tr>
@@ -1241,10 +1241,10 @@ li > p:last-of-type:only-child {
 </dd>
 </dl>
 </div>
-<h1 id="title">Explicitly excluding RPSL objects from RPSL set objects</h1>
+<h1 id="title">Explicitly excluding objects from RPSL sets</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document updates RFC2622 and RFC4012 by specifying <code>excl-members</code>, a new attribute on as-set and route-set objects in the Routing Policy Specification Language (RPSL). This new attribute enables the exclusion of objects from a set, which allows operators to overcome the implicit "include everything" approach of existing syntax.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document updates <span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> and <span>[<a href="#RFC4012" class="cite xref">RFC4012</a>]</span> by defining the <code>excl-members</code> attribute on as-set and route-set classes in the Routing Policy Specification Language (RPSL). This new attribute allows operators to overcome limitations of the existing syntax, which currently only supports the implicit inclusion of everything contained within an as-set or route-set.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
 <section id="section-boilerplate.1">
@@ -1295,24 +1295,58 @@ li > p:last-of-type:only-child {
         </h2>
 <nav class="toc"><ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
-            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+            <p id="section-toc.1-1.1.1"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
-                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-requirements-language" class="internal xref">Requirements Language</a></p>
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-existing-methods-of-inclusi" class="internal xref">Existing Methods of Inclusion</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.2">
-                <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="auto internal xref">1.2</a>.  <a href="#name-terminology" class="internal xref">Terminology</a></p>
+                <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="auto internal xref">1.2</a>.  <a href="#name-existing-methods-of-exclusi" class="internal xref">Existing Methods of Exclusion</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.3">
+                <p id="section-toc.1-1.1.2.3.1" class="keepWithNext"><a href="#section-1.3" class="auto internal xref">1.3</a>.  <a href="#name-overinclusiveness" class="internal xref">Overinclusiveness</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.4">
+                <p id="section-toc.1-1.1.2.4.1"><a href="#section-1.4" class="auto internal xref">1.4</a>.  <a href="#name-requirements-language" class="internal xref">Requirements Language</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.5">
+                <p id="section-toc.1-1.1.2.5.1"><a href="#section-1.5" class="auto internal xref">1.5</a>.  <a href="#name-terminology" class="internal xref">Terminology</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
-            <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-exclusion-rule" class="internal xref">Exclusion Rule</a></p>
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-the-excl-members-attribute" class="internal xref">The <code>excl-members</code> Attribute</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1">
+                <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-the-as-set-class" class="internal xref">The as-set Class</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
+                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-the-route-set-class" class="internal xref">The route-set Class</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.3">
+                <p id="section-toc.1-1.2.2.3.1"><a href="#section-2.3" class="auto internal xref">2.3</a>.  <a href="#name-exclusion-logic" class="internal xref">Exclusion Logic</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
-            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
-            <p id="section-toc.1-1.4.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
 </li>
         </ul>
 </nav>
@@ -1323,114 +1357,281 @@ li > p:last-of-type:only-child {
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">The Routing Policy Specification Language (RPSL) <span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> defines the as-set and route-set objects. These sets can either reference a direct member of the set (such as an AS number, IP prefix, etc.), or additional sets which themselves have their own direct members and/or reference yet more sets, ad infinitum. Server and client software can follow these references to resolve a set down to its members, a set of prefixes or ASes.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">The existing RPSL syntax allows for members of an as-set or route-set to be specified in multiple ways:<a href="#section-1-2" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-1-3">
-<li id="section-1-3.1">
-          <p id="section-1-3.1.1"><span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> defines the <code>members</code> attribute.<a href="#section-1-3.1.1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-1-3.1.2">
-<li id="section-1-3.1.2.1">
-              <p id="section-1-3.1.2.1.1"><span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.1" class="relref">Section 5.1</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> defines that for an as-set this attribute stores one or more primary keys, each referencing an aut-num object or or as-set object.<a href="#section-1-3.1.2.1.1" class="pilcrow">¶</a></p>
+<p id="section-1-1">The Routing Policy Specification Language (RPSL) <span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> defines the as-set and route-set classes. These sets can either reference a direct member of the set (such as an AS number, IP prefix, etc.), or additional sets which themselves have their own direct members and/or reference yet more sets, ad infinitum. Server and client software can follow these references to recursively resolve all the members of a set i.e., until all references have been resolved leaving a set of prefixes or ASes.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<div id="existing-methods-of-inclusion">
+<section id="section-1.1">
+        <h3 id="name-existing-methods-of-inclusi">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-existing-methods-of-inclusi" class="section-name selfRef">Existing Methods of Inclusion</a>
+        </h3>
+<p id="section-1.1-1">The existing RPSL syntax allows for members of an as-set or route-set to be specified in multiple ways:<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-1.1-2">
+<li id="section-1.1-2.1">
+            <p id="section-1.1-2.1.1"><span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> defines the <code>members</code> attribute.<a href="#section-1.1-2.1.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-1.1-2.1.2">
+<li id="section-1.1-2.1.2.1">
+                <p id="section-1.1-2.1.2.1.1"><span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.1" class="relref">Section 5.1</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> defines that for an as-set this attribute stores one or more primary keys, each referencing an aut-num object or or as-set object.<a href="#section-1.1-2.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-1-3.1.2.2">
-              <p id="section-1-3.1.2.2.1"><span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.2" class="relref">Section 5.2</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> defines that for a route-set this attribute may store one or more primary keys, each referencing a route-set object which optionally has a range operator appended. Alternatively, the <code>members</code> attribute on a route-set may store an IPv4 address prefix range directly i.e., not the RPSL primary key that points a route object, and that address prefix range may optionally have a range operator appended.<a href="#section-1-3.1.2.2.1" class="pilcrow">¶</a></p>
+              <li id="section-1.1-2.1.2.2">
+                <p id="section-1.1-2.1.2.2.1"><span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.2" class="relref">Section 5.2</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> defines that for a route-set this attribute may store one or more primary keys, each referencing a route-set object which optionally has a range operator appended. Alternatively, the <code>members</code> attribute on a route-set may store an IPv4 address prefix range directly i.e., not an RPSL primary key that points another route object, and that address prefix range may optionally have a range operator appended.<a href="#section-1.1-2.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
-          </ol>
+            </ol>
 </li>
-        <li id="section-1-3.2">
-          <p id="section-1-3.2.1"><span><a href="https://rfc-editor.org/rfc/rfc4012#section-4.2" class="relref">Section 4.2</a> of [<a href="#RFC4012" class="cite xref">RFC4012</a>]</span> defines the <code>mp-members</code> attribute for route-sets. This attribute may store one or more primary keys, each referencing a route-set object which optionally has a range operator appended, or an IPv4 address prefix range directly, or an IPv6 address prefix range directly.<a href="#section-1-3.2.1" class="pilcrow">¶</a></p>
+          <li id="section-1.1-2.2">
+            <p id="section-1.1-2.2.1"><span><a href="https://rfc-editor.org/rfc/rfc4012#section-4.2" class="relref">Section 4.2</a> of [<a href="#RFC4012" class="cite xref">RFC4012</a>]</span> defines the <code>mp-members</code> attribute for route-sets. This attribute may store one or more primary keys, each referencing a route-set object which optionally has a range operator appended, or an IPv4 address prefix range directly, or an IPv6 address prefix range directly.<a href="#section-1.1-2.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li id="section-1-3.3">
-          <p id="section-1-3.3.1"><span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> defines the <code>mbrs-by-ref</code> and <code>member-of</code> attributes.<a href="#section-1-3.3.1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-1-3.3.2">
-<li id="section-1-3.3.2.1">
-              <p id="section-1-3.3.2.1.1"><span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.1" class="relref">Section 5.1</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> defines that for an as-set these attributes allow for the inclusion of aut-nums in the as-set, iff the criteria defined in the RFC is met.<a href="#section-1-3.3.2.1.1" class="pilcrow">¶</a></p>
+          <li id="section-1.1-2.3">
+            <p id="section-1.1-2.3.1"><span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> defines the <code>mbrs-by-ref</code> and <code>member-of</code> attributes.<a href="#section-1.1-2.3.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-1.1-2.3.2">
+<li id="section-1.1-2.3.2.1">
+                <p id="section-1.1-2.3.2.1.1"><span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.1" class="relref">Section 5.1</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> defines that for an as-set these attributes allow for the inclusion of aut-nums in the as-set, iff the criteria defined in the RFC linking both attributes together is met.<a href="#section-1.1-2.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-1-3.3.2.2">
-              <p id="section-1-3.3.2.2.1"><span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.2" class="relref">Section 5.2</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> defines that for a route-set these attributes allow for the inclusion of routes in the route-set, iff the criteria defined in the RFC is met.<a href="#section-1-3.3.2.2.1" class="pilcrow">¶</a></p>
+              <li id="section-1.1-2.3.2.2">
+                <p id="section-1.1-2.3.2.2.1"><span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.2" class="relref">Section 5.2</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> defines that for a route-set these attributes allow for the inclusion of routes in the route-set, iff the criteria defined in the RFC linking both attributes together is met.<a href="#section-1.1-2.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
-          </ol>
+            </ol>
 </li>
-        <li id="section-1-3.4">
-          <p id="section-1-3.4.1"><span><a href="https://rfc-editor.org/rfc/rfc4012#section-3" class="relref">Section 3</a> of [<a href="#RFC4012" class="cite xref">RFC4012</a>]</span> defines the router6 class along with the <code>member-of</code> attribute on that class, and as a result, allows for the inclusion of route6 objects in a route-set, iff the criteria relating to <code>mbrs-by-ref</code> and <code>member-of</code> attributes defined in <span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.2" class="relref">Section 5.2</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> is met.<a href="#section-1-3.4.1" class="pilcrow">¶</a></p>
+          <li id="section-1.1-2.4">
+            <p id="section-1.1-2.4.1"><span><a href="https://rfc-editor.org/rfc/rfc4012#section-3" class="relref">Section 3</a> of [<a href="#RFC4012" class="cite xref">RFC4012</a>]</span> defines the router6 class along with the <code>member-of</code> attribute on that class, and as a result, allows for the inclusion of route6 objects in a route-set, iff the criteria relating to <code>mbrs-by-ref</code> and <code>member-of</code> attributes defined in <span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.2" class="relref">Section 5.2</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> is met.<a href="#section-1.1-2.4.1" class="pilcrow">¶</a></p>
 </li>
-      </ol>
-<p id="section-1-4">When using the <code>(mp)-members</code> attribute to include an as-set or route-set (hereinafter "included set") inside another as-set or route-set (hereinafter "including set"), all members of the included set are included in the including set. This is not just the members directly nested under the included set, but all members recursively included all the way down the RPSL hierarchy. This implicit recursive inclusion logic is hereon referred to as "greedy" logic.<a href="#section-1-4" class="pilcrow">¶</a></p>
-<p id="section-1-5">In the example below, the as-set <code>AS-EXAMPLE-1</code> only includes one member but as a result of that single inclusion, AS-EXAMPLE-1 now contains the aut-nums AS65001, AS65002, and AS65003:<a href="#section-1-5" class="pilcrow">¶</a></p>
+        </ol>
+<p id="section-1.1-3">When using the <code>(mp-)members</code> attribute to include an as-set or route-set (hereinafter the "included set") inside another as-set or route-set (hereinafter the "including set"), all members of the included set are included in the including set. This is not limited to the members directly nested inside the included set, but all members recursively included all the way down the RPSL hierarchy. This implicit recursive inclusion logic is hereon referred to as "greedy" logic.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
+<p id="section-1.1-4">In the example below, the as-set <code>AS-EXAMPLE-1</code> only includes one member but, as a result of that single inclusion, AS-EXAMPLE-1 now contains the aut-nums AS65001, AS65002, and AS65003:<a href="#section-1.1-4" class="pilcrow">¶</a></p>
 <span id="name-a-three-level-hierarchy-is-"></span><figure id="figure-1">
-        <div class="lang-rpsl sourcecode" id="section-1-6.1">
+          <div class="lang-rpsl sourcecode" id="section-1.1-5.1">
 <pre>
 as-set: AS-EXAMPLE-1
-members: AS65001, AS-EXAMPLE-2
+members: AS-EXAMPLE-2
 
 as-set: AS-EXAMPLE-2
-members: AS65002, AS-EXAMPLE-3
+members: AS65001, AS65002, AS-EXAMPLE-3
 
 as-set: AS-EXAMPLE-3
 members: AS65003
 </pre>
 </div>
 <figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
-<a href="#name-a-three-level-hierarchy-is-" class="selfRef">A three level hierarchy is create even though AS-EXAMPLE-1 includes only one additional as-set</a>
-        </figcaption></figure>
-<p id="section-1-7">The same inclusion logic applies to a route-set which references another route-set in the <code>members</code> attribute; everything inside the included set, all the way down the recursed tree, is implicitly included into the including set.<a href="#section-1-7" class="pilcrow">¶</a></p>
-<p id="section-1-8">Similarly greedy logic also applies to prefixes too; the <code>(mp)-members</code> attribute of a route-set includes any route/route6 objects which match the IPv4/6 address prefix range and the optional range operator.<a href="#section-1-8" class="pilcrow">¶</a></p>
-<p id="section-1-9">There is a slight difference with IP prefixes though. Filters and the filter-set class are defined in <span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.4" class="relref">Section 5.4</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span>. Correspondingly, the <code>mp-filter</code> attribute was later defined in <span><a href="https://rfc-editor.org/rfc/rfc4012#section-2.5.2" class="relref">Section 2.5.2</a> of [<a href="#RFC4012" class="cite xref">RFC4012</a>]</span>. Together these attributes provide a way for filtering prefixes which may have been included by the greedy logic of the <code>(mp)-members</code> attributes.<a href="#section-1-9" class="pilcrow">¶</a></p>
-<p id="section-1-10">There is currently no way to exclude either an as-set, an aut-num, or a route-set, which was included by the greedy logic of the <code>members</code> attribute on an as-set or route-set.<a href="#section-1-10" class="pilcrow">¶</a></p>
-<div id="requirements-language">
-<section id="section-1.1">
-        <h3 id="name-requirements-language">
-<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-requirements-language" class="section-name selfRef">Requirements Language</a>
+<a href="#name-a-three-level-hierarchy-is-" class="selfRef">A three level hierarchy is created even though AS-EXAMPLE-1 includes only one additional as-set</a>
+          </figcaption></figure>
+<p id="section-1.1-6">The same inclusion logic applies to a route-set which references another route-set in the <code>members</code> attribute; everything inside the included set, all the way down the recursed tree, is implicitly included into the including set.<a href="#section-1.1-6" class="pilcrow">¶</a></p>
+<p id="section-1.1-7">Similarly greedy logic also applies to prefixes too; the <code>(mp-)members</code> attribute of a route-set includes any route/route6 objects which match the IPv4/6 address prefix range and optional range operator.<a href="#section-1.1-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="existing-methods-of-exclusion">
+<section id="section-1.2">
+        <h3 id="name-existing-methods-of-exclusi">
+<a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-existing-methods-of-exclusi" class="section-name selfRef">Existing Methods of Exclusion</a>
         </h3>
-<p id="section-1.1-1">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>",
+<p id="section-1.2-1">The filter-set class and <code>filter</code> attribute are defined in <span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.4" class="relref">Section 5.4</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span>. Correspondingly, the <code>mp-filter</code> attribute was later defined in <span><a href="https://rfc-editor.org/rfc/rfc4012#section-2.5.2" class="relref">Section 2.5.2</a> of [<a href="#RFC4012" class="cite xref">RFC4012</a>]</span>. Together these attributes provide a method for declaring in the IRR ecosystem the prefixes a network will not accept.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
+<p id="section-1.2-2">Additionally, the <code>(mp-)filter</code> attribute may be used to exclude route/route6 objects which have been included by the greedy logic of the <code>(mp-)members</code> attribute of a route-set. This is achieved by first including all route/route6 objects which match the IPv4/6 address prefix range and optional range operator in the <code>(mp-)members</code> attribute on the route-set, and then removing any route/route6 objects from this result which match the IPv4/6 address prefix range and optional range operator in the <code>(mp-)members</code> attribute of the filter-set.<a href="#section-1.2-2" class="pilcrow">¶</a></p>
+<p id="section-1.2-3">For as-sets and route-sets which use the <code>mbrs-by-ref</code> and <code>member-of</code> attributes, both attributes have to contain corresponding values. This already reduces the greediness of the inclusion logic. It is also already possible to further reduce the greediness. This can be achieved by changing the value of <code>mbrs-by-ref</code> from ANY to a list of specific values, and/or by removing the as-set or route-set primary key from the <code>members-of</code> attribute of an aut-num or route/route6 object.<a href="#section-1.2-3" class="pilcrow">¶</a></p>
+<p id="section-1.2-4">There is currently no way to exclude either an aut-num, an as-set, or a route-set, which was included by the greedy logic of the <code>(mp-)members</code> attribute of an as-set or route-set object.<a href="#section-1.2-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="overinclusiveness">
+<section id="section-1.3">
+        <h3 id="name-overinclusiveness">
+<a href="#section-1.3" class="section-number selfRef">1.3. </a><a href="#name-overinclusiveness" class="section-name selfRef">Overinclusiveness</a>
+        </h3>
+<p id="section-1.3-1">The existing greedy logic of the <code>(mp-)-members</code> attribute of as-sets and route-sets, coupled with the inability to alter this logic, leads to overinclusiveness. This can result in various undesired effects for operators. A non-exhaustive list of possible undesirable outcomes follows:<a href="#section-1.3-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-1.3-2">
+<li id="section-1.3-2.1">
+            <p id="section-1.3-2.1.1">A member is added to a set which is not connected to or related to the network operated by the owner of the including set. This allows the including set owner to originate prefixes they aren't authorised to originate. Upstreams and peers of the network owning the including set, aren't able to generate an IRR based prefix filter which excludes the unauthorised included set. Note that this can happen anywhere in the set hierarchy, the unauthorised include may be nested many levels down within the set used by a peer or upstream, making it difficult for the peer/downstream to remove the included set. Also note that great progress has been made with the deployment of Route Origin Authorizations (ROAs) as defined in <span>[<a href="#RFC9582" class="cite xref">RFC9582</a>]</span>, which makes this type of hijack more difficult however, this hasn't been resolved yet.<a href="#section-1.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-1.3-2.2">
+            <p id="section-1.3-2.2.1">A member is added to a set which creates a loop when the set is resolved (set A contains set B which contains set A). This can lead to IRR derived prefix filters or AS path filters either massively expanding in size, or simply not being resolvable.<a href="#section-1.3-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-1.3-2.3">
+            <p id="section-1.3-2.3.1">A member is added to a set, that set is intended to contain a networks downstreams, but the included set relates to a peer or upstream, not a downstream. The operator of the including set now becomes a transit provider for the operator of the included set. This can also lead to IRR derived prefix filters or AS path filters massively expanding in size.<a href="#section-1.3-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-1.3-2.4">
+            <p id="section-1.3-2.4.1">A member is added to a set which relates to an operator who's actions violate a law or a geo-political agreement in the country of the peer or upstream of the including set operator. The peer or upstream has no choice but to exclude the included set from their peer's or downstream's IRR derived prefix or AS path filters. However, this currently requires a custom and potentially manual workaround, as there is no standard mechanism to support this in an automated manor.<a href="#section-1.3-2.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-1.3-2.5">
+            <p id="section-1.3-2.5.1">A member is added to a set with whom a peer or upstream of the including set operator already has a direct relation. A regulatory requirement may restrict the peer or upstream from exchanging traffic with the operator of the included set via the including set operator, or via any 3rd party operator.<a href="#section-1.3-2.5.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+<p id="section-1.3-3">This document updates the RPSL definition in <span>[<a href="#RFC4012" class="cite xref">RFC4012</a>]</span> by introducing the <code>excl-members</code> attribute, which allows the including set operator to exclude aut-nums, as-sets, and route-sets, from the included set, or exclude the included set entirely.<a href="#section-1.3-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="requirements-language">
+<section id="section-1.4">
+        <h3 id="name-requirements-language">
+<a href="#section-1.4" class="section-number selfRef">1.4. </a><a href="#name-requirements-language" class="section-name selfRef">Requirements Language</a>
+        </h3>
+<p id="section-1.4-1">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>",
 "<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
 described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
-appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+appear in all capitals, as shown here.<a href="#section-1.4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="terminology">
-<section id="section-1.2">
+<section id="section-1.5">
         <h3 id="name-terminology">
-<a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
+<a href="#section-1.5" class="section-number selfRef">1.5. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
         </h3>
-<p id="section-1.2-1">In this document, the key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>",
+<p id="section-1.5-1">In this document, the key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>",
 "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">MAY</span>",
 and "<span class="bcp14">OPTIONAL</span>" are to be interpreted as described in BCP 14, RFC 2119
-<span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span>.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
+<span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span>.<a href="#section-1.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
-<div id="exclusion-rule">
+<div id="the-excl-members-attribute">
 <section id="section-2">
-      <h2 id="name-exclusion-rule">
-<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-exclusion-rule" class="section-name selfRef">Exclusion Rule</a>
-    </h2>
+      <h2 id="name-the-excl-members-attribute">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-the-excl-members-attribute" class="section-name selfRef">The <code>excl-members</code> Attribute</a>
+      </h2>
+<p id="section-2-1">The <code>excl-members</code> attribute is defined for the as-set class and route-set class.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<div id="the-as-set-class">
+<section id="section-2.1">
+        <h3 id="name-the-as-set-class">
+<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-the-as-set-class" class="section-name selfRef">The as-set Class</a>
+        </h3>
+<p id="section-2.1-1">The new <code>excl-members</code> attribute on the as-set class uses almost exactly the same syntax as the existing <code>members</code> attribute from <span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.1" class="relref">Section 5.1</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span>, in that one or more RPSL primary keys of an aut-num or as-set may be specified. The only difference is that when an as-set is specified in <code>excl-members</code>, the as-set name <span class="bcp14">MUST</span> be prefixed with a registry name and a double colon (e.g., <code>SOURCE::</code>). This requirement is to ensure that the correct object is being excluded due to the inherent ambiguity of as-set primary keys in the existing IRR ecosystem (as demonstrated in draft-romijn-grow-rpsl-registry-scoped-members).  ##### FIX LINK TO DRAFT<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-2.1-2">
+          <dt id="section-2.1-2.1">Attribute:</dt>
+          <dd style="margin-left: 1.5em" id="section-2.1-2.2">
+            <p id="section-2.1-2.2.1"><code>excl-members</code><a href="#section-2.1-2.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-2.1-2.3">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-2.1-2.4">
+            <p id="section-2.1-2.4.1">list of ([<code>as-number</code>] or [<code>registry-name</code>]::[<code>as-set-name</code>])<a href="#section-2.1-2.4.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-2.1-2.5">Type:</dt>
+          <dd style="margin-left: 1.5em" id="section-2.1-2.6">
+            <p id="section-2.1-2.6.1">optional, multi-valued<a href="#section-2.1-2.6.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
 </section>
 </div>
-<div id="sec-normative-references">
+<div id="the-route-set-class">
+<section id="section-2.2">
+        <h3 id="name-the-route-set-class">
+<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-the-route-set-class" class="section-name selfRef">The route-set Class</a>
+        </h3>
+<p id="section-2.2-1">The new <code>excl-members</code> attribute on the route-set class uses similar syntax as the existing <code>members</code> attribute from <span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.2" class="relref">Section 5.2</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span>, in that one or more RPSL primary keys of an aut-num, an as-set, or route-set may be specified. What is different is that <code>excl-members</code> doesn't accept IPv4/6 address prefix ranges because they can already be filtered using a filter-set. In the case that an as-set or route-set is specified in <code>excl-members</code>, the set name <span class="bcp14">MUST</span> be prefixed with a registry name and a double colon (e.g., <code>SOURCE::</code>). This requirement is to ensure that the correct object is being excluded due to the inherent ambiguity of as-set and route-set primary keys in the existing IRR ecosystem (as demonstrated in draft-romijn-grow-rpsl-registry-scoped-members).  ##### FIX LINK TO DRAFT<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-2.2-2">
+          <dt id="section-2.2-2.1">Attribute:</dt>
+          <dd style="margin-left: 1.5em" id="section-2.2-2.2">
+            <p id="section-2.2-2.2.1"><code>excl-members</code><a href="#section-2.2-2.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-2.2-2.3">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-2.2-2.4">
+            <p id="section-2.2-2.4.1">list of ([<code>registry-name</code>]::[<code>route-set-name</code>] or [<code>registry-name</code>]::[<code>as-set-name</code>] or [<code>as-number</code>] or [<code>registry-name</code>]::[<code>route-set-name</code>][<code>range-operator</code>])<a href="#section-2.2-2.4.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-2.2-2.5">Type:</dt>
+          <dd style="margin-left: 1.5em" id="section-2.2-2.6">
+            <p id="section-2.2-2.6.1">optional, multi-valued<a href="#section-2.2-2.6.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="exclusion-logic">
+<section id="section-2.3">
+        <h3 id="name-exclusion-logic">
+<a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-exclusion-logic" class="section-name selfRef">Exclusion Logic</a>
+        </h3>
+<p id="section-2.3-1">When the <code>excl-members</code> attribute is populated on an as-set object, the primary keys stored in the attribute define aut-nums and as-sets that <span class="bcp14">MUST NOT</span> be resolved when recursively resolving the members of that as-set object.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.3-2">
+<li id="section-2.3-2.1">
+            <p id="section-2.3-2.1.1">This exclusion applies to the <code>members</code> attribute of the object itself, and the members attribute of all recursively resolved sets. Because the set names are stored in the <code>excl-members</code> attribute with a registry scope prepended, the set names in <code>members</code> must be checked against all set names in <code>excl-members</code> with the registry scope removed.<a href="#section-2.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-2.3-2.2">
+            <p id="section-2.3-2.2.1">This exclusion applies to the <code>src-members</code> attribute (as defined in draft-romijn-grow-rpsl-registry-scoped-members ##### FIX LINK TO DRAFT) of the object itself, and the members attribute of all recursively resolved sets. In this case the sets in <code>src-members</code> must match a set in <code>excl-members</code> exactly without removing the registry scope.<a href="#section-2.3-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+<span id="name-xxxxxxxxxxxxxxxxxxxxxxxxxxx"></span><figure id="figure-2">
+          <div class="lang-rpsl sourcecode" id="section-2.3-3.1">
+<pre>
+as-set: AS-EXAMPLE-1
+members: AS-EXAMPLE-2
+
+as-set: AS-EXAMPLE-2
+members: AS65001, AS65002, AS-EXAMPLE-3
+
+as-set: AS-EXAMPLE-3
+members: AS65003
+</pre>
+</div>
+<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
+<a href="#name-xxxxxxxxxxxxxxxxxxxxxxxxxxx" class="selfRef">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx</a>
+          </figcaption></figure>
+</section>
+</div>
+</section>
+</div>
+<div id="IANA">
 <section id="section-3">
-      <h2 id="name-normative-references">
-<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+      <h2 id="name-iana-considerations">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
+<p id="section-3-1">This memo includes no request to IANA.<a href="#section-3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="Security">
+<section id="section-4">
+      <h2 id="name-security-considerations">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<p id="section-4-1">This document removes a potential security issue where routing
+policy could be manipulated by maliciously creating set objects,
+which could be used in favor of legitimate objects.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-2">While not a new issue, references between set objects can be
+circular, and software <span class="bcp14">MUST</span> detect such cases while resolving.
+It is <span class="bcp14">RECOMMENDED</span> to also limit the depth or size of their resolving
+to prevent excessive resource use.<a href="#section-4-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-combined-references">
+<section id="section-5">
+      <h2 id="name-references">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<div id="sec-normative-references">
+<section id="section-5.1">
+        <h3 id="name-normative-references">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
 <dl class="references">
 <dt id="RFC2119">[RFC2119]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2622">[RFC2622]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Alaettinoglu, C.</span>, <span class="refAuthor">Villamizar, C.</span>, <span class="refAuthor">Gerich, E.</span>, <span class="refAuthor">Kessens, D.</span>, <span class="refAuthor">Meyer, D.</span>, <span class="refAuthor">Bates, T.</span>, <span class="refAuthor">Karrenberg, D.</span>, and <span class="refAuthor">M. Terpstra</span>, <span class="refTitle">"Routing Policy Specification Language (RPSL)"</span>, <span class="seriesInfo">RFC 2622</span>, <span class="seriesInfo">DOI 10.17487/RFC2622</span>, <time datetime="1999-06" class="refDate">June 1999</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2622">https://www.rfc-editor.org/rfc/rfc2622</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC4012">[RFC4012]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Blunk, L.</span>, <span class="refAuthor">Damas, J.</span>, <span class="refAuthor">Parent, F.</span>, and <span class="refAuthor">A. Robachevsky</span>, <span class="refTitle">"Routing Policy Specification Language next generation (RPSLng)"</span>, <span class="seriesInfo">RFC 4012</span>, <span class="seriesInfo">DOI 10.17487/RFC4012</span>, <time datetime="2005-03" class="refDate">March 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc4012">https://www.rfc-editor.org/rfc/rfc4012</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
-    <dd>
+      <dd>
 <span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
+</section>
+</div>
+<div id="sec-informative-references">
+<section id="section-5.2">
+        <h3 id="name-informative-references">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="RFC9582">[RFC9582]</dt>
+      <dd>
+<span class="refAuthor">Snijders, J.</span>, <span class="refAuthor">Maddison, B.</span>, <span class="refAuthor">Lepinski, M.</span>, <span class="refAuthor">Kong, D.</span>, and <span class="refAuthor">S. Kent</span>, <span class="refTitle">"A Profile for Route Origin Authorizations (ROAs)"</span>, <span class="seriesInfo">RFC 9582</span>, <span class="seriesInfo">DOI 10.17487/RFC9582</span>, <time datetime="2024-05" class="refDate">May 2024</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9582">https://www.rfc-editor.org/rfc/rfc9582</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
 </section>
 </div>
 <div id="authors-addresses">
