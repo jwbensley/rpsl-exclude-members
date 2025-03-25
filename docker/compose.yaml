@@ -5,6 +5,6 @@ services:
     ports:
       - "4343:4343"
     volumes:
-      - ./draft:/draft:rw
-      - ./serve.sh:/usr/local/bin/serve.sh:rw
+      - ../draft:/draft:rw
+      - ../docker/serve.sh:/usr/local/bin/serve.sh:rw
     entrypoint: ["serve.sh", "/draft/draft-bensley-rpsl-exclude-members.md"]
