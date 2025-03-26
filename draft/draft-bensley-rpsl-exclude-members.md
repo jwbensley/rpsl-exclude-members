@@ -125,7 +125,7 @@ For as-sets and route-sets which use the `mbrs-by-ref` and `member-of` attribute
 
 There is currently no method to exclude either an aut-num, an as-set, or a route-set, which was included by the greedy logic of the `(mp-)members` attribute of an as-set or route-set object.
 
-## Missing Methods of Exclusion
+## The Need for Additional Exclusion Control
 
 The existing greedy logic of the `(mp-)members` attribute of as-sets and route-sets, coupled with the inability to alter this logic, can result in various undesired effects for operators. A non-exhaustive list of possible undesirable outcomes follows:
 
