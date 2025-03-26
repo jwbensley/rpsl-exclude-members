@@ -1,6 +1,12 @@
 # draft-bensley-rpsl-exclude-members
 
-This repo contains the working draft text. The [Markdown](draft/draft-bensley-rpsl-exclude-members.md) file is the authoritative source.
+This repo contains the working text of the draft. The [Markdown](draft/draft-bensley-rpsl-exclude-members.md) file is the authoritative source.
+
+The document is written using [kramdown-rfc](https://github.com/cabo/kramdown-rfc).
+
+## Preview
+
+Preview the HTML version by visiting the following URL: <https://htmlpreview.github.io/?https://github.com/jwbensley/rpsl-exclude-members/blob/main/draft/draft-bensley-rpsl-exclude-members.html>
 
 ## Editing
 
