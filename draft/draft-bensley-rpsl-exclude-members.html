@@ -1671,7 +1671,7 @@ members: AS65001, AS65003
           </figcaption></figure>
 <ul class="normal">
 <li class="normal" id="section-3.1-7.1">
-            <p id="section-3.1-7.1.1">It can be seen that <code>excl-members</code> took effect on the object it was defined, not just it's descendants. This is shown by AS65002 not being included in the final result because AS65002 is both a <code>member</code> <em>and</em> <code>excl-member</code> of AS-EXAMPLE-2.<a href="#section-3.1-7.1.1" class="pilcrow">¶</a></p>
+            <p id="section-3.1-7.1.1">It can be seen that <code>excl-members</code> took effect on the object it was defined, not just it's descendants. This is shown by AS65002 not being included in the final result because AS65002 is both a <code>member</code> <em>and</em> <code>excl-members</code> of AS-EXAMPLE-2.<a href="#section-3.1-7.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.1-7.2">
             <p id="section-3.1-7.2.1">AS-EXAMPLE-4 is excluded even though AS-EXAMPLE-4 is defined in ARIN and RIPE::AS-EXAMPLE-4 is specified in <code>excl-members</code> on AS-EXAMPLE-2. This is because the AS-EXAMPLE-4 entry in the <code>members</code> attribute of AS-EXAMPLE-3 is ambiguous, but a <code>src-members</code> attribute has been defined which takes precedence over <code>members</code>. The exclusion is applied against the <code>src-members</code> attribute of AS-EXAMPLE-3 (which may be an as-set not displayed here or a non-existing set).<a href="#section-3.1-7.2.1" class="pilcrow">¶</a></p>
@@ -1736,7 +1736,7 @@ members: 192.0.2.0/25, 2001:db8::/33, 192.0.2.128/25
           </figcaption></figure>
 <ul class="normal">
 <li class="normal" id="section-3.2-7.1">
-            <p id="section-3.2-7.1.1">It can be seen that <code>excl-members</code> took effect on the object it was defined on, not just it's descendants. This is shown by 2001:db8:8000::/33 not being included in the final result because RS-EXAMPLE-4 is both a <code>member</code> <em>and</em> <code>excl-member</code> of RS-EXAMPLE-2.<a href="#section-3.2-7.1.1" class="pilcrow">¶</a></p>
+            <p id="section-3.2-7.1.1">It can be seen that <code>excl-members</code> took effect on the object it was defined on, not just it's descendants. This is shown by 2001:db8:8000::/33 not being included in the final result because RS-EXAMPLE-4 is both a <code>member</code> <em>and</em> <code>excl-members</code> of RS-EXAMPLE-2.<a href="#section-3.2-7.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.2-7.2">
             <p id="section-3.2-7.2.1">Even though RS-EXAMPLE-4 is excluded by RS-EXAMPLE-2, it was also included by RS-EXAMPLE-3, but still 2001:db8:8000::/33 is excluded. This shows that the exclusion logic applies from the point in the hierarchy where it is defined, all the way down, taking precedence over any subsequent includes.<a href="#section-3.2-7.2.1" class="pilcrow">¶</a></p>
