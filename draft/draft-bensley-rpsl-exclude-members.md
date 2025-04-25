@@ -190,11 +190,11 @@ Type:
 
 ## Attribute Validation
 
-When an authoritative IRR registry processes an as-set or route-set object with the `excl-members` attribute present, it MUST validate the contents of the attribute.
+When an authoritative IRR registry processes the creation or update of an as-set or route-set object with the `excl-members` attribute present, it MUST validate the contents of the attribute.
 
 ### Registry Scoped Keys Only
 
-All primary keys in `excl-members` MUST have a registry scope provided with the exception of an AS number.
+All primary keys in `excl-members` MUST have a registry scope provided, with the exception of an aut-num primary key.
 
 By requiring registry scoped as-set and route-set keys to be used in the `excl-members` attribute, it becomes possible to have multiple references to the same RPSL primary key. This is not permitted, and IRR registry software MUST reject this:
 
@@ -205,7 +205,7 @@ excl-members: RIPE::AS-EXAMPLE, ARIN::AS-EXAMPLE
 
 The IRR registry software MUST verify that without their registry prefix, all references from `excl-members` are unique.
 
-If allowed, the attribute `excl-members: RIPE::AS-EXAMPLE, ARIN::AS-EXAMPLE` would refer to two different set objects, whereas the `(mp-)members` attribute can only contain one instance of `AS-EXAMPLE`, which is ambiguous as to which set this refers to when sets exist in multiple registries with the same primary key.
+If allowed, the attribute `excl-members: RIPE::AS-EXAMPLE, ARIN::AS-EXAMPLE` would refer to two different set objects, whereas the `(mp-)members` attribute can only contain one instance of `AS-EXAMPLE`, which creates ambiguity regarding which set the exclusion refers to, when sets exist in multiple registries with the same primary key.
 
 Similarly, the IRR software MUST NOT allow for the registry scopes in the `excl-members` attribute and the `src-members` attribute to be mixed, when both attributes are populated on the same set object, and when they referencing the same primary key with the registry scope removed.
 
@@ -220,15 +220,15 @@ If allowed, due to the presence of the `src-members` attribute, ARIN::AS-EXAMPLE
 
 ### Any Primary Key and Registry Scope
 
-The IRR software MUST NOT require that the primary key of an entry in the `excl-members` attribute is a direct member of the object being updated. The `excl-members` attribute is used to exclude objects anywhere in the hierarchy, starting from the point of definition.
+The IRR software MUST NOT require that the primary key of an entry in the `excl-members` attribute is also a direct member of the object being created or updated. The `excl-members` attribute is used to exclude objects anywhere in the hierarchy, starting from the point of definition, moving downwards within the hierarchy. This is because the object to be excluded, might be being included by a member, of a member, of a member, for example.
 
-The IRR software MUST NOT require that the registry scope which precedes the object primary key, is a registry the IRR software knows to be a valid registry. An authoritative IRR server may have it's content mirrored to resolver IRR servers, which have visibility of many more registries.
+When creating or updating an object with the `excl-members` attribute, the authoritative IRR software MUST NOT require that the registry scope which precedes the object primary key, is a registry the IRR software knows to be a valid registry. An authoritative IRR server may have it's content mirrored to resolver IRR servers, which have visibility of many more registries.
 
 # Exclusion Logic
 
 ## The as-set Class
 
-When the `excl-members` attribute is populated on an as-set object, the primary keys stored in the attribute reference aut-nums or as-sets that MUST NOT be resolved when recursively resolving the members of that as-set object.
+When the `excl-members` attribute is populated on an as-set object, the primary keys stored in the attribute reference aut-nums or as-sets that MUST NOT be resolved by a resolving IRR server, when recursively resolving the members of that as-set object.
 
 1. This exclusion applies to the `members` attribute of the as-set object which has the `excl-members` attribute populated, and the `members` attribute of all recursively resolved as-sets within that set. Because the RPSL primary keys stored in the `excl-members` attribute have a registry scope prepended, the primary keys in the `members` attribute MUST be checked against all keys in the `excl-members` attribute with the registry scope removed.
 1. This exclusion applies to the `src-members` attribute (as defined in {{draft-romijn-grow-rpsl-registry-scoped-members}}) of the as-set object which has the `excl-members` attribute populated, and the `src-members` attribute of all recursively resolved as-sets within that set. In this case the registry scoped RPSL primary keys in `src-members` MUST match a registry scoped key in `excl-members` exactly, without the registry scope having being removed from either of the two keys being compared.
@@ -257,7 +257,7 @@ source: ARIN
 ~~~~
 {: title='An example as-set hierarchy, in it's unresolved state'}
 
-The figure below shows the result of resolving the members of set `AS-EXAMPLE-1` when the `excl-members` logic is applied:
+The figure below shows the result from a resolving IRR server having resolved the members of set `AS-EXAMPLE-1` when the `excl-members` logic is applied:
 
 ~~~~ rpsl
 as-set: AS-EXAMPLE-1
@@ -270,7 +270,7 @@ members: AS65001, AS65003
 
 ## The route-set Class
 
-When the `excl-members` attribute is populated on a route-set object, the primary keys stored in the attribute reference aut-nums, or as-sets, or route-sets, that MUST NOT be resolved when recursively resolving the members of that route-set object.
+When the `excl-members` attribute is populated on a route-set object, the primary keys stored in the attribute reference aut-nums, or as-sets, or route-sets, that MUST NOT be resolved by a resolving IRR server, when recursively resolving the members of that route-set object.
 
 1. This exclusion applies to the `(mp-)members` attributes of the route-set object which has the `excl-members` attribute populated, and the `(mp-)members` attributes of all recursively resolved route-sets and as-sets within that route-set. Because the RPSL primary keys stored in the `excl-members` attribute have a registry scope prepended, the primary keys in the `(mp-)members` attributes MUST be checked against all keys in `excl-members` attribute with the registry scope removed.
 1. This exclusion applies to the `src-members` attribute (as defined in {{draft-romijn-grow-rpsl-registry-scoped-members}}) of the route-set object which has the `excl-members` attribute populated, and the `src-members` attribute of all recursively resolved route-sets and as-sets within that route-set. In this case the registry scoped RPSL primary keys in `src-members` MUST match a registry scoped key in `excl-members` exactly, without the registry scope having being removed from either of the two keys being compared.
@@ -300,7 +300,7 @@ source: ARIN
 ~~~~
 {: title='An example route-set hierarchy, in it's unresolved state'}
 
-The figure below shows the result of resolving the members of set `RS-EXAMPLE-1` when the `excl-members` logic is applied:
+The figure below shows the result from a resolving IRR server having resolved the members of set `RS-EXAMPLE-1` when the `excl-members` logic is applied:
 
 ~~~~ rpsl
 as-set: RS-EXAMPLE-1
