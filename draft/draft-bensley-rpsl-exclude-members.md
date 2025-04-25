@@ -265,7 +265,7 @@ members: AS65001, AS65003
 ~~~~
 {: title='AS-EXAMPLE-1 in it's resolved state with exclusions applied'}
 
-* It can be seen that `excl-members` took effect on the object it was defined, not just it's descendants. This is shown by AS65002 not being included in the final result because AS65002 is both a `member` _and_ `excl-member` of AS-EXAMPLE-2.
+* It can be seen that `excl-members` took effect on the object it was defined, not just it's descendants. This is shown by AS65002 not being included in the final result because AS65002 is both a `member` _and_ `excl-members` of AS-EXAMPLE-2.
 * AS-EXAMPLE-4 is excluded even though AS-EXAMPLE-4 is defined in ARIN and RIPE::AS-EXAMPLE-4 is specified in `excl-members` on AS-EXAMPLE-2. This is because the AS-EXAMPLE-4 entry in the `members` attribute of AS-EXAMPLE-3 is ambiguous, but a `src-members` attribute has been defined which takes precedence over `members`. The exclusion is applied against the `src-members` attribute of AS-EXAMPLE-3 (which may be an as-set not displayed here or a non-existing set).
 
 ## The route-set Class
@@ -308,7 +308,7 @@ members: 192.0.2.0/25, 2001:db8::/33, 192.0.2.128/25
 ~~~~
 {: title='RS-EXAMPLE-1 in it's resolved state with exclusions applied'}
 
-* It can be seen that `excl-members` took effect on the object it was defined on, not just it's descendants. This is shown by 2001:db8:8000::/33 not being included in the final result because RS-EXAMPLE-4 is both a `member` _and_ `excl-member` of RS-EXAMPLE-2.
+* It can be seen that `excl-members` took effect on the object it was defined on, not just it's descendants. This is shown by 2001:db8:8000::/33 not being included in the final result because RS-EXAMPLE-4 is both a `member` _and_ `excl-members` of RS-EXAMPLE-2.
 * Even though RS-EXAMPLE-4 is excluded by RS-EXAMPLE-2, it was also included by RS-EXAMPLE-3, but still 2001:db8:8000::/33 is excluded. This shows that the exclusion logic applies from the point in the hierarchy where it is defined, all the way down, taking precedence over any subsequent includes.
 * RS-EXAMPLE-4 is excluded even though RS-EXAMPLE-4 is defined in ARIN and RIPE::RS-EXAMPLE-4 is specified in `excl-members` on RS-EXAMPLE-2. This is because the AS-EXAMPLE-4 entry in the `(mp-)members` attribute of RS-EXAMPLE-3 is ambiguous due to the lack of `src-members` attribute on RS-EXAMPLE-3. This means that the `excl-members` value RIPE::RS-EXAMPLE-4 has to be checked against the `members` attribute on RS-EXAMPLE-3 with the registry scope removed.
 

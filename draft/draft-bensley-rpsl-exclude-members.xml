@@ -268,7 +268,7 @@ members: AS65001, AS65003
 ]]></sourcecode></figure>
 
 <t><list style="symbols">
-  <t>It can be seen that <spanx style="verb">excl-members</spanx> took effect on the object it was defined, not just it's descendants. This is shown by AS65002 not being included in the final result because AS65002 is both a <spanx style="verb">member</spanx> <em>and</em> <spanx style="verb">excl-member</spanx> of AS-EXAMPLE-2.</t>
+  <t>It can be seen that <spanx style="verb">excl-members</spanx> took effect on the object it was defined, not just it's descendants. This is shown by AS65002 not being included in the final result because AS65002 is both a <spanx style="verb">member</spanx> <em>and</em> <spanx style="verb">excl-members</spanx> of AS-EXAMPLE-2.</t>
   <t>AS-EXAMPLE-4 is excluded even though AS-EXAMPLE-4 is defined in ARIN and RIPE::AS-EXAMPLE-4 is specified in <spanx style="verb">excl-members</spanx> on AS-EXAMPLE-2. This is because the AS-EXAMPLE-4 entry in the <spanx style="verb">members</spanx> attribute of AS-EXAMPLE-3 is ambiguous, but a <spanx style="verb">src-members</spanx> attribute has been defined which takes precedence over <spanx style="verb">members</spanx>. The exclusion is applied against the <spanx style="verb">src-members</spanx> attribute of AS-EXAMPLE-3 (which may be an as-set not displayed here or a non-existing set).</t>
 </list></t>
 
@@ -314,7 +314,7 @@ members: 192.0.2.0/25, 2001:db8::/33, 192.0.2.128/25
 ]]></sourcecode></figure>
 
 <t><list style="symbols">
-  <t>It can be seen that <spanx style="verb">excl-members</spanx> took effect on the object it was defined on, not just it's descendants. This is shown by 2001:db8:8000::/33 not being included in the final result because RS-EXAMPLE-4 is both a <spanx style="verb">member</spanx> <em>and</em> <spanx style="verb">excl-member</spanx> of RS-EXAMPLE-2.</t>
+  <t>It can be seen that <spanx style="verb">excl-members</spanx> took effect on the object it was defined on, not just it's descendants. This is shown by 2001:db8:8000::/33 not being included in the final result because RS-EXAMPLE-4 is both a <spanx style="verb">member</spanx> <em>and</em> <spanx style="verb">excl-members</spanx> of RS-EXAMPLE-2.</t>
   <t>Even though RS-EXAMPLE-4 is excluded by RS-EXAMPLE-2, it was also included by RS-EXAMPLE-3, but still 2001:db8:8000::/33 is excluded. This shows that the exclusion logic applies from the point in the hierarchy where it is defined, all the way down, taking precedence over any subsequent includes.</t>
   <t>RS-EXAMPLE-4 is excluded even though RS-EXAMPLE-4 is defined in ARIN and RIPE::RS-EXAMPLE-4 is specified in <spanx style="verb">excl-members</spanx> on RS-EXAMPLE-2. This is because the AS-EXAMPLE-4 entry in the <spanx style="verb">(mp-)members</spanx> attribute of RS-EXAMPLE-3 is ambiguous due to the lack of <spanx style="verb">src-members</spanx> attribute on RS-EXAMPLE-3. This means that the <spanx style="verb">excl-members</spanx> value RIPE::RS-EXAMPLE-4 has to be checked against the <spanx style="verb">members</spanx> attribute on RS-EXAMPLE-3 with the registry scope removed.</t>
 </list></t>
@@ -658,47 +658,47 @@ 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
-FC3+No6BRidj2HEoacJ51bT/TMVZWO2DpaEMcoyyJdv3pLjp2pBwNZ4qQe49
-njoOXbodZ6ilUe7CHiTqdbrowKkh3e3OHq7vNJmNhSQY3WCRRq69yb7H00cL
-PnDd3FRoaBwYykWqzSqTGxiZAibqqOWGT3f5gqoOx/0Fog9A91uZ3Y/C98MA
-4MdVHTP8dIC/owX4fsjYkzHzCeie88MfBPp2zdUL+4LO+uCsbYQCg2MQ/+C4
-oHeHD4kO/qkjg08pJx8QHOwnJf9XIoaWON4bNnRYvf8PHB4WOESk/rTRg2cK
-gOVOdHj8+cn4aAz/e3ICKPw6DBHiKKJ7JAgkVg1UPwGceZ5On52fPzk9jb4J
-XjmNpukE+62n25+ddYYn1/0RQvfaT7epcHzyrE2Hh40VBByeCM+Ojo6YEg+M
-PRoN+vuFH9efLvx4iIBFEjJs0b1Nmuv/QZGJwFPk+wQn22Kwb5xy3QoLHhis
-XLeClYsgJmkP6QMXWHD43tDtnk4ehIfNYtXE4ABgNFjJju0G41v6OPG0hYUG
-csQHx1uli3aRQ9jaRxVEVdvHvIdBcSqyv5jtN/XUqL/U1MBjT1ojqXrJo3bQ
-sD+uaz95T1x3/TFx3Y4Ddtd9wV1YN8xk8o6K2X0AKlrfqV3fUsk8YGhrT2Fl
-L6LFQrrSTxvT9sao8fQPKPtCQPeiXiI+xPrRhT1ENhhMzI4eHC5Sd6eQEQH1
-IFF+DULNBCXMofxtIMh79lKVK65XwWd85SjoyaQiAd0p+a1lUBdfMzUqwv3o
-rVm61TZ3ZRaQei2xKxu3BHrCXSxFF3/bh9KbVQiwGjNZBkdhUsJadD+zA3pA
-2JovVMrmWOlbLF191DRnHxvv5UuHfPkX3sSzolM3eFDdKCQQsnSKHYetz4dN
-Q0VGCBS1ArnjuOIKrL62aLsZQCjtdYoHbLAkOoboWilYBjySMb1AnPwtFCyQ
-BLmD3vdDd67E2IZp7K/kI2aajvKwORELviXQWkYwnNjTMlXN5GxFHFGG7jwd
-jbAs8MySrFSnraUeEzyX5LSD7TitwfA4iq9VsfeozLNiCu4JX3TolE6/UpmZ
-4Qdb9qhw4CJbXX7KBPceOer7M9/3IMrggacPTTPfm/gOhozn5BE+6xzhaXui
-Laz0cSnsbnY2+qfSEDjaCUKG7Z2P3t7Ax4G9Y84pNubCdl1yQ4ThewB6gHA4
-tQuCO80LzFcWktu7MLjLnZUKWxsiKT0RSz1fVFFqLlfv8aLEFjhA9fNAK3DM
-vdmPIPiONhAgB2q0tonVXf0gzuYPWybX0ZBalPk6Kvi+OdDoluBaff1R7YNt
-bTzk4ELj3al3tv/Lt2q0MuzH45iGbh65u1ffg4LulqLRU7Sq7mSmP1LJ1wdl
-alaFC9Jxnh0dWhWnyezhUo4daM14H4LOaydhOwSoo02vVFVd5uSNQnZyFoWO
-G3SYcbwJouK0CufeM1MF/GsGOgalOtBVc8ibOho7uMTz8fHluc5ND5NO20w6
-ba4sCiked8924uktSiBhAa7jHyAgLCF3pTfjo+u7mN8FqbfjwfjKoRmeweX0
-VtO/Ny1ljlhjFoOzLhEIQI7VpWEne0A0Hf+teSQGteskZKvIS/Ro/ykHbVbl
-rQUJFhEbu6d0ftHe7OGejmbrKvxaHULZb5A6AK9egLlGVfOUjOZ3GmuUu5TG
-XSbCriwIGANwGXiAtGDcskLsY/skmT9NGaJ9l11YL3H3eFo73mDMCOOxRwgb
-lMNzxz1d/WsH2dz9F176o1uJ+A40277FN3LQlvi+Hu5dn/E9XeI5BAkMzl9g
-prKyTWxMs6nC/G9R0wlqQreYzsy0DO+g5uMqep4X1H4NkU4xz+nSi+Aa0a3Y
-DmXESnQ7Zo+uwwzP4E7dXzkglxEcTZCta9OtHQWKy8Se4IvOtPTwxHjvhP3Z
-rRMU8Qx2jUTCy8nrCWopwvSSB7KAHES3aIxYXlAjpDLkFfAtev0GQ0PsG+wc
-ojmAnKb2ZsHmxhqO/m3/fMdNAnzTYHQBCgcrGJS4AMVfc2Sz0q6t0dY+idZk
-2yi/Z9eqjamVLRZSEzYfIwlvurPy33mJD/bnV1zmdGcpXFTRUoP45LqnJaVl
-yoIARdNYe08lrX2NgnUhLD12R+DQUHroflSKQMPTHu4WF5ykzv0tIe3KTBCw
-WMH3XHRH3+j6AeX8v6WQVzcgz5d4/QrK45wOxfmi+FKmASoBPJAVGxoZTSvd
-Jf2GrtqJ/9wHwqc3E3Mo2gU2+3d08HSgK63AzgvqLsd7aYqVG3zfvyzisx+d
-Jb3df9CB7tojQE2XWwEVgAtdFgFBfXRXC1on+gZeNIHwBZvBmwzsVWIqLzUX
-TiJJdSL4mG5ZzN7pykGYiu7RCFNLdLAY4/q6qum+DWvN7pT9gwhTMLCD/wZA
-Clgnp2oAAA==
+1F58FASNTsaw5VDUhHOraf+hirOw3AdrQyHkIGVLuO/JcdO9IeFqPFmC5Hs8
+dRy7dHvOUE2j5IU9SdTrddGDU0e62509Xd9pMxsTSTi6ASONYHubfY+rjxZ8
+4Nq5qdLQeDAUjFSbVSY3MDJFTNRSyx2f7vYFVR2O+ytEHwDvt1K7HwXwhwHC
+j8s6ZvjpEH9HD/D9mLEnZeYz0D0HiD8I9e2aqxf3Ba31wWHbCAYG5yD+wYFB
+7w4fEh78U4cGn1JOPiA62E9K/q+EDC1xvDdu6LB6/x85PCxyiEj9acMHzxRA
+y53w8Pjzk/HRGP735ARg+HUYI8RhRPdIEEmsGqx+AkDzPJ0+Oz9/cnoafRO8
+chpN04n2W0+3PzvrjE+u+0OE7rWfblPh+ORZmw4PGyuIODwRnh0dHTElHhh8
+NBr094s/rj9d/PEQAYskZNiie5s01/+DQhOBx8j3iU62xWDfQOW6FRY8NFq5
+bkUrF0FQ0h7TRy6w4vC9ods+nT0Ij5vFuonRAeBoMJMd+w3GtwRy8mlLCw3m
+iI+Ot4oX7TKHsNWPKgirtg96D4PyVGSAMd9v6qlRf6mphceetUZS9ZJH7aBh
+f2DXfvKewO76YwK7HUfsrvuiu7BymMnkHZWz+xBUtL5Tu76lknnA0Naewtpe
+RIuFdMWfNqjtDVLj6R9Q+IWI7kW9RICIFaQLe4xsMJiYHV04XKbuTiIjBOqB
+ovwaxJoJSpiD+dtIkPfspSpXXLGCz/jSUdCTSUUCulPyW8ugPr5malSE++Fb
+s3Srbe7SLCD1WmJfNm4J9IT7WIou/raPpTerEGA1ZrIMDsOkBLbohmaH9ICw
+NV+plM2x1rdYugqpaU4/Nu7LFw/5+i+8i2dF527wqLpRSCBk6RR7DlufD5uW
+iowgKGoFcsdxxZVYfXXR9jOAUNoLFQ/YYEn0DNHFUrAMeCRjeoE4+XsoWCAJ
+cwfd74fuZImxLdPYYcmHzDQd5mFzIhZ8T6C1jGA4satlqprJ2Yo4ogzdiToa
+YVngqSVZqU5bS10meDLJaQfbcVqD4XEUX6xib1KZZ8UU/BO+6OApnX+lQjPj
+D7bsUenAhba6/JQp7j2y1Pfnvu+BlMEDTx+aaL439R0MGc/JI3zWOcLT9kRb
+YOnjktjd7Gz0T6UhcrQThAzbOyO9vYGPQ3vHnFRszIXtu+SWCMM3AfQg4XBq
+FwV3mheYrywkN3hhdJc7KxU2N0RSeiKWer6ootxcrt7jVYktcIDq54FW4Jh7
+0x9B9B1tIEAO1GptM6u7OkKczR+2TK6jITUp84VU8H1zpNEtwTX7+sPaB9va
+eMjRhcbbU+9sB5hv1mil2I/HMQ3dPHJ3t74HBd1NRaOnaFXd2Ux/qJIvEMrU
+rAoXpONEOzq0Ks6T2eOlHDzQmvFGBJ3XTsJ2CFBHo16pqrrMyRuF7OQ0Ch04
+6DDjeBdExXkVTr5npgr41wx0DEp1oKvmmDf1NHZwiefjA8xznZseJp22mXTa
+XFoUUjzun+3E01uUQMICXMc/QUBYQu7Kb8aH13cxvwtSbweE8aVDMzyFy/mt
+poNvWsocscYsBmddIhCAHKtLw072gGg6/lvzSAxqF0rIVpGX6NH+Uw7arMpb
+CxIsIjZ2T+kEo73bwz0dzdZV+rU6hLLfIHUAXr0Ac42q5ikZze801ih3LY27
+ToRdWRAwBuAy8ABpwbhlhdjHdkoyf5o6RPs2u7Bg4m7ytHa8wZgRxmOPELYo
+hyePe/r61w6yuRswvPRH9xLxLWi2gYvv5KAt8Y093L0+45u6xHMIEhicv8BU
+ZWXb2JhmU4UJ4KKmM9SEbjGfmWkZ3kLNB1b0PC+oARsinWKe07UXwUWiW7Ed
+yoiV6HbMHl2IGZ7Cnbq/c0AuIzicIFsXp1s7ChSXiT3DF51q6eGJ8d4JO7Rb
+ZyjiGewaiYSXk9cT1FKE6SUPZAE5iG7RGLG8oFZIZcgr4Fv0+g2Ghtg52DlE
+cwQ5Te3dgs2dNRz92w76jrsE+K7B6AoUDlYwKHEBir/oyKalXWOjLX4Srcm2
+UYLPrlUbUytbLaQ2bD5IEt51Z+W/8xof7NCvuM7pTlO4qKKlBvHZdU9LSsuU
+BQGKprX2nlJa+yIF60JYeuyOwKGh9NANqRSBhuc93D0uOEmd+3tC2qWZIGCx
+gu+56A6/0QUEyvl/SyGvbkCeL/ECFpTHOR2L81XxpUwDVAJ4ICs2NDKaVrpN
++g1dthP/wQ+ET28m5lC0K2z2L+ng+UBXW4GdF9RfjjfTFCs3+L5/W8RnPzpr
+erv/pAPdtkeAmq63AioAF7osAoL66LYWtE70DbxoAuELNoN3GdjLxFReaq6c
+RJLqRPAx3bOYvdOVgzAV3aQRppboaDHG9XVV040b1prdKfsnEaZgYAf/DRAN
+SDupagAA
 
 -->
 
