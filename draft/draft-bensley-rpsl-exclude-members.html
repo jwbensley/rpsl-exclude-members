@@ -1334,6 +1334,9 @@ li > p:last-of-type:only-child {
 </li>
                 </ul>
 </li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.4">
+                <p id="section-toc.1-1.2.2.4.1"><a href="#section-2.4" class="auto internal xref">2.4</a>.  <a href="#name-joint-vs-split-attributes" class="internal xref">Joint vs. Split Attributes</a></p>
+</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
@@ -1507,7 +1510,7 @@ and "<span class="bcp14">OPTIONAL</span>" are to be interpreted as described in 
       <h2 id="name-the-excl-members-attribute">
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-the-excl-members-attribute" class="section-name selfRef">The <code>excl-members</code> Attribute</a>
       </h2>
-<p id="section-2-1">The <code>excl-members</code> attribute is defined for the as-set class and route-set class.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-1">The <code>excl-members</code> attribute is defined by this document for the as-set class and route-set class.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <div id="the-as-set-class">
 <section id="section-2.1">
         <h3 id="name-the-as-set-class">
@@ -1606,6 +1609,26 @@ excl-members: RIPE::AS-EXAMPLE
 <p id="section-2.3.2-2">When creating or updating an object with the <code>excl-members</code> attribute, the authoritative IRR software <span class="bcp14">MUST NOT</span> require that the registry scope which precedes the object primary key, is a registry the IRR software knows to be a valid registry. An authoritative IRR server may have it's content mirrored to resolver IRR servers, which have visibility of many more registries.<a href="#section-2.3.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
+</section>
+</div>
+<div id="joint-vs-split-attributes">
+<section id="section-2.4">
+        <h3 id="name-joint-vs-split-attributes">
+<a href="#section-2.4" class="section-number selfRef">2.4. </a><a href="#name-joint-vs-split-attributes" class="section-name selfRef">Joint vs. Split Attributes</a>
+        </h3>
+<p id="section-2.4-1">The <code>excl-members</code> attribute could have been designed to be two separate attributes i.e., <code>excl-members</code> and <code>excl-mp-members</code>. This would provide finer grained control by only excluding a primary key found in a <code>members</code> attribute, and only excluding a primary key found in an <code>mp-members</code> attribute, respectively. This creates additional problems though:<a href="#section-2.4-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.4-2">
+<li id="section-2.4-2.1">
+            <p id="section-2.4-2.1.1">If the primary key of an object which needs to be excluded exists in the data hierarchy in a <code>members</code> attribute, but is only excluded if found in an <code>mp-members</code> attribute (e.g., it is only referenced in <code>excl-mp-members</code>), the object referenced is not successfully excluded. The problem is that the wrong exclude attribute has been used. This problem doesn't exist with a single combined exclude attribute.<a href="#section-2.4-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-2.4-2.2">
+            <p id="section-2.4-2.2.1">The syntax of the <code>mp-members</code> attribute allows it to contain all types of value supported by the <code>members</code> attribute, plus additional value types not supported by the <code>members</code> attribute (syntactically <code>mp-members</code> supports a superset of <code>members</code>). A primary key type which is valid in both attributes, such as a route-set, could be included via the <code>members</code> attribute or the <code>mp-members</code> attribute in the data hierarchy. To ensure this object is excluded, it's primary key would need to be added to both exclude attributes. This creates the problem that the two attributes would need to always store all values which are valid in the <code>members</code> attribute. This would render an <code>excl-members</code> attribute redundant because everything is duplicated in an <code>excl-mp-members</code> attribute. This problem doesn't exist with a single combined exclude attribute.<a href="#section-2.4-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-2.4-2.3">
+            <p id="section-2.4-2.3.1">Split exclude attributes allows for the intentional evasion of an exclusion, by looking up the data hierarchy, observing that a primary is excluded only if found in one of the <code>(mp-)members</code> attributes, and then intentionally including it in the other attribute. This problem doesn't exist with a combined excluded attribute.<a href="#section-2.4-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+<p id="section-2.4-3">Due to the problems listed above, the <code>excl-members</code> attribute has been specifically designed to be a single attribute, to avoid these problems.<a href="#section-2.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
