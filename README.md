@@ -8,7 +8,7 @@ The document is written using [kramdown-rfc](https://github.com/cabo/kramdown-rf
 
 ## Preview
 
-Preview the HTML version by visiting the following URL: <https://htmlpreview.github.io/?https://github.com/jwbensley/rpsl-exclude-members/blob/main/draft/draft-bensley-rpsl-exclude-members.html>
+Preview the HTML version by visiting the following URL: <https://previewhtml.github.io/?url=https://github.com/jwbensley/rpsl-exclude-members/blob/main/draft/draft-bensley-rpsl-exclude-members.html>
 
 ## Editing
 
