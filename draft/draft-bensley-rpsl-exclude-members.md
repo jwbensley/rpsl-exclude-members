@@ -154,7 +154,7 @@ and "OPTIONAL" are to be interpreted as described in BCP 14, RFC 2119
 
 # The `excl-members` Attribute
 
-The `excl-members` attribute is defined for the as-set class and route-set class.
+The `excl-members` attribute is defined by this document for the as-set class and route-set class.
 
 ## The as-set Class
 
@@ -223,6 +223,16 @@ If allowed, due to the presence of the `src-members` attribute, ARIN::AS-EXAMPLE
 The IRR software MUST NOT require that the primary key of an entry in the `excl-members` attribute is also a direct member of the object being created or updated. The `excl-members` attribute is used to exclude objects anywhere in the hierarchy, starting from the point of definition, moving downwards within the hierarchy. This is because the object to be excluded, might be being included by a member, of a member, of a member, for example.
 
 When creating or updating an object with the `excl-members` attribute, the authoritative IRR software MUST NOT require that the registry scope which precedes the object primary key, is a registry the IRR software knows to be a valid registry. An authoritative IRR server may have it's content mirrored to resolver IRR servers, which have visibility of many more registries.
+
+## Joint vs. Split Attributes
+
+The `excl-members` attribute could have been designed to be two separate attributes i.e., `excl-members` and `excl-mp-members`. This would provide finer grained control by only excluding a primary key found in a `members` attribute, and only excluding a primary key found in an `mp-members` attribute, respectively. This creates additional problems though:
+
+1. If the primary key of an object which needs to be excluded exists in the data hierarchy in a `members` attribute, but is only excluded if found in an `mp-members` attribute (e.g., it is only referenced in `excl-mp-members`), the object referenced is not successfully excluded. The problem is that the wrong exclude attribute has been used. This problem doesn't exist with a single combined exclude attribute.
+1. The syntax of the `mp-members` attribute allows it to contain all types of value supported by the `members` attribute, plus additional value types not supported by the `members` attribute (syntactically `mp-members` supports a superset of `members`). A primary key type which is valid in both attributes, such as a route-set, could be included via the `members` attribute or the `mp-members` attribute in the data hierarchy. To ensure this object is excluded, it's primary key would need to be added to both exclude attributes. This creates the problem that the two attributes would need to always store all values which are valid in the `members` attribute. This would render an `excl-members` attribute redundant because everything is duplicated in an `excl-mp-members` attribute. This problem doesn't exist with a single combined exclude attribute.
+1. Split exclude attributes allows for the intentional evasion of an exclusion, by looking up the data hierarchy, observing that a primary is excluded only if found in one of the `(mp-)members` attributes, and then intentionally including it in the other attribute. This problem doesn't exist with a combined excluded attribute.
+
+Due to the problems listed above, the `excl-members` attribute has been specifically designed to be a single attribute, to avoid these problems.
 
 # Exclusion Logic
 
