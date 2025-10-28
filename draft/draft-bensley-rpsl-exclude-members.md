@@ -370,7 +370,11 @@ The example shows that discovered exclusions do not apply across branches of the
 
 # Backwards Compatibility
 
-The behaviour or RPSL compliant software is to ignore unrecognised attributes. This means that adding the exclusion logic defined in this document based on the contents of a new attribute has no impact when existing IRR software implementations process an object with the new attribute defined.
+{{Section 2 of RFC2622}} defines syntax which allows for finer grained inclusion and exclusion of IP prefix ranges in the `(mp-)members` attribute of a route-set (i.e., `^-`, `^+`, `^n`, and `^n-m`). It could be possible to introduce similar style syntax to the existing `(mp-)members` attributes, which would match and include or exclude aut-num, as-set, and route-set primary keys. This breaks backwards compatibility though. Existing IRR implementations or tooling which parses IRR data, which has not been updated to include such changes to the existing attributes, would break when encountering data from an implementation which has been updated which returns data using these new syntax options.
+
+The behaviour of RPSL compliant software is to ignore unrecognised attributes. This means that adding the exclusion logic defined in this document, based on the contents of a new attribute, has no impact when existing IRR software implementations process an object with the new attribute defined.
+
+Although not related to the ability to retain backwards compatibility for parsing data, there is a breaking change introduced by this document in relation to the data returned from an IRR implementation which has implemented the defined changes. The returned data, from two IRR resolvers, with the exact same database, and one of the resolvers uses software which has implemented the changes introduced in this document, would not be the same. Therefore, for consumers of the returned data the presence of the new attribute in the returned data indicates that data maybe have been excluded, if any matches to the excluded primary keys where found during the resolving process.
 
 # IANA Considerations
 
