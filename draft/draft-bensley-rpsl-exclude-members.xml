@@ -57,7 +57,7 @@
 
 <section anchor="introduction"><name>Introduction</name>
 
-<t>The Routing Policy Specification Language (RPSL) <xref target="RFC2622"/> defines the as-set and route-set classes. These sets can either reference a direct member of the set (such as an AS number, IP prefix, etc.), or additional sets, which themselves have their own direct members and/or reference yet more sets, ad infinitum. Server and client software can follow these references to recursively resolve all the members of a set i.e., once all references have been resolved what remains is set of prefixes or ASes.</t>
+<t>The Routing Policy Specification Language (RPSL) <xref target="RFC2622"/> defines the as-set and route-set classes. These sets can reference direct members (such as an AS number or IP prefix) or additional sets, which in turn can reference further sets recursively. Server and client software can follow these references to resolve all members of a set. Once all references have been resolved, what remains is a set of prefixes or ASes.</t>
 
 <section anchor="existing-methods-of-inclusion"><name>Existing Methods of Inclusion</name>
 
@@ -66,10 +66,10 @@
 <t><list style="numbers" type="1">
   <t><xref target="RFC2622"/> defines the <spanx style="verb">members</spanx> attribute.
   <list style="numbers" type="1">
-      <t><xref section="5.1" sectionFormat="of" target="RFC2622"/> defines that for an as-set class this attribute stores one or more primary keys, each referencing an aut-num or or as-set object.</t>
-      <t>Sections <xref target="RFC2622" section="5.2" sectionFormat="bare"/> and <xref target="RFC2622" section="5.3" sectionFormat="bare"/> of <xref target="RFC2622"/> defines that for a route-set class this attribute stores one or more primary keys, each referencing a route-set object which optionally has a range operator appended, or an aut-num, or an as-set. Alternatively, the <spanx style="verb">members</spanx> attribute on a route-set may store an IPv4 address prefix range directly i.e., not an RPSL primary key that points directly to route object. In this case, the address prefix range is used to identify matching route objects. That address prefix range may optionally have a range operator appended.</t>
+      <t><xref section="5.1" sectionFormat="of" target="RFC2622"/> defines that for an as-set class this attribute stores one or more primary keys, each referencing an aut-num or an as-set object.</t>
+      <t>Sections <xref target="RFC2622" section="5.2" sectionFormat="bare"/> and <xref target="RFC2622" section="5.3" sectionFormat="bare"/> of <xref target="RFC2622"/> define that for a route-set class this attribute stores one or more primary keys, each referencing a route-set object (optionally with a range operator appended), an aut-num, or an as-set. Alternatively, the <spanx style="verb">members</spanx> attribute on a route-set may store an IPv4 address prefix range directly (i.e., not an RPSL primary key that points to a route object). In this case, the address prefix range is used to identify matching route objects. That address prefix range may optionally have a range operator appended.</t>
     </list></t>
-  <t><xref section="4.2" sectionFormat="of" target="RFC4012"/> defines the <spanx style="verb">mp-members</spanx> attribute for the route-set class. This attribute may store one or more primary keys, each referencing a route-set object which optionally has a range operator appended, or an IPv4 address prefix range directly, or an IPv6 address prefix range directly. Although not explicitly stated in <xref target="RFC4012"/>, implementations of the <spanx style="verb">mp-members</spanx> attributes have been based on the <xref target="RFC2622"/> definition of the <spanx style="verb">members</spanx> attribute and also allow the attribute to store the RPSL primary key of aut-nums and as-sets.</t>
+  <t><xref section="4.2" sectionFormat="of" target="RFC4012"/> defines the <spanx style="verb">mp-members</spanx> attribute for the route-set class. This attribute may store one or more primary keys, each referencing a route-set object (optionally with a range operator appended), or an IPv4/IPv6 address prefix range directly. Although not explicitly stated in <xref target="RFC4012"/>, implementations of the <spanx style="verb">mp-members</spanx> attribute have generally followed the <xref target="RFC2622"/> <spanx style="verb">members</spanx> behavior and also allow aut-num and as-set primary keys.</t>
   <t><xref target="RFC2622"/> defines the <spanx style="verb">mbrs-by-ref</spanx> and <spanx style="verb">member-of</spanx> attributes.
   <list style="numbers" type="1">
       <t><xref section="5.1" sectionFormat="of" target="RFC2622"/> defines that for an as-set these attributes allow for the inclusion of aut-nums in the as-set, iff the criteria defined in the RFC linking both attributes together is met.</t>
@@ -121,7 +121,9 @@ members: AS65003
   <t>A member is added to a set with whom a peer or upstream of the including set operator already has a direct relation. A regulatory requirement may restrict the peer or upstream from exchanging traffic with the operator of the included set via the including set operator, or via any 3rd party operator. Again, such a scenario may required manual workarounds.</t>
 </list></t>
 
-<t>This document updates the RPSL definition in <xref target="RFC4012"/> by introducing the <spanx style="verb">excl-members</spanx> attribute. This allows the including set operator to exclude aut-nums, as-sets, and route-sets, from the included set, or to exclude the included set entirely, from being included in the including set. This allows operators to have finer grained control over the members of their sets, and to avoid the undesired outcomes described above.</t>
+<t>This document updates the RPSL definitions in <xref target="RFC2622"/> and <xref target="RFC4012"/> by introducing the <spanx style="verb">excl-members</spanx> attribute.</t>
+
+<t>This allows the including set operator to exclude aut-nums, as-sets, and route-sets, from the included set, or to exclude the included set entirely, from being included in the including set. This allows operators to have finer grained control over the members of their sets, and to avoid the undesired outcomes described above.</t>
 
 </section>
 <section anchor="requirements-language"><name>Requirements Language</name>
@@ -148,7 +150,7 @@ and "<bcp14>OPTIONAL</bcp14>" are to be interpreted as described in BCP 14, RFC 
 
 <t>The <spanx style="verb">excl-members</spanx> attribute is defined by this document for the as-set class and route-set class.</t>
 
-<t>This attribute builds on the RPSL modifications introduced by the <spanx style="verb">src-members</spanx> attribute defined in <xref target="draft-romijn-grow-rpsl-registry-scoped-members"/>. Therefore reads should be familiar with the <spanx style="verb">src-members</spanx> attribute and the motivation for that attribute, before reading the rest of this document.</t>
+<t>This attribute builds on the RPSL modifications introduced by the <spanx style="verb">src-members</spanx> attribute defined in <xref target="draft-romijn-grow-rpsl-registry-scoped-members"/>. Therefore, readers should be familiar with the <spanx style="verb">src-members</spanx> attribute and its motivation before reading the rest of this document.</t>
 
 <section anchor="the-as-set-class"><name>The as-set Class</name>
 
@@ -196,7 +198,7 @@ and "<bcp14>OPTIONAL</bcp14>" are to be interpreted as described in BCP 14, RFC 
 
 <section anchor="registry-scoped-keys-only"><name>Registry Scoped Keys Only</name>
 
-<t>All primary keys in <spanx style="verb">excl-members</spanx> <bcp14>MUST</bcp14> have a registry scope provided. By requiring registry scoped aut-num, as-set, and route-set keys to be used in the <spanx style="verb">excl-members</spanx> attribute, it becomes possible to have multiple references to the same RPSL primary key. This is not permitted, and IRR registry software <bcp14>MUST</bcp14> reject this:</t>
+<t>All primary keys in <spanx style="verb">excl-members</spanx> <bcp14>MUST</bcp14> have a registry scope provided. By requiring registry scoped primary keys in the <spanx style="verb">excl-members</spanx> attribute, it becomes possible to have multiple references to the same RPSL primary key after stripping the registry prefix. This is not permitted, and IRR registry software <bcp14>MUST</bcp14> reject this:</t>
 
 <figure title="Invalid object fragment using multiple registry prefixes with the same RPSL primary key"><sourcecode type="rpsl"><![CDATA[
 excl-members: RIPE::AS-EXAMPLE, ARIN::AS-EXAMPLE
@@ -219,7 +221,7 @@ excl-members: RIPE::AS-EXAMPLE
 
 <t>The IRR software <bcp14>MUST NOT</bcp14> require that the primary key of an entry in the <spanx style="verb">excl-members</spanx> attribute is also a direct member of the object being created or updated. The <spanx style="verb">excl-members</spanx> attribute is used to exclude objects anywhere in the recursive set hierarchy, starting from the point of definition, moving downwards within the hierarchy. This is because the object to be excluded might have been included by a member, of a member, of a member (ad infinitum).</t>
 
-<t>When creating or updating an object with the <spanx style="verb">excl-members</spanx> attribute, the authoritative IRR software <bcp14>MUST NOT</bcp14> require that the registry scope which precedes the object primary key, is a registry the IRR software knows to be a valid registry. An authoritative IRR server may have it's content mirrored to resolver IRR servers, which have visibility of many more registries.</t>
+<t>When creating or updating an object with the <spanx style="verb">excl-members</spanx> attribute, authoritative IRR software <bcp14>MUST NOT</bcp14> require that the registry scope which precedes the object primary key is one the IRR software recognizes as valid. An authoritative IRR server may have its content mirrored to resolver IRR servers, which have visibility of many more registries.</t>
 
 </section>
 </section>
@@ -249,9 +251,9 @@ excl-members: RIPE::AS-EXAMPLE
   <t>If both <spanx style="verb">members</spanx> and <spanx style="verb">src-members</spanx> are defined on an as-set object, and the same key exists in both attributes when the registry scope is removed from the <spanx style="verb">src-members</spanx> entry, the key from <spanx style="verb">src-members</spanx> which is prefixed with a registry scope <bcp14>MUST</bcp14> be compared against all entries in <spanx style="verb">excl-members</spanx> with their registry scopes present. Matching keys in <spanx style="verb">src-members</spanx> takes precedence over matching keys in <spanx style="verb">members</spanx>.</t>
 </list></t>
 
-<t>The figure below shows IRR data in its raw an unresolved state. In the figure, RIPE::AS-EXAMPLE-4 is not defined (it could be that it doesn't exist or the resolving IRR system doesn't contain data from the RIPE registry):</t>
+<t>The figure below shows IRR data in its raw and unresolved state. In the figure, RIPE::AS-EXAMPLE-4 is not defined (it may not exist, or the resolving IRR system may not contain data from the RIPE registry):</t>
 
-<figure title="An example as-set hierarchy, in it's unresolved state"><sourcecode type="rpsl"><![CDATA[
+<figure title="An example as-set hierarchy, in its unresolved state"><sourcecode type="rpsl"><![CDATA[
 as-set: AS-EXAMPLE-1
 members: AS-EXAMPLE-2, AS65001
 source: ARIN
@@ -273,14 +275,14 @@ source: ARIN
 
 <t>The figure below shows the result from a resolving IRR server having resolved the members of set <spanx style="verb">AS-EXAMPLE-1</spanx> when the logic relating to <spanx style="verb">excl-members</spanx> is applied:</t>
 
-<figure title="AS-EXAMPLE-1 in it's resolved state with exclusions applied"><sourcecode type="rpsl"><![CDATA[
+<figure title="AS-EXAMPLE-1 in its resolved state with exclusions applied"><sourcecode type="rpsl"><![CDATA[
 as-set: AS-EXAMPLE-1
 members: AS65001, AS65003
 ]]></sourcecode></figure>
 
 <t><list style="symbols">
   <t>It can be seen that <spanx style="verb">excl-members</spanx> took effect on the object it was defined, not just it's descendants. This is shown by AS65002 not being included in the final result because AS65002 is both a <spanx style="verb">member</spanx> <em>and</em> <spanx style="verb">excl-members</spanx> of AS-EXAMPLE-2.</t>
-  <t>AS-EXAMPLE-4 is excluded even though AS-EXAMPLE-4 is defined in ARIN and a <spanx style="verb">member</spanx> of AS-EXAMPLE-3. This happens because a <spanx style="verb">src-members</spanx> attribute has been defined on AS-EXAMPLE-3, this takes precedence over the <spanx style="verb">members</spanx> attribute (the AS-EXAMPLE-4 key in the <spanx style="verb">members</spanx> attribute of AS-EXAMPLE-3 is ambiguous due to it not having a registry scope and the provided registry scoped value is preferred to remove ambiguity). This means that RIPE::AS-EXAMPLE-4 <em>would</em> be included, but it's been excluded by the <spanx style="verb">exclude</spanx> attribute one level higher in the tree on AS-EXAMPLE-2.</t>
+  <t>AS-EXAMPLE-4 is excluded even though AS-EXAMPLE-4 is defined in ARIN and is a <spanx style="verb">member</spanx> of AS-EXAMPLE-3. This happens because a <spanx style="verb">src-members</spanx> attribute is defined on AS-EXAMPLE-3, and it takes precedence over the <spanx style="verb">members</spanx> attribute. This means RIPE::AS-EXAMPLE-4 would be included, but it is excluded by the <spanx style="verb">excl-members</spanx> attribute one level higher in the tree on AS-EXAMPLE-2.</t>
 </list></t>
 
 </section>
@@ -294,9 +296,9 @@ members: AS65001, AS65003
   <t>If both <spanx style="verb">(mp-)members</spanx> and <spanx style="verb">src-members</spanx> are defined on a route-set object, and the same key exists in both attributes when the registry scope is removed from the <spanx style="verb">src-members</spanx> entry, the key from <spanx style="verb">src-members</spanx> which is prefixed with a registry scope <bcp14>MUST</bcp14> be compared against all entries in <spanx style="verb">excl-members</spanx> with their registry scopes present. Matching keys in <spanx style="verb">src-members</spanx> takes precedence over matching keys in <spanx style="verb">(mp-)members</spanx>.</t>
 </list></t>
 
-<t>The figure below shows IRR data in its raw an unresolved state:</t>
+<t>The figure below shows IRR data in its raw and unresolved state:</t>
 
-<figure title="An example route-set hierarchy, in it's unresolved state"><sourcecode type="rpsl"><![CDATA[
+<figure title="An example route-set hierarchy, in its unresolved state"><sourcecode type="rpsl"><![CDATA[
 route-set: RS-EXAMPLE-1
 members: 192.0.2.0/25, RS-EXAMPLE-2
 source: ARIN
@@ -319,8 +321,8 @@ source: ARIN
 
 <t>The figure below shows the result from a resolving IRR server having resolved the members of set <spanx style="verb">RS-EXAMPLE-1</spanx> when the logic relating to <spanx style="verb">excl-members</spanx> is applied:</t>
 
-<figure title="RS-EXAMPLE-1 in it's resolved state with exclusions applied"><sourcecode type="rpsl"><![CDATA[
-as-set: RS-EXAMPLE-1
+<figure title="RS-EXAMPLE-1 in its resolved state with exclusions applied"><sourcecode type="rpsl"><![CDATA[
+route-set: RS-EXAMPLE-1
 members: 192.0.2.0/25, 2001:db8::/33, 192.0.2.128/25
 ]]></sourcecode></figure>
 
@@ -333,13 +335,15 @@ members: 192.0.2.0/25, 2001:db8::/33, 192.0.2.128/25
 </section>
 <section anchor="cumulative-excludes"><name>Cumulative Excludes</name>
 
-<t>As as-set or route-set objects are recursively resolved and <spanx style="verb">excl-members</spanx> attributes are discovered, the RPSL primary keys to be excluded need to be tracked. At any point in the hierarchy where <spanx style="verb">excl-members</spanx> is discovered, all <spanx style="verb">(mp-)members</spanx> and <spanx style="verb">src-members</spanx> attributes from that point onwards are subject to the <spanx style="verb">excl-members</spanx> which have been discovered so far. However, depending on the resolution algorithm being used by the resolving software i.e., a depth first search or breadth first search, multiple lists of RPSL keys to exclude may have to be maintained (the exact implementation details are outside the scope of this document).</t>
+<t>As as-set and route-set objects are recursively resolved and <spanx style="verb">excl-members</spanx> attributes are discovered, the RPSL primary keys to be excluded need to be tracked.</t>
+
+<t>At any point in the hierarchy where <spanx style="verb">excl-members</spanx> is discovered, all <spanx style="verb">(mp-)members</spanx> and <spanx style="verb">src-members</spanx> attributes from that point onwards are subject to the <spanx style="verb">excl-members</spanx> which have been discovered so far. However, depending on the resolution algorithm being used by the resolving software i.e., a depth first search or breadth first search, multiple lists of RPSL keys to exclude may have to be maintained (the exact implementation details are outside the scope of this document).</t>
 
 <t>This section does not aim to define how the logic should be implemented in software, simply to demonstrate that the exclusion list is cumulative, but not as simple as a single global list.</t>
 
 <t>The following figure shows as-set objects in their unresolved state:</t>
 
-<figure title="An example as-set hierarchy, in it's unresolved state"><sourcecode type="rpsl"><![CDATA[
+<figure title="An example as-set hierarchy, in its unresolved state"><sourcecode type="rpsl"><![CDATA[
 as-set: AS-EXAMPLE-1
 members: AS-EXAMPLE-2, AS-EXAMPLE-3
 excl-members: RIPE::AS-EXAMPLE-4
@@ -370,7 +374,7 @@ members: AS65005
   <t>The resolving process starts by resolving the members of AS-EXAMPLE-1.</t>
   <t>If a depth first search approach is taken by the IRR software, AS-EXAMPLE-2 might be resolved next. AS-EXAMPLE-4 is not included due to the <spanx style="verb">excl-members</spanx> attribute defined on AS-EXAMPLE-1. This is being applied from the point of definition onwards, the resolving process inherited the currently defined list of excludes (RIPE::AS-EXAMPLE-4) when it moved on to resolve AS-EXAMPLE-2.</t>
   <t>AS-EXAMPLE-2 defined a new <spanx style="verb">excl-members</spanx> attribute with the value RIPE::AS-EXAMPLE-5 however, there is nothing left to resolve in AS-EXAMPLE-2 so this exclusion has no effect.</t>
-  <t>Continuing the depth first search approach, the IRR software returns to AS-EXAMPLE-1, and uses the exclusion list as it existed whilst resolving AS-EXAMPLE1-1 (it contains only RIPE::AS-EXAMPLE-4), and now begins to resolve AS-EXAMPLE-3.</t>
+  <t>Continuing the depth-first search approach, the IRR software returns to AS-EXAMPLE-1, uses the exclusion list as it existed while resolving AS-EXAMPLE-1 (containing only RIPE::AS-EXAMPLE-4), and then resolves AS-EXAMPLE-3.</t>
   <t>AS-EXAMPLE-3 includes AS-EXAMPLE-5. This is not excluded even though the IRR software has encountered an <spanx style="verb">excl-members</spanx> attribute which contains the value RIPE::AS-EXAMPLE-5. This is because that <spanx style="verb">excl-members</spanx> attribute was found on a different branch of the set hierarchy.</t>
   <t>Continuing the resolution process, resolving AS-EXAMPLE-5 returns AS65005 only. The exclusion of AS65006 defined on AS-EXAMPLE-3 was applied to the resolution of AS-EXAMPLE-5 in addition to the exclusion of RIPE::AS-EXAMPLE-4, however no <spanx style="verb">members</spanx> or <spanx style="verb">src-members</spanx> attributes were found on AS-EXAMPLE-5 with these values.</t>
 </list></t>
@@ -385,12 +389,7 @@ members: AS65005
 
 <t>The behaviour of RPSL compliant software is to ignore unrecognised attributes. This means that adding the exclusion logic defined in this document, based on the contents of a new attribute, has no impact when existing IRR software implementations process an object with the new attribute defined.</t>
 
-<t>Although not related to the ability to retain backwards compatibility for parsing data, there is a breaking change introduced by this document in relation to the data returned from an IRR implementation which has implemented the defined changes. The returned data from two IRR resolvers, with the exact same database, and one of the resolvers uses software which has not implemented the changes introduced in this document, would not be the same. Therefore, for consumers of the returned data, the presence of the <spanx style="verb">excl-members</spanx> attribute in the returned data indicates that data may have been excluded, if any matches to the excluded primary keys where found during the resolving process.</t>
-
-</section>
-<section anchor="iana-considerations"><name>IANA Considerations</name>
-
-<t>This memo includes no request to IANA.</t>
+<t>Although not related to the ability to retain backwards compatibility for parsing data, there is a breaking change introduced by this document in relation to the data returned from an IRR implementation which has implemented the defined changes. The returned data from two IRR resolvers, with the exact same database, and one of the resolvers uses software which has not implemented the changes introduced in this document, would not be the same. Therefore, for consumers of the returned data, the presence of the <spanx style="verb">excl-members</spanx> attribute indicates that data may have been excluded, if any matches to the excluded primary keys were found during the resolving process.</t>
 
 </section>
 <section anchor="security-considerations"><name>Security Considerations</name>
@@ -399,7 +398,7 @@ members: AS65005
 
 <t>It is possible that the operator of an including set includes the wrong primary key in the <spanx style="verb">excl-members</spanx> attribute. However, this is not a new issue, it has long been possible to include the unintended primary keys in set objects. This document doesn't change this existing behaviour. It does limit the scope of the unintended inclusion by requiring registry scoped keys only in the <spanx style="verb">excl-members</spanx> attribute.</t>
 
-<t>Great progress has been made with the deployment of Route Origin Authorizations (ROAs) as defined in <xref target="RFC9582"/>, and the ongoing development of Autonomous System Provider Authorization (ASPA) objects as defined in <xref target="draft-ietf-sidrops-aspa-verification"/>. The method proposed in this document in intended to compliment those existing developments, further enriching the existing operator's toolkit, and not work against them or be mutually exclusive.</t>
+<t>Great progress has been made with the deployment of Route Origin Authorizations (ROAs) as defined in <xref target="RFC9582"/>, and the ongoing development of Autonomous System Provider Authorization (ASPA) objects as defined in <xref target="draft-ietf-sidrops-aspa-verification"/>. The method proposed in this document is intended to complement those existing developments, further enriching the operator toolkit, and not work against them or be mutually exclusive.</t>
 
 </section>
 
@@ -552,205 +551,202 @@ members: AS65005
   </back>
 
 <!-- ##markdown-source:
-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
-SzlZNXUj3G5QjP2bNx+jrRz9DxQlqqH5ggAA
+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
+iMl487Zb9GWj/wH5Wzli7YAAAA==
 
 -->
 
