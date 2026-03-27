@@ -222,7 +222,7 @@ If allowed, due to the presence of the `src-members` attribute, ARIN::AS-EXAMPLE
 
 The IRR software MUST NOT require that the primary key of an entry in the `excl-members` attribute is also a direct member of the object being created or updated. The `excl-members` attribute is used to exclude objects anywhere in the recursive set hierarchy, starting from the point of definition, moving downwards within the hierarchy. This is because the object to be excluded might have been included by a member, of a member, of a member (ad infinitum).
 
-When creating or updating an object with the `excl-members` attribute, authoritative IRR software MUST NOT require that the registry scope which precedes the object primary key is one the IRR software recognizes as valid. An authoritative IRR server may have its content mirrored to resolver IRR servers, which have visibility of many more registries.
+When creating or updating an object with the `excl-members` attribute, authoritative IRR software MUST NOT require that the registry scope which precedes the object primary key is one the IRR software recognises. An authoritative IRR server may have its content mirrored to resolver IRR servers, which have visibility of many more registries.
 
 ## Joint vs. Split Attributes
 

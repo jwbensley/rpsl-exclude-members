@@ -1603,7 +1603,7 @@ excl-members: RIPE::AS-EXAMPLE
 <a href="#section-2.3.2" class="section-number selfRef">2.3.2. </a><a href="#name-any-primary-key-and-registr" class="section-name selfRef">Any Primary Key and Registry Scope</a>
           </h4>
 <p id="section-2.3.2-1">The IRR software <span class="bcp14">MUST NOT</span> require that the primary key of an entry in the <code>excl-members</code> attribute is also a direct member of the object being created or updated. The <code>excl-members</code> attribute is used to exclude objects anywhere in the recursive set hierarchy, starting from the point of definition, moving downwards within the hierarchy. This is because the object to be excluded might have been included by a member, of a member, of a member (ad infinitum).<a href="#section-2.3.2-1" class="pilcrow">¶</a></p>
-<p id="section-2.3.2-2">When creating or updating an object with the <code>excl-members</code> attribute, authoritative IRR software <span class="bcp14">MUST NOT</span> require that the registry scope which precedes the object primary key is one the IRR software recognizes as valid. An authoritative IRR server may have its content mirrored to resolver IRR servers, which have visibility of many more registries.<a href="#section-2.3.2-2" class="pilcrow">¶</a></p>
+<p id="section-2.3.2-2">When creating or updating an object with the <code>excl-members</code> attribute, authoritative IRR software <span class="bcp14">MUST NOT</span> require that the registry scope which precedes the object primary key is one the IRR software recognises. An authoritative IRR server may have its content mirrored to resolver IRR servers, which have visibility of many more registries.<a href="#section-2.3.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
