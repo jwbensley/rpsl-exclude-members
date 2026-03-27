@@ -80,16 +80,16 @@ This document updates {{RFC2622}} and {{RFC4012}} by defining the `excl-members`
 
 # Introduction
 
-The Routing Policy Specification Language (RPSL) {{RFC2622}} defines the as-set and route-set classes. These sets can either reference a direct member of the set (such as an AS number, IP prefix, etc.), or additional sets, which themselves have their own direct members and/or reference yet more sets, ad infinitum. Server and client software can follow these references to recursively resolve all the members of a set i.e., once all references have been resolved what remains is set of prefixes or ASes.
+The Routing Policy Specification Language (RPSL) {{RFC2622}} defines the as-set and route-set classes. These sets can reference direct members (such as an AS number or IP prefix) or additional sets, which in turn can reference further sets recursively. Server and client software can follow these references to resolve all members of a set. Once all references have been resolved, what remains is a set of prefixes or ASes.
 
 ## Existing Methods of Inclusion
 
 The existing RPSL syntax allows for members of an as-set or route-set to be specified in multiple ways:
 
 1. {{RFC2622}} defines the `members` attribute.
-    1. {{Section 5.1 of RFC2622}} defines that for an as-set class this attribute stores one or more primary keys, each referencing an aut-num or or as-set object.
-    1. {{Sections 5.2 and 5.3 of RFC2622}} defines that for a route-set class this attribute stores one or more primary keys, each referencing a route-set object which optionally has a range operator appended, or an aut-num, or an as-set. Alternatively, the `members` attribute on a route-set may store an IPv4 address prefix range directly i.e., not an RPSL primary key that points directly to route object. In this case, the address prefix range is used to identify matching route objects. That address prefix range may optionally have a range operator appended.
-1. {{Section 4.2 of RFC4012}} defines the `mp-members` attribute for the route-set class. This attribute may store one or more primary keys, each referencing a route-set object which optionally has a range operator appended, or an IPv4 address prefix range directly, or an IPv6 address prefix range directly. Although not explicitly stated in {{RFC4012}}, implementations of the `mp-members` attributes have been based on the {{RFC2622}} definition of the `members` attribute and also allow the attribute to store the RPSL primary key of aut-nums and as-sets.
+    1. {{Section 5.1 of RFC2622}} defines that for an as-set class this attribute stores one or more primary keys, each referencing an aut-num or an as-set object.
+    1. {{Sections 5.2 and 5.3 of RFC2622}} define that for a route-set class this attribute stores one or more primary keys, each referencing a route-set object (optionally with a range operator appended), an aut-num, or an as-set. Alternatively, the `members` attribute on a route-set may store an IPv4 address prefix range directly (i.e., not an RPSL primary key that points to a route object). In this case, the address prefix range is used to identify matching route objects. That address prefix range may optionally have a range operator appended.
+1. {{Section 4.2 of RFC4012}} defines the `mp-members` attribute for the route-set class. This attribute may store one or more primary keys, each referencing a route-set object (optionally with a range operator appended), or an IPv4/IPv6 address prefix range directly. Although not explicitly stated in {{RFC4012}}, implementations of the `mp-members` attribute have generally followed the {{RFC2622}} `members` behavior and also allow aut-num and as-set primary keys.
 1. {{RFC2622}} defines the `mbrs-by-ref` and `member-of` attributes.
     1. {{Section 5.1 of RFC2622}} defines that for an as-set these attributes allow for the inclusion of aut-nums in the as-set, iff the criteria defined in the RFC linking both attributes together is met.
     1. {{Section 5.2 of RFC2622}} defines that for a route-set these attributes allow for the inclusion of routes in the route-set, iff the criteria defined in the RFC linking both attributes together is met.
@@ -139,7 +139,9 @@ The existing greedy inclusion logic of the `(mp-)members` attribute of as-sets a
 
 1. A member is added to a set with whom a peer or upstream of the including set operator already has a direct relation. A regulatory requirement may restrict the peer or upstream from exchanging traffic with the operator of the included set via the including set operator, or via any 3rd party operator. Again, such a scenario may required manual workarounds.
 
-This document updates the RPSL definition in {{RFC4012}} by introducing the `excl-members` attribute. This allows the including set operator to exclude aut-nums, as-sets, and route-sets, from the included set, or to exclude the included set entirely, from being included in the including set. This allows operators to have finer grained control over the members of their sets, and to avoid the undesired outcomes described above.
+This document updates the RPSL definitions in {{RFC2622}} and {{RFC4012}} by introducing the `excl-members` attribute.
+
+This allows the including set operator to exclude aut-nums, as-sets, and route-sets, from the included set, or to exclude the included set entirely, from being included in the including set. This allows operators to have finer grained control over the members of their sets, and to avoid the undesired outcomes described above.
 
 ## Requirements Language
 
@@ -156,7 +158,7 @@ and "OPTIONAL" are to be interpreted as described in BCP 14, RFC 2119
 
 The `excl-members` attribute is defined by this document for the as-set class and route-set class.
 
-This attribute builds on the RPSL modifications introduced by the `src-members` attribute defined in {{draft-romijn-grow-rpsl-registry-scoped-members}}. Therefore reads should be familiar with the `src-members` attribute and the motivation for that attribute, before reading the rest of this document.
+This attribute builds on the RPSL modifications introduced by the `src-members` attribute defined in {{draft-romijn-grow-rpsl-registry-scoped-members}}. Therefore, readers should be familiar with the `src-members` attribute and its motivation before reading the rest of this document.
 
 ## The as-set Class
 
@@ -196,7 +198,7 @@ When an authoritative IRR registry processes the creation or update of an as-set
 
 ### Registry Scoped Keys Only
 
-All primary keys in `excl-members` MUST have a registry scope provided. By requiring registry scoped aut-num, as-set, and route-set keys to be used in the `excl-members` attribute, it becomes possible to have multiple references to the same RPSL primary key. This is not permitted, and IRR registry software MUST reject this:
+All primary keys in `excl-members` MUST have a registry scope provided. By requiring registry scoped primary keys in the `excl-members` attribute, it becomes possible to have multiple references to the same RPSL primary key after stripping the registry prefix. This is not permitted, and IRR registry software MUST reject this:
 
 ~~~~ rpsl
 excl-members: RIPE::AS-EXAMPLE, ARIN::AS-EXAMPLE
@@ -220,7 +222,7 @@ If allowed, due to the presence of the `src-members` attribute, ARIN::AS-EXAMPLE
 
 The IRR software MUST NOT require that the primary key of an entry in the `excl-members` attribute is also a direct member of the object being created or updated. The `excl-members` attribute is used to exclude objects anywhere in the recursive set hierarchy, starting from the point of definition, moving downwards within the hierarchy. This is because the object to be excluded might have been included by a member, of a member, of a member (ad infinitum).
 
-When creating or updating an object with the `excl-members` attribute, the authoritative IRR software MUST NOT require that the registry scope which precedes the object primary key, is a registry the IRR software knows to be a valid registry. An authoritative IRR server may have it's content mirrored to resolver IRR servers, which have visibility of many more registries.
+When creating or updating an object with the `excl-members` attribute, authoritative IRR software MUST NOT require that the registry scope which precedes the object primary key is one the IRR software recognizes as valid. An authoritative IRR server may have its content mirrored to resolver IRR servers, which have visibility of many more registries.
 
 ## Joint vs. Split Attributes
 
@@ -242,7 +244,7 @@ When the `excl-members` attribute is populated on an as-set object, the primary 
 1. This exclusion applies to the `src-members` attribute (as defined in {{draft-romijn-grow-rpsl-registry-scoped-members}}) of the as-set object which has the `excl-members` attribute populated, and the `src-members` attribute of all recursively resolved as-sets within that set. In this case the registry scoped RPSL primary keys in `src-members` MUST match a registry scoped key in `excl-members` exactly, without the registry scope having been removed from either of the two keys being compared.
 1. If both `members` and `src-members` are defined on an as-set object, and the same key exists in both attributes when the registry scope is removed from the `src-members` entry, the key from `src-members` which is prefixed with a registry scope MUST be compared against all entries in `excl-members` with their registry scopes present. Matching keys in `src-members` takes precedence over matching keys in `members`.
 
-The figure below shows IRR data in its raw an unresolved state. In the figure, RIPE::AS-EXAMPLE-4 is not defined (it could be that it doesn't exist or the resolving IRR system doesn't contain data from the RIPE registry):
+The figure below shows IRR data in its raw and unresolved state. In the figure, RIPE::AS-EXAMPLE-4 is not defined (it may not exist, or the resolving IRR system may not contain data from the RIPE registry):
 
 ~~~~ rpsl
 as-set: AS-EXAMPLE-1
@@ -263,7 +265,7 @@ as-set: AS-EXAMPLE-4
 members: AS65004
 source: ARIN
 ~~~~
-{: title='An example as-set hierarchy, in it's unresolved state'}
+{: title='An example as-set hierarchy, in its unresolved state'}
 
 The figure below shows the result from a resolving IRR server having resolved the members of set `AS-EXAMPLE-1` when the logic relating to `excl-members` is applied:
 
@@ -271,10 +273,10 @@ The figure below shows the result from a resolving IRR server having resolved th
 as-set: AS-EXAMPLE-1
 members: AS65001, AS65003
 ~~~~
-{: title='AS-EXAMPLE-1 in it's resolved state with exclusions applied'}
+{: title='AS-EXAMPLE-1 in its resolved state with exclusions applied'}
 
 * It can be seen that `excl-members` took effect on the object it was defined, not just it's descendants. This is shown by AS65002 not being included in the final result because AS65002 is both a `member` _and_ `excl-members` of AS-EXAMPLE-2.
-* AS-EXAMPLE-4 is excluded even though AS-EXAMPLE-4 is defined in ARIN and a `member` of AS-EXAMPLE-3. This happens because a `src-members` attribute has been defined on AS-EXAMPLE-3, this takes precedence over the `members` attribute (the AS-EXAMPLE-4 key in the `members` attribute of AS-EXAMPLE-3 is ambiguous due to it not having a registry scope and the provided registry scoped value is preferred to remove ambiguity). This means that RIPE::AS-EXAMPLE-4 _would_ be included, but it's been excluded by the `exclude` attribute one level higher in the tree on AS-EXAMPLE-2.
+* AS-EXAMPLE-4 is excluded even though AS-EXAMPLE-4 is defined in ARIN and is a `member` of AS-EXAMPLE-3. This happens because a `src-members` attribute is defined on AS-EXAMPLE-3, and it takes precedence over the `members` attribute. This means RIPE::AS-EXAMPLE-4 would be included, but it is excluded by the `excl-members` attribute one level higher in the tree on AS-EXAMPLE-2.
 
 ## The route-set Class
 
@@ -284,7 +286,7 @@ When the `excl-members` attribute is populated on a route-set object, the primar
 1. This exclusion applies to the `src-members` attribute (as defined in {{draft-romijn-grow-rpsl-registry-scoped-members}}) of the route-set object which has the `excl-members` attribute populated, and the `src-members` attribute of all recursively resolved route-sets and as-sets within that route-set. In this case the registry scoped RPSL primary keys in `src-members` MUST match a registry scoped key in `excl-members` exactly, without the registry scope having being removed from either of the two keys being compared.
 1. If both `(mp-)members` and `src-members` are defined on a route-set object, and the same key exists in both attributes when the registry scope is removed from the `src-members` entry, the key from `src-members` which is prefixed with a registry scope MUST be compared against all entries in `excl-members` with their registry scopes present. Matching keys in `src-members` takes precedence over matching keys in `(mp-)members`.
 
-The figure below shows IRR data in its raw an unresolved state:
+The figure below shows IRR data in its raw and unresolved state:
 
 ~~~~ rpsl
 route-set: RS-EXAMPLE-1
@@ -306,15 +308,15 @@ route-set: RS-EXAMPLE-4
 members: 2001:db8:8000::/33
 source: ARIN
 ~~~~
-{: title='An example route-set hierarchy, in it's unresolved state'}
+{: title='An example route-set hierarchy, in its unresolved state'}
 
 The figure below shows the result from a resolving IRR server having resolved the members of set `RS-EXAMPLE-1` when the logic relating to `excl-members` is applied:
 
 ~~~~ rpsl
-as-set: RS-EXAMPLE-1
+route-set: RS-EXAMPLE-1
 members: 192.0.2.0/25, 2001:db8::/33, 192.0.2.128/25
 ~~~~
-{: title='RS-EXAMPLE-1 in it's resolved state with exclusions applied'}
+{: title='RS-EXAMPLE-1 in its resolved state with exclusions applied'}
 
 * It can be seen that `excl-members` took effect on the object it was defined on, not just it's descendants. This is shown by 2001:db8:8000::/33 not being included in the final result because RS-EXAMPLE-4 is both a `member` _and_ `excl-members` of RS-EXAMPLE-2.
 * Even though RS-EXAMPLE-4 is excluded by RS-EXAMPLE-2, it was also included by RS-EXAMPLE-3, but still 2001:db8:8000::/33 is excluded. This shows that the exclusion logic applies from the point in the hierarchy where it is defined, all the way down, taking precedence over any subsequent includes.
@@ -322,7 +324,9 @@ members: 192.0.2.0/25, 2001:db8::/33, 192.0.2.128/25
 
 ## Cumulative Excludes
 
-As as-set or route-set objects are recursively resolved and `excl-members` attributes are discovered, the RPSL primary keys to be excluded need to be tracked. At any point in the hierarchy where `excl-members` is discovered, all `(mp-)members` and `src-members` attributes from that point onwards are subject to the `excl-members` which have been discovered so far. However, depending on the resolution algorithm being used by the resolving software i.e., a depth first search or breadth first search, multiple lists of RPSL keys to exclude may have to be maintained (the exact implementation details are outside the scope of this document).
+As as-set and route-set objects are recursively resolved and `excl-members` attributes are discovered, the RPSL primary keys to be excluded need to be tracked.
+
+At any point in the hierarchy where `excl-members` is discovered, all `(mp-)members` and `src-members` attributes from that point onwards are subject to the `excl-members` which have been discovered so far. However, depending on the resolution algorithm being used by the resolving software i.e., a depth first search or breadth first search, multiple lists of RPSL keys to exclude may have to be maintained (the exact implementation details are outside the scope of this document).
 
 This section does not aim to define how the logic should be implemented in software, simply to demonstrate that the exclusion list is cumulative, but not as simple as a single global list.
 
@@ -347,7 +351,7 @@ excl-members: AS65006
 as-set: AS-EXAMPLE-5
 members: AS65005
 ~~~~
-{: title='An example as-set hierarchy, in it's unresolved state'}
+{: title='An example as-set hierarchy, in its unresolved state'}
 
 The following figure shows the resolved members of as-set AS-EXAMPLE-1:
 
@@ -360,7 +364,7 @@ members: AS65005
 1. The resolving process starts by resolving the members of AS-EXAMPLE-1.
 1. If a depth first search approach is taken by the IRR software, AS-EXAMPLE-2 might be resolved next. AS-EXAMPLE-4 is not included due to the `excl-members` attribute defined on AS-EXAMPLE-1. This is being applied from the point of definition onwards, the resolving process inherited the currently defined list of excludes (RIPE::AS-EXAMPLE-4) when it moved on to resolve AS-EXAMPLE-2.
 1. AS-EXAMPLE-2 defined a new `excl-members` attribute with the value RIPE::AS-EXAMPLE-5 however, there is nothing left to resolve in AS-EXAMPLE-2 so this exclusion has no effect.
-1. Continuing the depth first search approach, the IRR software returns to AS-EXAMPLE-1, and uses the exclusion list as it existed whilst resolving AS-EXAMPLE1-1 (it contains only RIPE::AS-EXAMPLE-4), and now begins to resolve AS-EXAMPLE-3.
+1. Continuing the depth-first search approach, the IRR software returns to AS-EXAMPLE-1, uses the exclusion list as it existed while resolving AS-EXAMPLE-1 (containing only RIPE::AS-EXAMPLE-4), and then resolves AS-EXAMPLE-3.
 1. AS-EXAMPLE-3 includes AS-EXAMPLE-5. This is not excluded even though the IRR software has encountered an `excl-members` attribute which contains the value RIPE::AS-EXAMPLE-5. This is because that `excl-members` attribute was found on a different branch of the set hierarchy.
 1. Continuing the resolution process, resolving AS-EXAMPLE-5 returns AS65005 only. The exclusion of AS65006 defined on AS-EXAMPLE-3 was applied to the resolution of AS-EXAMPLE-5 in addition to the exclusion of RIPE::AS-EXAMPLE-4, however no `members` or `src-members` attributes were found on AS-EXAMPLE-5 with these values.
 
@@ -372,11 +376,7 @@ The example shows that discovered exclusions do not apply across branches of the
 
 The behaviour of RPSL compliant software is to ignore unrecognised attributes. This means that adding the exclusion logic defined in this document, based on the contents of a new attribute, has no impact when existing IRR software implementations process an object with the new attribute defined.
 
-Although not related to the ability to retain backwards compatibility for parsing data, there is a breaking change introduced by this document in relation to the data returned from an IRR implementation which has implemented the defined changes. The returned data from two IRR resolvers, with the exact same database, and one of the resolvers uses software which has not implemented the changes introduced in this document, would not be the same. Therefore, for consumers of the returned data, the presence of the `excl-members` attribute in the returned data indicates that data may have been excluded, if any matches to the excluded primary keys where found during the resolving process.
-
-# IANA Considerations
-
-This memo includes no request to IANA.
+Although not related to the ability to retain backwards compatibility for parsing data, there is a breaking change introduced by this document in relation to the data returned from an IRR implementation which has implemented the defined changes. The returned data from two IRR resolvers, with the exact same database, and one of the resolvers uses software which has not implemented the changes introduced in this document, would not be the same. Therefore, for consumers of the returned data, the presence of the `excl-members` attribute indicates that data may have been excluded, if any matches to the excluded primary keys were found during the resolving process.
 
 # Security Considerations
 
@@ -384,6 +384,6 @@ This document adds the ability to specify that IRR derived prefix and AS path fi
 
 It is possible that the operator of an including set includes the wrong primary key in the `excl-members` attribute. However, this is not a new issue, it has long been possible to include the unintended primary keys in set objects. This document doesn't change this existing behaviour. It does limit the scope of the unintended inclusion by requiring registry scoped keys only in the `excl-members` attribute.
 
-Great progress has been made with the deployment of Route Origin Authorizations (ROAs) as defined in {{RFC9582}}, and the ongoing development of Autonomous System Provider Authorization (ASPA) objects as defined in {{draft-ietf-sidrops-aspa-verification}}. The method proposed in this document in intended to compliment those existing developments, further enriching the existing operator's toolkit, and not work against them or be mutually exclusive.
+Great progress has been made with the deployment of Route Origin Authorizations (ROAs) as defined in {{RFC9582}}, and the ongoing development of Autonomous System Provider Authorization (ASPA) objects as defined in {{draft-ietf-sidrops-aspa-verification}}. The method proposed in this document is intended to complement those existing developments, further enriching the operator toolkit, and not work against them or be mutually exclusive.
 
 --- back
