@@ -1307,10 +1307,13 @@ li > p:last-of-type:only-child {
                 <p id="section-toc.1-1.1.2.3.1" class="keepWithNext"><a href="#section-1.3" class="auto internal xref">1.3</a>.  <a href="#name-the-need-for-additional-exc" class="internal xref">The Need for Additional Exclusion Control</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.4">
-                <p id="section-toc.1-1.1.2.4.1"><a href="#section-1.4" class="auto internal xref">1.4</a>.  <a href="#name-requirements-language" class="internal xref">Requirements Language</a></p>
+                <p id="section-toc.1-1.1.2.4.1"><a href="#section-1.4" class="auto internal xref">1.4</a>.  <a href="#name-problems-with-the-existing-" class="internal xref">Problems with the Existing Syntax</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.5">
-                <p id="section-toc.1-1.1.2.5.1"><a href="#section-1.5" class="auto internal xref">1.5</a>.  <a href="#name-terminology" class="internal xref">Terminology</a></p>
+                <p id="section-toc.1-1.1.2.5.1"><a href="#section-1.5" class="auto internal xref">1.5</a>.  <a href="#name-requirements-language" class="internal xref">Requirements Language</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.6">
+                <p id="section-toc.1-1.1.2.6.1"><a href="#section-1.6" class="auto internal xref">1.6</a>.  <a href="#name-terminology" class="internal xref">Terminology</a></p>
 </li>
             </ul>
 </li>
@@ -1448,7 +1451,7 @@ members: AS65003
         </h3>
 <p id="section-1.2-1">The filter-set class and <code>filter</code> attribute are defined in <span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.4" class="relref">Section 5.4</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span>. The <code>mp-filter</code> attribute was later defined in <span><a href="https://rfc-editor.org/rfc/rfc4012#section-2.5.2" class="relref">Section 2.5.2</a> of [<a href="#RFC4012" class="cite xref">RFC4012</a>]</span>. Together these attributes provide a method for declaring in the IRR ecosystem the prefixes a network will <em>not</em> accept.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
 <p id="section-1.2-2">The <code>(mp-)filter</code> attribute may be used to exclude route/route6 objects which have been included by the greedy inclusion logic of the <code>(mp-)members</code> attribute of a route-set. The way this is achieved in practice is by first including all route/route6 objects which match the IPv4/6 address prefix range and optional range operator in the <code>(mp-)members</code> attribute of a route-set, and then removing any route/route6 objects from this result which match the IPv4/6 address prefix range and optional range operator in the <code>(mp-)filter</code> attribute of the filter-set.<a href="#section-1.2-2" class="pilcrow">¶</a></p>
-<p id="section-1.2-3">For as-sets and route-sets which use the <code>mbrs-by-ref</code> and <code>member-of</code> attributes, both attributes have to contain corresponding values. This reduces the greediness of the inclusion logic when compared to the <code>(mp-)members</code> attribute alone, because the including set <em>and</em> included set must both reference each other (whereas the <code>(mp-)members</code> attribute alone only requires the including set to reference the included set). It is also possible to further reduce the greediness by changing the value of the <code>mbrs-by-ref</code> attribute from ANY to a list of specific values, and/or by removing the as-set or route-set primary key from the <code>members-of</code> attribute of an aut-num or route/route6 object.<a href="#section-1.2-3" class="pilcrow">¶</a></p>
+<p id="section-1.2-3">For as-sets and route-sets which use the <code>mbrs-by-ref</code> and <code>member-of</code> attributes, both attributes have to contain corresponding values. This reduces the greediness of the inclusion logic when compared to the <code>(mp-)members</code> attribute alone, because the including set <em>and</em> included set <span class="bcp14">MUST</span> both reference each other (whereas the <code>(mp-)members</code> attribute alone only requires the including set to reference the included set). It is also possible to further reduce the greediness by changing the value of the <code>mbrs-by-ref</code> attribute from ANY to a list of specific values, and/or by removing the as-set or route-set primary key from the <code>members-of</code> attribute of an aut-num or route/route6 object.<a href="#section-1.2-3" class="pilcrow">¶</a></p>
 <p id="section-1.2-4">There is currently no method to exclude either an aut-num, an as-set, or a route-set, which was included by the greedy inclusion logic of the <code>(mp-)members</code> attribute of an as-set or route-set object. This is the missing functionality within the RPSL syntax which this document aims to address.<a href="#section-1.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1457,48 +1460,60 @@ members: AS65003
         <h3 id="name-the-need-for-additional-exc">
 <a href="#section-1.3" class="section-number selfRef">1.3. </a><a href="#name-the-need-for-additional-exc" class="section-name selfRef">The Need for Additional Exclusion Control</a>
         </h3>
-<p id="section-1.3-1">The existing greedy inclusion logic of the <code>(mp-)members</code> attribute of as-sets and route-sets, coupled with the inability to alter this logic, can result in various undesired effects for operators. A non-exhaustive list of possible undesirable outcomes follows:<a href="#section-1.3-1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-1.3-2">
-<li id="section-1.3-2.1">
-            <p id="section-1.3-2.1.1">A member is added to a set which is not connected to or related to the network operated by the owner of the including set. This allows the including set owner to make routing advertisements they are not authorised to make, either intentionally, commonly known as a route hijack, or accidentally, commonly known as a route leak. Upstreams and peers of the network owning the including set, aren't able to generate an IRR derived prefix or AS path filter which excludes the unauthorised inclusion. Note that this can happen anywhere in the set hierarchy; the unauthorised include may be nested many levels down within the set used by a peer or upstream, making it difficult to get the included set removed due to no direct relationship between the network making the inclusion and the network using the as-set or route-set to build a routing filter.<a href="#section-1.3-2.1.1" class="pilcrow">¶</a></p>
+<p id="section-1.3-1">A local network operator which manages an as-set or route-set object, is only in control of which members are directly included included their set. They have no control over the members included beyond this first level of inclusion. This can lead to problems for other networks connecting to the local network, when using the set for route filtering purposes.<a href="#section-1.3-1" class="pilcrow">¶</a></p>
+<p id="section-1.3-2">The other network, using the the local network's set to build a routing filter, may decided to exclude certain members from the local network's set. This decision needs to be made based on context known to the other network. For example, filtering the presence of any IXP Route Server as-sets or any sets for networks which are known to the other network to be transit free. There are various reasons why the other network may wish to exclude members from the local network's set, however, the context for which sets to exclude is based on knowledge and policy specific to the other network, and is out of scope of this document.<a href="#section-1.3-2" class="pilcrow">¶</a></p>
+<p id="section-1.3-3">After having excluded any members which the other network doesn't want to include, the other network can then use the remainder of the local network's set to build a routing filter. However, the other network doesn't have the full context about the contents of the local network's set. For example, nested many levels down inside the local network's set are networks for which the the local network <span class="bcp14">MUST NOT</span> be a connectivity provider. The other network can't know the relationship between the local network and these nested entries within the set. The local network operator needs a method to provide this context to the other network, so that the other network's existing process for excluding set members can be extended with this additional context. This is the scope of this document.<a href="#section-1.3-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="problems-with-the-existing-syntax">
+<section id="section-1.4">
+        <h3 id="name-problems-with-the-existing-">
+<a href="#section-1.4" class="section-number selfRef">1.4. </a><a href="#name-problems-with-the-existing-" class="section-name selfRef">Problems with the Existing Syntax</a>
+        </h3>
+<p id="section-1.4-1">The existing greedy inclusion logic of the <code>(mp-)members</code> attribute of as-sets and route-sets, coupled with the inability to alter this logic, means that there is no method for a local network operator to provide context to other network operators about set member exclusions. Due to this inability to provide such context, other networks encounter various problems when using the local network's set to build routing filters. A non-exhaustive list of undesirable outcomes are provided below.<a href="#section-1.4-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-1.4-2">
+<li id="section-1.4-2.1">
+            <p id="section-1.4-2.1.1">The owner of an including set adds a new member, but the included set is not connected with, or related to, the including set. This allows the including set owner to make routing advertisements they are not authorised to make, either intentionally (commonly known as a route hijack), or accidentally (commonly known as a route leak). Other networks lack this context and will generate routing policy based on the unauthorised inclusion.<a href="#section-1.4-2.1.1" class="pilcrow">¶</a></p>
+<p id="section-1.4-2.1.2">
+This can happen anywhere in the set hierarchy; the unauthorised include may be nested many levels down within the set used by the other network, making it difficult to get the included set removed due to no direct relationship between the network making the inclusion and the network using the as-set or route-set to build a routing filter.<a href="#section-1.4-2.1.2" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-1.3-2.2">
-            <p id="section-1.3-2.2.1">A member is added to a set which creates a loop when the set is resolved (set A contains set B which contains set A). This can lead to IRR derived prefix or AS path filters either massively expanding in size, or simply not being resolvable.<a href="#section-1.3-2.2.1" class="pilcrow">¶</a></p>
+          <li id="section-1.4-2.2">
+            <p id="section-1.4-2.2.1">A member is added to a set which creates a loop when the set is resolved (set A contains set B which contains set A). This can lead to IRR derived prefix or AS path filters either massively expanding in size, or simply not being resolvable.<a href="#section-1.4-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-1.3-2.3">
-            <p id="section-1.3-2.3.1">A member is added to a set which is intended to contain a network's downstreams, but the included set relates to a peer or upstream, not a downstream. The operator of the including set now becomes a transit provider for the operator of the included set. This can also lead to IRR derived prefix or AS path filters massively expanding in size, to a point at which the filters are effectively nullified and provide no protection. This can happen because one or more included sets, when recursively resolved, expand to the entire global BGP routing table, or because they are so big they can no longer be programmed into network devices.<a href="#section-1.3-2.3.1" class="pilcrow">¶</a></p>
+          <li id="section-1.4-2.3">
+            <p id="section-1.4-2.3.1">A member is added to a set which is intended to contain a network's downstreams, but the included set relates to a peer or upstream, not a downstream. According the IRR data, the operator of the including set has now become a transit provider for the operator of the included set. This can also lead to IRR derived prefix or AS path filters massively expanding in size, to a point at which the filters are effectively nullified and provide no protection. This can happen because one or more included sets, which when recursively resolved, expand to the entire global BGP routing table, or because they become so big they can no longer be programmed into network devices.<a href="#section-1.4-2.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-1.3-2.4">
-            <p id="section-1.3-2.4.1">A member is added to a set which relates to an operator who's actions violate a law, a geo-political agreement, or the connectivity terms and conditions, of a peer or upstream of the including set operator. The peer or upstream has no choice but to exclude the included set from their peer's or downstream's IRR derived prefix or AS path filters. However, this currently requires a custom and potentially manual workaround, as there is no standard mechanism to support this in an automated manner.<a href="#section-1.3-2.4.1" class="pilcrow">¶</a></p>
+          <li id="section-1.4-2.4">
+            <p id="section-1.4-2.4.1">A member is added to a set which relates to an network who's actions violate a law, a geo-political agreement, sanctions, or the connectivity terms and conditions, of a peer or upstream of the including set operator. All peers and upstreams of the networking owning the including set will now route traffic for the included set. If the including set is operated by a direct peer, two peers may be able to discuss an alternative approach between themselves. If the including set is many levels down within the set hierarchy of a peer, the peer likely can not help due to having no relationship with the including set. The operator may have to implement manual workarounds to avoid routing traffic for the included set, which may be difficult to maintain and error prone.<a href="#section-1.4-2.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-1.3-2.5">
-            <p id="section-1.3-2.5.1">A member is added to a set with whom a peer or upstream of the including set operator already has a direct relation. A regulatory requirement may restrict the peer or upstream from exchanging traffic with the operator of the included set via the including set operator, or via any 3rd party operator. Again, such a scenario may required manual workarounds.<a href="#section-1.3-2.5.1" class="pilcrow">¶</a></p>
+          <li id="section-1.4-2.5">
+            <p id="section-1.4-2.5.1">A member is added to a set with whom a peer or upstream of the including set operator already has a direct relation. A regulatory requirement may restrict the peer or upstream from exchanging traffic with the operator of the included set via the including set operator, or via any 3rd party operator. Again, such a scenario may required manual workarounds.<a href="#section-1.4-2.5.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<p id="section-1.3-3">This document updates the RPSL definitions in <span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> and <span>[<a href="#RFC4012" class="cite xref">RFC4012</a>]</span> by introducing the <code>excl-members</code> attribute.<a href="#section-1.3-3" class="pilcrow">¶</a></p>
-<p id="section-1.3-4">This allows the including set operator to exclude aut-nums, as-sets, and route-sets, from the included set, or to exclude the included set entirely, from being included in the including set. This allows operators to have finer grained control over the members of their sets, and to avoid the undesired outcomes described above.<a href="#section-1.3-4" class="pilcrow">¶</a></p>
+<p id="section-1.4-3">This document updates the RPSL definitions in <span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> and <span>[<a href="#RFC4012" class="cite xref">RFC4012</a>]</span> by introducing the <code>excl-members</code> attribute.<a href="#section-1.4-3" class="pilcrow">¶</a></p>
+<p id="section-1.4-4">This allows the including set operator to exclude aut-nums, as-sets, and route-sets, from the included set, or to exclude the included set entirely, from being included in the including set. This allows operators to have finer grained control over the members of their sets, and to avoid the undesired outcomes described above.<a href="#section-1.4-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="requirements-language">
-<section id="section-1.4">
+<section id="section-1.5">
         <h3 id="name-requirements-language">
-<a href="#section-1.4" class="section-number selfRef">1.4. </a><a href="#name-requirements-language" class="section-name selfRef">Requirements Language</a>
+<a href="#section-1.5" class="section-number selfRef">1.5. </a><a href="#name-requirements-language" class="section-name selfRef">Requirements Language</a>
         </h3>
-<p id="section-1.4-1">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>",
+<p id="section-1.5-1">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>",
 "<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
 described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
-appear in all capitals, as shown here.<a href="#section-1.4-1" class="pilcrow">¶</a></p>
+appear in all capitals, as shown here.<a href="#section-1.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="terminology">
-<section id="section-1.5">
+<section id="section-1.6">
         <h3 id="name-terminology">
-<a href="#section-1.5" class="section-number selfRef">1.5. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
+<a href="#section-1.6" class="section-number selfRef">1.6. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
         </h3>
-<p id="section-1.5-1">In this document, the key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>",
+<p id="section-1.6-1">In this document, the key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>",
 "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">MAY</span>",
 and "<span class="bcp14">OPTIONAL</span>" are to be interpreted as described in BCP 14, RFC 2119
-<span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span>.<a href="#section-1.5-1" class="pilcrow">¶</a></p>
+<span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span>.<a href="#section-1.6-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
