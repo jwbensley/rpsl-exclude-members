@@ -29,7 +29,7 @@
       </address>
     </author>
 
-    <date year="2026" month="March" day="27"/>
+    <date year="2026" month="April" day="15"/>
 
     
     
@@ -38,9 +38,9 @@
     <abstract>
 
 
-<?line 75?>
+<?line 92?>
 
-<t>This document updates <xref target="RFC2622"/> and <xref target="RFC4012"/> by defining the <spanx style="verb">excl-members</spanx> attribute on as-set and route-set classes in the Routing Policy Specification Language (RPSL). The existing RPSL syntax only supports the implicit inclusion of everything contained within an as-set or route-set. The newly defined attribute allows operators to overcome this limitation of the existing syntax by enabling them to explicitly exclude certain members from the implicit inclusion.</t>
+<t>This document updates <xref target="RFC2622"/> and <xref target="RFC4012"/> by defining the <spanx style="verb">excl-members</spanx> attribute on as-set and route-set classes in the Routing Policy Specification Language (RPSL). The existing RPSL syntax only supports the implicit inclusion of everything contained within an as-set or route-set. The newly defined attribute allows operators to overcome this limitation of the existing syntax by enabling them to explicitly exclude specific members from that implicit inclusion.</t>
 
 
 
@@ -53,34 +53,34 @@
   <middle>
 
 
-<?line 79?>
+<?line 96?>
 
 <section anchor="introduction"><name>Introduction</name>
 
-<t>The Routing Policy Specification Language (RPSL) <xref target="RFC2622"/> defines the as-set and route-set classes. These sets can reference direct members (such as an AS number or IP prefix) or additional sets, which in turn can reference further sets recursively. Server and client software can follow these references to resolve all members of a set. Once all references have been resolved, what remains is a set of prefixes or ASes.</t>
+<t>The Routing Policy Specification Language (RPSL) <xref target="RFC2622"/> defines the as-set and route-set classes. These sets can reference direct members, such as an AS number or IP prefix, or additional sets, which in turn can reference further sets recursively. Server and client software can follow these references to resolve all members of a set. Once all references have been resolved, the result is a set of prefixes or AS numbers.</t>
 
 <section anchor="existing-methods-of-inclusion"><name>Existing Methods of Inclusion</name>
 
-<t>The existing RPSL syntax allows for members of an as-set or route-set to be specified in multiple ways:</t>
+<t>The existing RPSL syntax allows members of an as-set or route-set to be specified in multiple ways:</t>
 
 <t><list style="numbers" type="1">
   <t><xref target="RFC2622"/> defines the <spanx style="verb">members</spanx> attribute.
   <list style="numbers" type="1">
-      <t><xref section="5.1" sectionFormat="of" target="RFC2622"/> defines that for an as-set class this attribute stores one or more primary keys, each referencing an aut-num or an as-set object.</t>
-      <t>Sections <xref target="RFC2622" section="5.2" sectionFormat="bare"/> and <xref target="RFC2622" section="5.3" sectionFormat="bare"/> of <xref target="RFC2622"/> define that for a route-set class this attribute stores one or more primary keys, each referencing a route-set object (optionally with a range operator appended), an aut-num, or an as-set. Alternatively, the <spanx style="verb">members</spanx> attribute on a route-set may store an IPv4 address prefix range directly (i.e., not an RPSL primary key that points to a route object). In this case, the address prefix range is used to identify matching route objects. That address prefix range may optionally have a range operator appended.</t>
+      <t><xref section="5.1" sectionFormat="of" target="RFC2622"/> defines that, for an as-set class, this attribute stores one or more primary keys, each referencing an aut-num or an as-set object.</t>
+      <t>Sections <xref target="RFC2622" section="5.2" sectionFormat="bare"/> and <xref target="RFC2622" section="5.3" sectionFormat="bare"/> of <xref target="RFC2622"/> define that, for a route-set class, this attribute stores one or more primary keys, each referencing a route-set object (optionally with a range operator appended), an aut-num, or an as-set. Alternatively, the <spanx style="verb">members</spanx> attribute on a route-set may store an IPv4 address prefix range directly, that is, not an RPSL primary key that points to a route object. In this case, the address prefix range is used to identify matching route objects. That address prefix range may optionally have a range operator appended.</t>
     </list></t>
-  <t><xref section="4.2" sectionFormat="of" target="RFC4012"/> defines the <spanx style="verb">mp-members</spanx> attribute for the route-set class. This attribute may store one or more primary keys, each referencing a route-set object (optionally with a range operator appended), or an IPv4/IPv6 address prefix range directly. Although not explicitly stated in <xref target="RFC4012"/>, implementations of the <spanx style="verb">mp-members</spanx> attribute have generally followed the <xref target="RFC2622"/> <spanx style="verb">members</spanx> behavior and also allow aut-num and as-set primary keys.</t>
+  <t><xref section="4.2" sectionFormat="of" target="RFC4012"/> defines the <spanx style="verb">mp-members</spanx> attribute for the route-set class. This attribute may store one or more primary keys, each referencing a route-set object (optionally with a range operator appended), or an IPv4/IPv6 address prefix range directly. Although not explicitly stated in <xref target="RFC4012"/>, implementations of the <spanx style="verb">mp-members</spanx> attribute have generally followed the <xref target="RFC2622"/> <spanx style="verb">members</spanx> behaviour and also allow aut-num and as-set primary keys.</t>
   <t><xref target="RFC2622"/> defines the <spanx style="verb">mbrs-by-ref</spanx> and <spanx style="verb">member-of</spanx> attributes.
   <list style="numbers" type="1">
-      <t><xref section="5.1" sectionFormat="of" target="RFC2622"/> defines that for an as-set these attributes allow for the inclusion of aut-nums in the as-set, iff the criteria defined in the RFC linking both attributes together is met.</t>
-      <t><xref section="5.2" sectionFormat="of" target="RFC2622"/> defines that for a route-set these attributes allow for the inclusion of routes in the route-set, iff the criteria defined in the RFC linking both attributes together is met.</t>
+      <t><xref section="5.1" sectionFormat="of" target="RFC2622"/> defines that, for an as-set, these attributes allow the inclusion of aut-nums in the as-set if and only if the criteria defined in the RFC linking both attributes together is met.</t>
+      <t><xref section="5.2" sectionFormat="of" target="RFC2622"/> defines that, for a route-set, these attributes allow the inclusion of routes in the route-set if and only if the criteria defined in the RFC linking both attributes together is met.</t>
     </list></t>
-  <t><xref section="3" sectionFormat="of" target="RFC4012"/> defines the router6 class along with the <spanx style="verb">member-of</spanx> attribute on that class, and as a result, allows for the inclusion of route6 objects in a route-set, iff the criteria relating to <spanx style="verb">mbrs-by-ref</spanx> and <spanx style="verb">member-of</spanx> attributes defined in <xref section="5.2" sectionFormat="of" target="RFC2622"/> is met.</t>
+  <t><xref section="3" sectionFormat="of" target="RFC4012"/> defines the router6 class along with the <spanx style="verb">member-of</spanx> attribute on that class and, as a result, allows the inclusion of route6 objects in a route-set if and only if the criteria relating to the <spanx style="verb">mbrs-by-ref</spanx> and <spanx style="verb">member-of</spanx> attributes defined in <xref section="5.2" sectionFormat="of" target="RFC2622"/> is met.</t>
 </list></t>
 
-<t>When using the <spanx style="verb">(mp-)members</spanx> attribute to include an as-set or route-set (hereinafter the "included set") inside of an as-set or route-set (hereinafter the "including set"), all members of the included set are included in the including set. This is not limited to the members directly nested inside the included set, but all members recursively included all the way down the RPSL hierarchy of the included set. This implicit recursive inclusion logic is hereinafter referred to as "greedy inclusion logic".</t>
+<t>When using the <spanx style="verb">(mp-)members</spanx> attribute to include an as-set or route-set (hereinafter the "included set") within an another as-set or route-set (hereinafter the "including set"), all members of the included set are included in the including set. This is not limited to the members directly nested inside the included set, but extends to all members recursively included throughout the RPSL hierarchy of the included set. This implicit recursive inclusion logic is hereinafter referred to as "greedy inclusion logic".</t>
 
-<t>In the figure below, the as-set <spanx style="verb">AS-EXAMPLE-1</spanx> only includes one member but, as a result of that single inclusion, AS-EXAMPLE-1 now contains the aut-nums AS65001, AS65002, and AS65003:</t>
+<t>In the figure below, the as-set <spanx style="verb">AS-EXAMPLE-1</spanx> only includes one member but, as a result of that single inclusion, AS-EXAMPLE-1 contains the aut-nums AS65001, AS65002, and AS65003:</t>
 
 <figure title="An example of greedy inclusion logic. A three level hierarchy is recursed even though AS-EXAMPLE-1 only includes one additional as-set"><sourcecode type="rpsl"><![CDATA[
 as-set: AS-EXAMPLE-1
@@ -93,37 +93,47 @@ as-set: AS-EXAMPLE-3
 members: AS65003
 ]]></sourcecode></figure>
 
-<t>The same inclusion logic applies to a route-set which references another route-set or as-set in the <spanx style="verb">members</spanx> attribute; everything inside the included set, all the way down the recursed tree, is implicitly included into the including set.</t>
+<t>The same inclusion logic applies when a route-set references another route-set or as-set in the <spanx style="verb">members</spanx> attribute; everything within the included set, including all recursively nested members, is implicitly included in the including set.</t>
 
-<t>Similarly, greedy inclusion logic also applies to prefixes; the <spanx style="verb">(mp-)members</spanx> attribute of a route-set includes any route/route6 objects which match the IPv4/6 address prefix range and optional range operator.</t>
+<t>Similarly, greedy inclusion logic also applies to prefixes: the <spanx style="verb">(mp-)members</spanx> attribute of a route-set includes any route or route6 objects which match the IPv4 or IPv6 address prefix range and any optional range operator.</t>
 
 </section>
 <section anchor="existing-methods-of-exclusion"><name>Existing Methods of Exclusion</name>
 
-<t>The filter-set class and <spanx style="verb">filter</spanx> attribute are defined in <xref section="5.4" sectionFormat="of" target="RFC2622"/>. The <spanx style="verb">mp-filter</spanx> attribute was later defined in <xref section="2.5.2" sectionFormat="of" target="RFC4012"/>. Together these attributes provide a method for declaring in the IRR ecosystem the prefixes a network will <em>not</em> accept.</t>
+<t>The filter-set class and <spanx style="verb">filter</spanx> attribute are defined in <xref section="5.4" sectionFormat="of" target="RFC2622"/>. The <spanx style="verb">mp-filter</spanx> attribute was later defined in <xref section="2.5.2" sectionFormat="of" target="RFC4012"/>. Together these attributes provide a method for declaring, in the IRR ecosystem, the prefixes that a network will <em>not</em> accept.</t>
 
-<t>The <spanx style="verb">(mp-)filter</spanx> attribute may be used to exclude route/route6 objects which have been included by the greedy inclusion logic of the <spanx style="verb">(mp-)members</spanx> attribute of a route-set. The way this is achieved in practice is by first including all route/route6 objects which match the IPv4/6 address prefix range and optional range operator in the <spanx style="verb">(mp-)members</spanx> attribute of a route-set, and then removing any route/route6 objects from this result which match the IPv4/6 address prefix range and optional range operator in the <spanx style="verb">(mp-)filter</spanx> attribute of the filter-set.</t>
+<t>The <spanx style="verb">(mp-)filter</spanx> attribute may be used to exclude route or route6 objects that have been included by the greedy inclusion logic of the <spanx style="verb">(mp-)members</spanx> attribute of a route-set. In practice, this is achieved by first including all route or route6 objects which match the IPv4 or IPv6 address prefix range and any optional range operator in the <spanx style="verb">(mp-)members</spanx> attribute of a route-set, and then removing from that result any route or route6 objects which match the IPv4 or IPv6 address prefix range and any optional range operator in the <spanx style="verb">(mp-)filter</spanx> attribute of the filter-set.</t>
 
-<t>For as-sets and route-sets which use the <spanx style="verb">mbrs-by-ref</spanx> and <spanx style="verb">member-of</spanx> attributes, both attributes have to contain corresponding values. This reduces the greediness of the inclusion logic when compared to the <spanx style="verb">(mp-)members</spanx> attribute alone, because the including set <em>and</em> included set must both reference each other (whereas the <spanx style="verb">(mp-)members</spanx> attribute alone only requires the including set to reference the included set). It is also possible to further reduce the greediness by changing the value of the <spanx style="verb">mbrs-by-ref</spanx> attribute from ANY to a list of specific values, and/or by removing the as-set or route-set primary key from the <spanx style="verb">members-of</spanx> attribute of an aut-num or route/route6 object.</t>
+<t>For as-sets and route-sets that use the <spanx style="verb">mbrs-by-ref</spanx> and <spanx style="verb">member-of</spanx> attributes, both attributes must contain corresponding values. This reduces the greediness of the inclusion logic when compared with the <spanx style="verb">(mp-)members</spanx> attribute alone, because the including set <em>and</em> the included set <bcp14>MUST</bcp14> both reference each other, whereas the <spanx style="verb">(mp-)members</spanx> attribute alone only requires the including set to reference the included set. It is also possible to reduce the greediness further by changing the value of the <spanx style="verb">mbrs-by-ref</spanx> attribute from ANY to a list of specific values, and/or by removing the as-set or route-set primary key from the <spanx style="verb">member-of</spanx> attribute of an aut-num or route/route6 object.</t>
 
-<t>There is currently no method to exclude either an aut-num, an as-set, or a route-set, which was included by the greedy inclusion logic of the <spanx style="verb">(mp-)members</spanx> attribute of an as-set or route-set object. This is the missing functionality within the RPSL syntax which this document aims to address.</t>
+<t>There is currently no method to exclude either an aut-num, an as-set, or a route-set that was included by the greedy inclusion logic of the <spanx style="verb">(mp-)members</spanx> attribute of an as-set or route-set object. This is the missing functionality in the RPSL syntax that this document aims to address.</t>
 
 </section>
 <section anchor="the-need-for-additional-exclusion-control"><name>The Need for Additional Exclusion Control</name>
 
-<t>The existing greedy inclusion logic of the <spanx style="verb">(mp-)members</spanx> attribute of as-sets and route-sets, coupled with the inability to alter this logic, can result in various undesired effects for operators. A non-exhaustive list of possible undesirable outcomes follows:</t>
+<t>Using the existing RPSL syntax, a local network operator who manages an as-set or route-set object is only in control of which members are directly included in their set. The RPSL syntax provides no control over the members included beyond this first level of inclusion. This can lead to problems for other networks connecting to the local network when using the set for route filtering purposes.</t>
+
+<t>When using the local network's set to build a routing filter for connecting to the local network, another network may decide to exclude certain members from the local network's set. This decision needs to be made on the basis of context known to the other network. For example, the other network decides that IXP LANs generally <bcp14>MUST NOT</bcp14> be reachable via the public Internet and therefore filters the presence of any IXP route server sets from the local network's set. There are various reasons why the other network operator <bcp14>MAY</bcp14> exclude members from the local network's set; however, the context regarding which sets to exclude is based on knowledge and policy specific to the other network. These reasons are out of scope for this document.</t>
+
+<t>After excluding any members that the other network does not want to include, the other network uses the remainder of the local network's set to build a routing filter. However, when the other network is performing member exclusions on the local network's set, it does not know based on IRR data alone, the relationship of the local network to the members of it's set. For example, nested many levels down inside the local network's set are networks for which the local network <bcp14>MUST NOT</bcp14> be a connectivity provider. This could be because there is no commercial agreement in place that includes connectivity SLAs and the included set requires such SLAs, or because the including set simply does not have the capacity to meet the traffic demands of the included set. The other network cannot determine the commercial or operational relationship between the local network and these nested entries within the local network's set based purely on the information available in the IRR DB. The local network operator needs a method to provide this context to the other network operator so that the other network's existing process for excluding set members can be extended with this additional context. This is the scope of this document: providing a set owner with the ability to signal exclusion context to consumers of the set.</t>
+
+</section>
+<section anchor="problems-with-the-existing-syntax"><name>Problems with the Existing Syntax</name>
+
+<t>The existing greedy inclusion logic of the <spanx style="verb">(mp-)members</spanx> attribute of as-sets and route-sets, coupled with the inability to alter this logic, means that there is no method for a local network operator to provide context to other network operators about set member exclusions. Due to this inability to provide such context, other networks encounter various problems when using the local network's set to build routing filters. A non-exhaustive list of example undesirable outcomes is provided below.</t>
 
 <t><list style="numbers" type="1">
-  <t>A member is added to a set which is not connected to or related to the network operated by the owner of the including set. This allows the including set owner to make routing advertisements they are not authorised to make, either intentionally, commonly known as a route hijack, or accidentally, commonly known as a route leak. Upstreams and peers of the network owning the including set, aren't able to generate an IRR derived prefix or AS path filter which excludes the unauthorised inclusion. Note that this can happen anywhere in the set hierarchy; the unauthorised include may be nested many levels down within the set used by a peer or upstream, making it difficult to get the included set removed due to no direct relationship between the network making the inclusion and the network using the as-set or route-set to build a routing filter.</t>
-  <t>A member is added to a set which creates a loop when the set is resolved (set A contains set B which contains set A). This can lead to IRR derived prefix or AS path filters either massively expanding in size, or simply not being resolvable.</t>
-  <t>A member is added to a set which is intended to contain a network's downstreams, but the included set relates to a peer or upstream, not a downstream. The operator of the including set now becomes a transit provider for the operator of the included set. This can also lead to IRR derived prefix or AS path filters massively expanding in size, to a point at which the filters are effectively nullified and provide no protection. This can happen because one or more included sets, when recursively resolved, expand to the entire global BGP routing table, or because they are so big they can no longer be programmed into network devices.</t>
-  <t>A member is added to a set which relates to an operator who's actions violate a law, a geo-political agreement, or the connectivity terms and conditions, of a peer or upstream of the including set operator. The peer or upstream has no choice but to exclude the included set from their peer's or downstream's IRR derived prefix or AS path filters. However, this currently requires a custom and potentially manual workaround, as there is no standard mechanism to support this in an automated manner.</t>
-  <t>A member is added to a set with whom a peer or upstream of the including set operator already has a direct relation. A regulatory requirement may restrict the peer or upstream from exchanging traffic with the operator of the included set via the including set operator, or via any 3rd party operator. Again, such a scenario may required manual workarounds.</t>
+  <t>The owner of an including set adds a new member, but the included set is not connected with, or related to, the including set. This allows the including set owner to make routing advertisements they are not authorised to make, either intentionally (commonly known as a route hijack) or accidentally (commonly known as a route leak). Other networks lack this context and will generate routing policy based on the unauthorised inclusion.  <vspace blankLines='1'/>
+This can happen anywhere in the set hierarchy; the unauthorised inclusion may be nested many levels down within the set used by the other network, making it difficult to remove the included set due to the absence of any direct relationship between the network making the inclusion and the network using the as-set or route-set to build a routing filter.</t>
+  <t>A member is added to a set which creates a loop when the set is resolved (set A contains set B which contains set A). This can lead to IRR-derived prefix or AS-path filters either massively expanding in size or simply becoming unresolvable.</t>
+  <t>A member is added to a set which is intended to contain a network's downstreams, but the included set relates to a peer or upstream, not a downstream. According to the IRR data, the operator of the including set has now become a transit provider for the operator of the included set. This can also lead to IRR-derived prefix or AS-path filters massively expanding in scope, to a point at which the filters are effectively nullified and provide no protection. This can happen because one or more included sets, when recursively resolved, expand to the entire global BGP routing table (or a significant portion thereof), or because the filters become so large that they can no longer be programmed into network devices.</t>
+  <t>A member is added to a set which relates to a network whose actions violate a law, a geo-political agreement, sanctions, or the connectivity terms and conditions of a peer or upstream of the including set operator. All peers and upstreams of the network owning the including set could now forward traffic for the included set towards the network using the including set. If the including set is operated by a direct peer, two peers may be able to discuss an alternative approach between themselves. If the included set is many levels down within the set hierarchy of a peer, the peer likely cannot help due to having no relationship with the including set. The operator may have to implement manual workarounds to avoid routing traffic for the included set, which may be difficult to maintain and error-prone.</t>
+  <t>A member is added to a set with whom a peer or upstream of the including set operator already has a direct relation. A regulatory requirement may restrict the peer or upstream from exchanging traffic with the operator of the included set via the including set operator, or via any third-party operator. Again, such a scenario may require manual workarounds.</t>
 </list></t>
 
 <t>This document updates the RPSL definitions in <xref target="RFC2622"/> and <xref target="RFC4012"/> by introducing the <spanx style="verb">excl-members</spanx> attribute.</t>
 
-<t>This allows the including set operator to exclude aut-nums, as-sets, and route-sets, from the included set, or to exclude the included set entirely, from being included in the including set. This allows operators to have finer grained control over the members of their sets, and to avoid the undesired outcomes described above.</t>
+<t>This allows the operator of the including set to exclude aut-nums, as-sets, and route-sets from the included set, or to exclude the included set entirely from being included in the including set. This allows operators to have finer-grained control over the members of their sets and to avoid the undesired outcomes described above.</t>
 
 </section>
 <section anchor="requirements-language"><name>Requirements Language</name>
@@ -144,6 +154,15 @@ appear in all capitals, as shown here.</t>
 and "<bcp14>OPTIONAL</bcp14>" are to be interpreted as described in BCP 14, RFC 2119
 <xref target="RFC2119"/>.</t>
 
+<t>The terms for peering relationships used in this document are taken from <xref target="draft-ietf-grow-routing-ops-terms"/>, specifically:</t>
+
+<t><list style="symbols">
+  <t>Upstream</t>
+  <t>Downstream</t>
+  <t>Peer</t>
+  <t>Transit provider</t>
+</list></t>
+
 </section>
 </section>
 <section anchor="the-excl-members-attribute"><name>The <spanx style="verb">excl-members</spanx> Attribute</name>
@@ -154,7 +173,7 @@ and "<bcp14>OPTIONAL</bcp14>" are to be interpreted as described in BCP 14, RFC 
 
 <section anchor="the-as-set-class"><name>The as-set Class</name>
 
-<t>The new <spanx style="verb">excl-members</spanx> attribute on the as-set class uses almost exactly the same syntax as the existing <spanx style="verb">members</spanx> attribute from <xref section="5.1" sectionFormat="of" target="RFC2622"/>, in that one or more RPSL primary keys of an aut-num or as-set may be specified. The only difference is that when an as-set is specified in <spanx style="verb">excl-members</spanx>, the as-set primary key <bcp14>MUST</bcp14> be prefixed with a registry name and a double colon (e.g., <spanx style="verb">SOURCE::</spanx>). This requirement is to ensure that the correct object is being excluded due to the existing ambiguity of as-set primary keys in the IRR ecosystem (as documented in <xref target="draft-romijn-grow-rpsl-registry-scoped-members"/>).</t>
+<t>The new <spanx style="verb">excl-members</spanx> attribute on the as-set class uses almost exactly the same syntax as the existing <spanx style="verb">members</spanx> attribute from <xref section="5.1" sectionFormat="of" target="RFC2622"/>, in that one or more RPSL primary keys of an aut-num or as-set may be specified. The only difference is that when an as-set is specified in <spanx style="verb">excl-members</spanx>, the as-set primary key <bcp14>MUST</bcp14> be prefixed with a registry name and a double colon, for example <spanx style="verb">SOURCE::</spanx>. This requirement is intended to ensure that the correct object is being excluded because of the existing ambiguity of as-set primary keys in the IRR ecosystem, as documented in <xref target="draft-romijn-grow-rpsl-registry-scoped-members"/>.</t>
 
 <dl newline="true">
   <dt>Attribute:</dt>
@@ -174,7 +193,7 @@ and "<bcp14>OPTIONAL</bcp14>" are to be interpreted as described in BCP 14, RFC 
 </section>
 <section anchor="the-route-set-class"><name>The route-set Class</name>
 
-<t>The new <spanx style="verb">excl-members</spanx> attribute on the route-set class uses similar syntax as the existing <spanx style="verb">members</spanx> attribute from Sections <xref target="RFC2622" section="5.2" sectionFormat="bare"/> and <xref target="RFC2622" section="5.3" sectionFormat="bare"/> of <xref target="RFC2622"/>, in that one or more RPSL primary keys of an aut-num, an as-set, or route-set may be specified. What is different is that <spanx style="verb">excl-members</spanx> doesn't accept IPv4/6 address prefix ranges because they can already be filtered using a filter-set. In the case that an as-set or route-set is specified in <spanx style="verb">excl-members</spanx>, the set primary key <bcp14>MUST</bcp14> be prefixed with a registry name and a double colon (e.g., <spanx style="verb">SOURCE::</spanx>). This requirement is to ensure that the correct object is being excluded due to the existing ambiguity of as-set and route-set primary keys in the IRR ecosystem (as documented in <xref target="draft-romijn-grow-rpsl-registry-scoped-members"/>).</t>
+<t>The new <spanx style="verb">excl-members</spanx> attribute on the route-set class uses similar syntax to the existing <spanx style="verb">members</spanx> attribute from Sections <xref target="RFC2622" section="5.2" sectionFormat="bare"/> and <xref target="RFC2622" section="5.3" sectionFormat="bare"/> of <xref target="RFC2622"/>, in that one or more RPSL primary keys of an aut-num, an as-set, or a route-set may be specified. What is different is that <spanx style="verb">excl-members</spanx> does not accept IPv4 or IPv6 address prefix ranges because they can already be filtered using a filter-set. If an as-set or route-set is specified in <spanx style="verb">excl-members</spanx>, the set primary key <bcp14>MUST</bcp14> be prefixed with a registry name and a double colon, for example <spanx style="verb">SOURCE::</spanx>. This requirement is intended to ensure that the correct object is being excluded because of the existing ambiguity of as-set and route-set primary keys in the IRR ecosystem, as documented in <xref target="draft-romijn-grow-rpsl-registry-scoped-members"/>.</t>
 
 <dl newline="true">
   <dt>Attribute:</dt>
@@ -198,15 +217,15 @@ and "<bcp14>OPTIONAL</bcp14>" are to be interpreted as described in BCP 14, RFC 
 
 <section anchor="registry-scoped-keys-only"><name>Registry Scoped Keys Only</name>
 
-<t>All primary keys in <spanx style="verb">excl-members</spanx> <bcp14>MUST</bcp14> have a registry scope provided. By requiring registry scoped primary keys in the <spanx style="verb">excl-members</spanx> attribute, it becomes possible to have multiple references to the same RPSL primary key after stripping the registry prefix. This is not permitted, and IRR registry software <bcp14>MUST</bcp14> reject this:</t>
+<t>All primary keys in <spanx style="verb">excl-members</spanx> <bcp14>MUST</bcp14> have a registry scope provided. By requiring registry-scoped primary keys in the <spanx style="verb">excl-members</spanx> attribute, it becomes possible to have multiple references to the same RPSL primary key after stripping the registry prefix. This is not permitted, and IRR registry software <bcp14>MUST</bcp14> reject this:</t>
 
 <figure title="Invalid object fragment using multiple registry prefixes with the same RPSL primary key"><sourcecode type="rpsl"><![CDATA[
 excl-members: RIPE::AS-EXAMPLE, ARIN::AS-EXAMPLE
 ]]></sourcecode></figure>
 
-<t>The IRR registry software <bcp14>MUST</bcp14> verify that without their registry prefix, all primary keys in <spanx style="verb">excl-members</spanx> are unique. If allowed, the attribute <spanx style="verb">excl-members: RIPE::AS-EXAMPLE, ARIN::AS-EXAMPLE</spanx> would refer to two different set objects, whereas the <spanx style="verb">(mp-)members</spanx> attribute can only contain one instance of <spanx style="verb">AS-EXAMPLE</spanx>, which creates ambiguity regarding which set the exclusion refers to when sets exist in multiple registries with the same primary key.</t>
+<t>The IRR registry software <bcp14>MUST</bcp14> verify that, without their registry prefix, all primary keys in <spanx style="verb">excl-members</spanx> are unique. If allowed, the attribute <spanx style="verb">excl-members: RIPE::AS-EXAMPLE, ARIN::AS-EXAMPLE</spanx> would refer to two different set objects, whereas the <spanx style="verb">(mp-)members</spanx> attribute can only contain one instance of <spanx style="verb">AS-EXAMPLE</spanx>, which creates ambiguity regarding which set the exclusion refers to when sets exist in multiple registries with the same primary key.</t>
 
-<t>Similarly, the IRR software <bcp14>MUST NOT</bcp14> allow for the registry scopes in the <spanx style="verb">excl-members</spanx> attribute and the <spanx style="verb">src-members</spanx> attribute to be mixed, when both attributes are populated on the same set object, and when with the registry scope removed they are referencing the same primary key.</t>
+<t>Similarly, the IRR software <bcp14>MUST NOT</bcp14> allow the registry scopes in the <spanx style="verb">excl-members</spanx> attribute and the <spanx style="verb">src-members</spanx> attribute to be mixed when both attributes are populated on the same set object and, after removing the registry scope, they reference the same primary key.</t>
 
 <figure title="Invalid object fragment using different registry prefixes with the same RPSL primary key across attributes"><sourcecode type="rpsl"><![CDATA[
 member: AS-EXAMPLE
@@ -214,28 +233,28 @@ src-members: ARIN::AS-EXAMPLE
 excl-members: RIPE::AS-EXAMPLE
 ]]></sourcecode></figure>
 
-<t>If allowed, due to the presence of the <spanx style="verb">src-members</spanx> attribute, ARIN::AS-EXAMPLE is included instead of AS-EXAMPLE (<spanx style="verb">src-members</spanx> is taking preference over <spanx style="verb">members</spanx>), and the <spanx style="verb">excl-members</spanx> attribute value RIPE::AS-EXAMPLE wouldn't match the <spanx style="verb">src-members</spanx> value.</t>
+<t>If allowed, because of the presence of the <spanx style="verb">src-members</spanx> attribute, ARIN::AS-EXAMPLE would be included instead of AS-EXAMPLE (<spanx style="verb">src-members</spanx> takes precedence over <spanx style="verb">members</spanx>), and the <spanx style="verb">excl-members</spanx> attribute value RIPE::AS-EXAMPLE would not match the <spanx style="verb">src-members</spanx> value.</t>
 
 </section>
 <section anchor="any-primary-key-and-registry-scope"><name>Any Primary Key and Registry Scope</name>
 
-<t>The IRR software <bcp14>MUST NOT</bcp14> require that the primary key of an entry in the <spanx style="verb">excl-members</spanx> attribute is also a direct member of the object being created or updated. The <spanx style="verb">excl-members</spanx> attribute is used to exclude objects anywhere in the recursive set hierarchy, starting from the point of definition, moving downwards within the hierarchy. This is because the object to be excluded might have been included by a member, of a member, of a member (ad infinitum).</t>
+<t>The IRR software <bcp14>MUST NOT</bcp14> require that the primary key of an entry in the <spanx style="verb">excl-members</spanx> attribute is also a direct member of the object being created or updated. The <spanx style="verb">excl-members</spanx> attribute is used to exclude objects anywhere in the recursive set hierarchy, starting from the point of definition and moving downwards within the hierarchy. This is because the object to be excluded might have been included by a member of a member of a member, and so on.</t>
 
-<t>When creating or updating an object with the <spanx style="verb">excl-members</spanx> attribute, authoritative IRR software <bcp14>MUST NOT</bcp14> require that the registry scope which precedes the object primary key is one the IRR software recognizes as valid. An authoritative IRR server may have its content mirrored to resolver IRR servers, which have visibility of many more registries.</t>
+<t>When creating or updating an object with the <spanx style="verb">excl-members</spanx> attribute, authoritative IRR software <bcp14>MUST NOT</bcp14> require the registry scope that precedes the object primary key to be one the IRR software recognises as valid. An authoritative IRR server may have its content mirrored to resolver IRR servers, which may have visibility of many more registries.</t>
 
 </section>
 </section>
 <section anchor="joint-vs-split-attributes"><name>Joint vs. Split Attributes</name>
 
-<t>The <spanx style="verb">excl-members</spanx> attribute could have been designed to be two separate attributes i.e., <spanx style="verb">excl-members</spanx> and <spanx style="verb">excl-mp-members</spanx>. This would provide finer grained control by only excluding a primary key found in a <spanx style="verb">members</spanx> attribute, and only excluding a primary key found in an <spanx style="verb">mp-members</spanx> attribute, respectively. This creates additional problems though:</t>
+<t>The <spanx style="verb">excl-members</spanx> attribute could have been designed as two separate attributes, that is, <spanx style="verb">excl-members</spanx> and <spanx style="verb">excl-mp-members</spanx>. This would provide finer-grained control by only excluding a primary key found in a <spanx style="verb">members</spanx> attribute, and only excluding a primary key found in an <spanx style="verb">mp-members</spanx> attribute, respectively. However, this creates additional problems:</t>
 
 <t><list style="numbers" type="1">
-  <t>If the primary key of an object which needs to be excluded exists in the set hierarchy in a <spanx style="verb">members</spanx> attribute, but is only excluded if found in an <spanx style="verb">mp-members</spanx> attribute (e.g., it is only referenced in <spanx style="verb">excl-mp-members</spanx>), the object referenced is not successfully excluded. The problem is that the wrong exclude attribute has been used. This problem doesn't exist with a single combined exclude attribute.</t>
-  <t>The syntax of the <spanx style="verb">mp-members</spanx> attribute allows it to contain all types of value supported by the <spanx style="verb">members</spanx> attribute, plus additional value types not supported by the <spanx style="verb">members</spanx> attribute (syntactically <spanx style="verb">mp-members</spanx> supports a superset of <spanx style="verb">members</spanx>). A primary key type which is valid in both attributes, such as a route-set, could be included via the <spanx style="verb">members</spanx> attribute or the <spanx style="verb">mp-members</spanx> attribute in the set hierarchy. To ensure this object is excluded, it's primary key would need to be added to both exclude attributes. This creates the problem that the two attributes would need to always store all values which are valid in the <spanx style="verb">members</spanx> attribute. This would render an <spanx style="verb">excl-members</spanx> attribute redundant because everything is duplicated in an <spanx style="verb">excl-mp-members</spanx> attribute. This problem doesn't exist with a single combined exclude attribute.</t>
-  <t>Split exclude attributes allows for the intentional evasion of an exclusion, by looking in the set hierarchy, observing that a primary key is excluded only if found in one of the <spanx style="verb">(mp-)members</spanx> attributes, and then intentionally including it in the other attribute. This problem doesn't exist with a combined excluded attribute.</t>
+  <t>If the primary key of an object that needs to be excluded exists in the set hierarchy in a <spanx style="verb">members</spanx> attribute, but is only excluded if found in an <spanx style="verb">mp-members</spanx> attribute (for example, it is only referenced in <spanx style="verb">excl-mp-members</spanx>), the object referenced is not successfully excluded. The problem is that the wrong exclude attribute has been used. This problem does not exist with a single combined exclude attribute.</t>
+  <t>The syntax of the <spanx style="verb">mp-members</spanx> attribute allows it to contain all types of value supported by the <spanx style="verb">members</spanx> attribute, plus additional value types not supported by the <spanx style="verb">members</spanx> attribute; syntactically, <spanx style="verb">mp-members</spanx> supports a superset of <spanx style="verb">members</spanx>. A primary-key type which is valid in both attributes, such as a route-set, could be included via the <spanx style="verb">members</spanx> attribute or the <spanx style="verb">mp-members</spanx> attribute in the set hierarchy. To ensure that this object is excluded, its primary key would need to be added to both exclude attributes. This creates the problem that the two attributes would need to store all values that are valid in the <spanx style="verb">members</spanx> attribute. This would render an <spanx style="verb">excl-members</spanx> attribute redundant because everything is duplicated in an <spanx style="verb">excl-mp-members</spanx> attribute. This problem does not exist with a single combined exclude attribute.</t>
+  <t>Split exclude attributes allow intentional evasion of an exclusion by examining the set hierarchy, observing that a primary key is excluded only if found in one of the <spanx style="verb">(mp-)members</spanx> attributes, and then intentionally including it in the other attribute. This problem does not exist with a combined exclusion attribute.</t>
 </list></t>
 
-<t>Due to the problems listed above, the <spanx style="verb">excl-members</spanx> attribute has been specifically designed to be a single attribute to avoid these problems.</t>
+<t>Due to the problems listed above, the <spanx style="verb">excl-members</spanx> attribute has been designed as a single attribute.</t>
 
 </section>
 </section>
@@ -243,15 +262,15 @@ excl-members: RIPE::AS-EXAMPLE
 
 <section anchor="the-as-set-class-1"><name>The as-set Class</name>
 
-<t>When the <spanx style="verb">excl-members</spanx> attribute is populated on an as-set object, the primary keys stored in the attribute reference aut-nums or as-sets that <bcp14>MUST NOT</bcp14> be resolved by a resolving IRR server, when recursively resolving the members of that as-set object.</t>
+<t>When the <spanx style="verb">excl-members</spanx> attribute is populated on an as-set object, the primary keys stored in the attribute reference aut-nums or as-sets that a resolving IRR server <bcp14>MUST NOT</bcp14> resolve when recursively resolving that object's members.</t>
 
 <t><list style="numbers" type="1">
-  <t>This exclusion applies to the <spanx style="verb">members</spanx> attribute of the as-set object which has the <spanx style="verb">excl-members</spanx> attribute populated, and the <spanx style="verb">members</spanx> attribute of all recursively resolved as-sets within that set. Because the RPSL primary keys stored in the <spanx style="verb">excl-members</spanx> attribute are prefixed with a registry scope, the primary keys in the <spanx style="verb">members</spanx> attribute <bcp14>MUST</bcp14> be checked against all keys in the <spanx style="verb">excl-members</spanx> attribute with the registry scope removed.</t>
-  <t>This exclusion applies to the <spanx style="verb">src-members</spanx> attribute (as defined in <xref target="draft-romijn-grow-rpsl-registry-scoped-members"/>) of the as-set object which has the <spanx style="verb">excl-members</spanx> attribute populated, and the <spanx style="verb">src-members</spanx> attribute of all recursively resolved as-sets within that set. In this case the registry scoped RPSL primary keys in <spanx style="verb">src-members</spanx> <bcp14>MUST</bcp14> match a registry scoped key in <spanx style="verb">excl-members</spanx> exactly, without the registry scope having been removed from either of the two keys being compared.</t>
-  <t>If both <spanx style="verb">members</spanx> and <spanx style="verb">src-members</spanx> are defined on an as-set object, and the same key exists in both attributes when the registry scope is removed from the <spanx style="verb">src-members</spanx> entry, the key from <spanx style="verb">src-members</spanx> which is prefixed with a registry scope <bcp14>MUST</bcp14> be compared against all entries in <spanx style="verb">excl-members</spanx> with their registry scopes present. Matching keys in <spanx style="verb">src-members</spanx> takes precedence over matching keys in <spanx style="verb">members</spanx>.</t>
+  <t>This exclusion applies to the <spanx style="verb">members</spanx> attribute of the as-set object on which the <spanx style="verb">excl-members</spanx> attribute is populated, and to the <spanx style="verb">members</spanx> attribute of all recursively resolved as-sets within that set. Because the RPSL primary keys stored in the <spanx style="verb">excl-members</spanx> attribute are prefixed with a registry scope, the primary keys in the <spanx style="verb">members</spanx> attribute <bcp14>MUST</bcp14> be checked against all keys in the <spanx style="verb">excl-members</spanx> attribute with the registry scope removed.</t>
+  <t>This exclusion applies to the <spanx style="verb">src-members</spanx> attribute (as defined in <xref target="draft-romijn-grow-rpsl-registry-scoped-members"/>) of the as-set object on which the <spanx style="verb">excl-members</spanx> attribute is populated, and to the <spanx style="verb">src-members</spanx> attribute of all recursively resolved as-sets within that set. In this case, the registry-scoped RPSL primary keys in <spanx style="verb">src-members</spanx> <bcp14>MUST</bcp14> match a registry-scoped key in <spanx style="verb">excl-members</spanx> exactly, without the registry scope being removed from either of the two keys being compared.</t>
+  <t>If both <spanx style="verb">members</spanx> and <spanx style="verb">src-members</spanx> are defined on an as-set object, and the same key exists in both attributes after removing the registry scope from the <spanx style="verb">src-members</spanx> entry, the key from <spanx style="verb">src-members</spanx>, which is prefixed with a registry scope, <bcp14>MUST</bcp14> be compared against all entries in <spanx style="verb">excl-members</spanx> with their registry scopes present. Matching keys in <spanx style="verb">src-members</spanx> take precedence over matching keys in <spanx style="verb">members</spanx>.</t>
 </list></t>
 
-<t>The figure below shows IRR data in its raw and unresolved state. In the figure, RIPE::AS-EXAMPLE-4 is not defined (it may not exist, or the resolving IRR system may not contain data from the RIPE registry):</t>
+<t>The figure below shows IRR data in its raw and unresolved state. In the figure, RIPE::AS-EXAMPLE-4 is not defined; it may not exist, or the resolving IRR system may not contain data from the RIPE registry:</t>
 
 <figure title="An example as-set hierarchy, in its unresolved state"><sourcecode type="rpsl"><![CDATA[
 as-set: AS-EXAMPLE-1
@@ -273,7 +292,7 @@ members: AS65004
 source: ARIN
 ]]></sourcecode></figure>
 
-<t>The figure below shows the result from a resolving IRR server having resolved the members of set <spanx style="verb">AS-EXAMPLE-1</spanx> when the logic relating to <spanx style="verb">excl-members</spanx> is applied:</t>
+<t>The figure below shows the result from a resolving IRR server after the members of set <spanx style="verb">AS-EXAMPLE-1</spanx> have been resolved and the logic relating to <spanx style="verb">excl-members</spanx> has been applied:</t>
 
 <figure title="AS-EXAMPLE-1 in its resolved state with exclusions applied"><sourcecode type="rpsl"><![CDATA[
 as-set: AS-EXAMPLE-1
@@ -281,19 +300,19 @@ members: AS65001, AS65003
 ]]></sourcecode></figure>
 
 <t><list style="symbols">
-  <t>It can be seen that <spanx style="verb">excl-members</spanx> took effect on the object it was defined, not just it's descendants. This is shown by AS65002 not being included in the final result because AS65002 is both a <spanx style="verb">member</spanx> <em>and</em> <spanx style="verb">excl-members</spanx> of AS-EXAMPLE-2.</t>
-  <t>AS-EXAMPLE-4 is excluded even though AS-EXAMPLE-4 is defined in ARIN and is a <spanx style="verb">member</spanx> of AS-EXAMPLE-3. This happens because a <spanx style="verb">src-members</spanx> attribute is defined on AS-EXAMPLE-3, and it takes precedence over the <spanx style="verb">members</spanx> attribute. This means RIPE::AS-EXAMPLE-4 would be included, but it is excluded by the <spanx style="verb">excl-members</spanx> attribute one level higher in the tree on AS-EXAMPLE-2.</t>
+  <t>It can be seen that <spanx style="verb">excl-members</spanx> took effect on the object on which it was defined, not just its descendants. This is shown by AS65002 not being included in the final result because AS65002 is both a <spanx style="verb">member</spanx> <em>and</em> <spanx style="verb">excl-members</spanx> of AS-EXAMPLE-2.</t>
+  <t>AS-EXAMPLE-4 is excluded even though AS-EXAMPLE-4 is defined in ARIN and is a <spanx style="verb">member</spanx> of AS-EXAMPLE-3. This happens because a <spanx style="verb">src-members</spanx> attribute is defined on AS-EXAMPLE-3, and it takes precedence over the <spanx style="verb">members</spanx> attribute. This means RIPE::AS-EXAMPLE-4 would be included, but it is excluded by the <spanx style="verb">excl-members</spanx> attribute one level higher in the tree, on AS-EXAMPLE-2.</t>
 </list></t>
 
 </section>
 <section anchor="the-route-set-class-1"><name>The route-set Class</name>
 
-<t>When the <spanx style="verb">excl-members</spanx> attribute is populated on a route-set object, the primary keys stored in the attribute reference aut-nums, or as-sets, or route-sets, that <bcp14>MUST NOT</bcp14> be resolved by a resolving IRR server, when recursively resolving the members of that route-set object.</t>
+<t>When the <spanx style="verb">excl-members</spanx> attribute is populated on a route-set object, the primary keys stored in the attribute reference aut-nums, as-sets, or route-sets that a resolving IRR server <bcp14>MUST NOT</bcp14> resolve when recursively resolving the members of that route-set object.</t>
 
 <t><list style="numbers" type="1">
-  <t>This exclusion applies to the <spanx style="verb">(mp-)members</spanx> attributes of the route-set object which has the <spanx style="verb">excl-members</spanx> attribute populated, and the <spanx style="verb">(mp-)members</spanx> attributes of all recursively resolved route-sets and as-sets within that route-set. Because the RPSL primary keys stored in the <spanx style="verb">excl-members</spanx> attribute are prefixed with a registry scope, the primary keys in the <spanx style="verb">(mp-)members</spanx> attributes <bcp14>MUST</bcp14> be checked against all keys in <spanx style="verb">excl-members</spanx> attribute with the registry scope removed.</t>
-  <t>This exclusion applies to the <spanx style="verb">src-members</spanx> attribute (as defined in <xref target="draft-romijn-grow-rpsl-registry-scoped-members"/>) of the route-set object which has the <spanx style="verb">excl-members</spanx> attribute populated, and the <spanx style="verb">src-members</spanx> attribute of all recursively resolved route-sets and as-sets within that route-set. In this case the registry scoped RPSL primary keys in <spanx style="verb">src-members</spanx> <bcp14>MUST</bcp14> match a registry scoped key in <spanx style="verb">excl-members</spanx> exactly, without the registry scope having being removed from either of the two keys being compared.</t>
-  <t>If both <spanx style="verb">(mp-)members</spanx> and <spanx style="verb">src-members</spanx> are defined on a route-set object, and the same key exists in both attributes when the registry scope is removed from the <spanx style="verb">src-members</spanx> entry, the key from <spanx style="verb">src-members</spanx> which is prefixed with a registry scope <bcp14>MUST</bcp14> be compared against all entries in <spanx style="verb">excl-members</spanx> with their registry scopes present. Matching keys in <spanx style="verb">src-members</spanx> takes precedence over matching keys in <spanx style="verb">(mp-)members</spanx>.</t>
+  <t>This exclusion applies to the <spanx style="verb">(mp-)members</spanx> attributes of the route-set object on which the <spanx style="verb">excl-members</spanx> attribute is populated, and to the <spanx style="verb">(mp-)members</spanx> attributes of all recursively resolved route-sets and as-sets within that route-set. Because the RPSL primary keys stored in the <spanx style="verb">excl-members</spanx> attribute are prefixed with a registry scope, the primary keys in the <spanx style="verb">(mp-)members</spanx> attributes <bcp14>MUST</bcp14> be checked against all keys in <spanx style="verb">excl-members</spanx> with the registry scope removed.</t>
+  <t>This exclusion applies to the <spanx style="verb">src-members</spanx> attribute (as defined in <xref target="draft-romijn-grow-rpsl-registry-scoped-members"/>) of the route-set object on which the <spanx style="verb">excl-members</spanx> attribute is populated, and to the <spanx style="verb">src-members</spanx> attribute of all recursively resolved route-sets and as-sets within that route-set. In this case, the registry-scoped RPSL primary keys in <spanx style="verb">src-members</spanx> <bcp14>MUST</bcp14> match a registry-scoped key in <spanx style="verb">excl-members</spanx> exactly, without the registry scope being removed from either of the two keys being compared.</t>
+  <t>If both <spanx style="verb">(mp-)members</spanx> and <spanx style="verb">src-members</spanx> are defined on a route-set object, and the same key exists in both attributes after removing the registry scope from the <spanx style="verb">src-members</spanx> entry, the key from <spanx style="verb">src-members</spanx>, which is prefixed with a registry scope, <bcp14>MUST</bcp14> be compared against all entries in <spanx style="verb">excl-members</spanx> with their registry scopes present. Matching keys in <spanx style="verb">src-members</spanx> take precedence over matching keys in <spanx style="verb">(mp-)members</spanx>.</t>
 </list></t>
 
 <t>The figure below shows IRR data in its raw and unresolved state:</t>
@@ -319,7 +338,7 @@ members: 2001:db8:8000::/33
 source: ARIN
 ]]></sourcecode></figure>
 
-<t>The figure below shows the result from a resolving IRR server having resolved the members of set <spanx style="verb">RS-EXAMPLE-1</spanx> when the logic relating to <spanx style="verb">excl-members</spanx> is applied:</t>
+<t>The figure below shows the result from a resolving IRR server after the members of set <spanx style="verb">RS-EXAMPLE-1</spanx> have been resolved and the logic relating to <spanx style="verb">excl-members</spanx> has been applied:</t>
 
 <figure title="RS-EXAMPLE-1 in its resolved state with exclusions applied"><sourcecode type="rpsl"><![CDATA[
 route-set: RS-EXAMPLE-1
@@ -327,21 +346,21 @@ members: 192.0.2.0/25, 2001:db8::/33, 192.0.2.128/25
 ]]></sourcecode></figure>
 
 <t><list style="symbols">
-  <t>It can be seen that <spanx style="verb">excl-members</spanx> took effect on the object it was defined on, not just it's descendants. This is shown by 2001:db8:8000::/33 not being included in the final result because RS-EXAMPLE-4 is both a <spanx style="verb">member</spanx> <em>and</em> <spanx style="verb">excl-members</spanx> of RS-EXAMPLE-2.</t>
-  <t>Even though RS-EXAMPLE-4 is excluded by RS-EXAMPLE-2, it was also included by RS-EXAMPLE-3, but still 2001:db8:8000::/33 is excluded. This shows that the exclusion logic applies from the point in the hierarchy where it is defined, all the way down, taking precedence over any subsequent includes.</t>
-  <t>RS-EXAMPLE-4 is excluded even though RS-EXAMPLE-4 is defined in ARIN and RIPE::RS-EXAMPLE-4 is specified in <spanx style="verb">excl-members</spanx> on RS-EXAMPLE-2. This is because the RS-EXAMPLE-4 entry in the <spanx style="verb">(mp-)members</spanx> attribute of RS-EXAMPLE-3 is ambiguous due to the lack of <spanx style="verb">src-members</spanx> attribute on RS-EXAMPLE-3. This means that the <spanx style="verb">excl-members</spanx> value RIPE::RS-EXAMPLE-4 has to be checked against the <spanx style="verb">members</spanx> attribute on RS-EXAMPLE-3 with the registry scope removed, which results in a match when checking for primary keys to be excluded from the recursive resolution.</t>
+  <t>It can be seen that <spanx style="verb">excl-members</spanx> took effect on the object on which it was defined, not just its descendants. This is shown by 2001:db8:8000::/33 not being included in the final result because RS-EXAMPLE-4 is both a <spanx style="verb">member</spanx> <em>and</em> <spanx style="verb">excl-members</spanx> of RS-EXAMPLE-2.</t>
+  <t>Even though RS-EXAMPLE-4 is excluded by RS-EXAMPLE-2, it was also included by RS-EXAMPLE-3, but 2001:db8:8000::/33 is still excluded. This shows that the exclusion logic applies from the point in the hierarchy where it is defined, all the way down, taking precedence over any subsequent includes.</t>
+  <t>RS-EXAMPLE-4 is excluded even though RS-EXAMPLE-4 is defined in ARIN and RIPE::RS-EXAMPLE-4 is specified in <spanx style="verb">excl-members</spanx> on RS-EXAMPLE-2. This is because the RS-EXAMPLE-4 entry in the <spanx style="verb">(mp-)members</spanx> attribute of RS-EXAMPLE-3 is ambiguous due to the absence of a <spanx style="verb">src-members</spanx> attribute on RS-EXAMPLE-3. This means that the <spanx style="verb">excl-members</spanx> value RIPE::RS-EXAMPLE-4 has to be checked against the <spanx style="verb">members</spanx> attribute on RS-EXAMPLE-3 with the registry scope removed, which results in a match when checking for primary keys to be excluded from recursive resolution.</t>
 </list></t>
 
 </section>
 <section anchor="cumulative-excludes"><name>Cumulative Excludes</name>
 
-<t>As as-set and route-set objects are recursively resolved and <spanx style="verb">excl-members</spanx> attributes are discovered, the RPSL primary keys to be excluded need to be tracked.</t>
+<t>As as-set and route-set objects are recursively resolved and <spanx style="verb">excl-members</spanx> attributes are encountered, the RPSL primary keys to be excluded need to be tracked by the software implementation.</t>
 
-<t>At any point in the hierarchy where <spanx style="verb">excl-members</spanx> is discovered, all <spanx style="verb">(mp-)members</spanx> and <spanx style="verb">src-members</spanx> attributes from that point onwards are subject to the <spanx style="verb">excl-members</spanx> which have been discovered so far. However, depending on the resolution algorithm being used by the resolving software i.e., a depth first search or breadth first search, multiple lists of RPSL keys to exclude may have to be maintained (the exact implementation details are outside the scope of this document).</t>
+<t>At any point in the hierarchy where <spanx style="verb">excl-members</spanx> is encountered, all <spanx style="verb">(mp-)members</spanx> and <spanx style="verb">src-members</spanx> attributes within the same branch of the hierarchy are subject only to the <spanx style="verb">excl-members</spanx> that have been encountered along this branch. The cumulative nature of the <spanx style="verb">excl-members</spanx> attribute requires an approach which is inline with a depth-first search. However, the resolving software may use any algorithm to resolve the set hierarchy, which means that multiple lists of RPSL keys to exclude <bcp14>MAY</bcp14> have to be maintained, one for each branch of the hierarchy.</t>
 
-<t>This section does not aim to define how the logic should be implemented in software, simply to demonstrate that the exclusion list is cumulative, but not as simple as a single global list.</t>
+<t>The exact software implementation details are outside the scope of this document. This section aims to demonstrate that the exclusion list is cumulative, but not as simple as a single global list.</t>
 
-<t>The following figure shows as-set objects in their unresolved state:</t>
+<t>Consider the following figure which shows as-set objects in their unresolved state:</t>
 
 <figure title="An example as-set hierarchy, in its unresolved state"><sourcecode type="rpsl"><![CDATA[
 as-set: AS-EXAMPLE-1
@@ -365,40 +384,42 @@ members: AS65005
 
 <t>The following figure shows the resolved members of as-set AS-EXAMPLE-1:</t>
 
-<figure title="AS-EXAMPLE-1 in it's resolved state with exclusions applied"><sourcecode type="rpsl"><![CDATA[
+<figure title="AS-EXAMPLE-1 in its resolved state with exclusions applied"><sourcecode type="rpsl"><![CDATA[
 as-set: AS-EXAMPLE-1
 members: AS65005
 ]]></sourcecode></figure>
 
 <t><list style="numbers" type="1">
   <t>The resolving process starts by resolving the members of AS-EXAMPLE-1.</t>
-  <t>If a depth first search approach is taken by the IRR software, AS-EXAMPLE-2 might be resolved next. AS-EXAMPLE-4 is not included due to the <spanx style="verb">excl-members</spanx> attribute defined on AS-EXAMPLE-1. This is being applied from the point of definition onwards, the resolving process inherited the currently defined list of excludes (RIPE::AS-EXAMPLE-4) when it moved on to resolve AS-EXAMPLE-2.</t>
-  <t>AS-EXAMPLE-2 defined a new <spanx style="verb">excl-members</spanx> attribute with the value RIPE::AS-EXAMPLE-5 however, there is nothing left to resolve in AS-EXAMPLE-2 so this exclusion has no effect.</t>
-  <t>Continuing the depth-first search approach, the IRR software returns to AS-EXAMPLE-1, uses the exclusion list as it existed while resolving AS-EXAMPLE-1 (containing only RIPE::AS-EXAMPLE-4), and then resolves AS-EXAMPLE-3.</t>
+  <t>If a depth-first search approach is taken by the IRR software and AS-EXAMPLE-2 is resolved before AS-EXAMPLE-3; AS-EXAMPLE-4 is not included due to the <spanx style="verb">excl-members</spanx> attribute defined on AS-EXAMPLE-1. The exclusion is applied from the point of definition onwards; the resolving process inherits the currently defined list of exclusions (RIPE::AS-EXAMPLE-4) when it moves on to resolve AS-EXAMPLE-2.</t>
+  <t>AS-EXAMPLE-2 defined a new <spanx style="verb">excl-members</spanx> attribute with the value RIPE::AS-EXAMPLE-5; however, there is nothing left to resolve in AS-EXAMPLE-2, so this exclusion has no effect.</t>
+  <t>Continuing the depth-first search approach, the IRR software returns to AS-EXAMPLE-1, uses the exclusion list <em>as it existed</em> while resolving AS-EXAMPLE-1 (containing only RIPE::AS-EXAMPLE-4), and then resolves AS-EXAMPLE-3.</t>
   <t>AS-EXAMPLE-3 includes AS-EXAMPLE-5. This is not excluded even though the IRR software has encountered an <spanx style="verb">excl-members</spanx> attribute which contains the value RIPE::AS-EXAMPLE-5. This is because that <spanx style="verb">excl-members</spanx> attribute was found on a different branch of the set hierarchy.</t>
-  <t>Continuing the resolution process, resolving AS-EXAMPLE-5 returns AS65005 only. The exclusion of AS65006 defined on AS-EXAMPLE-3 was applied to the resolution of AS-EXAMPLE-5 in addition to the exclusion of RIPE::AS-EXAMPLE-4, however no <spanx style="verb">members</spanx> or <spanx style="verb">src-members</spanx> attributes were found on AS-EXAMPLE-5 with these values.</t>
+  <t>Continuing the resolution process, resolving AS-EXAMPLE-5 returns AS65005 only. The exclusion of AS65006 defined on AS-EXAMPLE-3 was applied to the resolution of AS-EXAMPLE-5 in addition to the exclusion of RIPE::AS-EXAMPLE-4; however, no <spanx style="verb">members</spanx> or <spanx style="verb">src-members</spanx> attributes were found on AS-EXAMPLE-5 with these values.</t>
 </list></t>
 
-<t>The example shows that discovered exclusions do not apply across branches of the hierarchy. This <bcp14>MUST NOT</bcp14> be allowed by the software implementation. If allowed, the operator of an as-set or route-set would be able to influence their upstream or peer to exclude objects they are not responsible for.</t>
+<t>The example shows that encountered exclusions do not apply across branches of the hierarchy.</t>
+
+<t>Cross-branch exclusions <bcp14>MUST NOT</bcp14> be allowed by the software implementation. If allowed, the operator of an included set would be able to influence the exclusions for the network owning the including set. The included set could add RPSL keys to their <spanx style="verb">excl-members</spanx> attribute, for a set included in a different branch of the including set.</t>
 
 </section>
 </section>
 <section anchor="backwards-compatibility"><name>Backwards Compatibility</name>
 
-<t><xref section="2" sectionFormat="of" target="RFC2622"/> defines syntax which allows for finer grained inclusion and exclusion of IP prefix ranges in the <spanx style="verb">(mp-)members</spanx> attribute of a route-set (i.e., <spanx style="verb">^-</spanx>, <spanx style="verb">^+</spanx>, <spanx style="verb">^n</spanx>, and <spanx style="verb">^n-m</spanx>). It could be possible to introduce similar style syntax to the existing <spanx style="verb">(mp-)members</spanx> attributes, which would match and include or exclude aut-num, as-set, and route-set primary keys. This breaks backwards compatibility though. Existing IRR implementations or tooling which parses IRR data, which has not been updated to include such changes to the existing attributes, would break when encountering data from an implementation which has been updated which returns data using these new syntax options.</t>
+<t><xref section="2" sectionFormat="of" target="RFC2622"/> defines syntax which allows for finer-grained inclusion and exclusion of IP prefix ranges in the <spanx style="verb">(mp-)members</spanx> attribute of a route-set, that is, <spanx style="verb">^-</spanx>, <spanx style="verb">^+</spanx>, <spanx style="verb">^n</spanx>, and <spanx style="verb">^n-m</spanx>. It might be possible to introduce similar syntax to the existing <spanx style="verb">(mp-)members</spanx> attributes, which would match and include or exclude aut-num, as-set, and route-set primary keys. However, this would break backwards compatibility. Existing IRR implementations or tooling which parses IRR data, and which has not been updated to include such changes to the existing attributes, would break when encountering data from an implementation which has been updated to return data using these new syntax options.</t>
 
-<t>The behaviour of RPSL compliant software is to ignore unrecognised attributes. This means that adding the exclusion logic defined in this document, based on the contents of a new attribute, has no impact when existing IRR software implementations process an object with the new attribute defined.</t>
+<t>The behaviour of RPSL-compliant software is to ignore unrecognised attributes. This means that adding the exclusion logic defined in this document, based on the contents of a new attribute, has no impact when existing IRR software implementations process an object containing the new attribute.</t>
 
-<t>Although not related to the ability to retain backwards compatibility for parsing data, there is a breaking change introduced by this document in relation to the data returned from an IRR implementation which has implemented the defined changes. The returned data from two IRR resolvers, with the exact same database, and one of the resolvers uses software which has not implemented the changes introduced in this document, would not be the same. Therefore, for consumers of the returned data, the presence of the <spanx style="verb">excl-members</spanx> attribute indicates that data may have been excluded, if any matches to the excluded primary keys were found during the resolving process.</t>
+<t>Although unrelated to the ability to retain backwards compatibility for parsing data, there is a breaking change introduced by this document in relation to the data returned from an IRR implementation that has implemented the defined changes. The data returned by two IRR resolvers, operating on the exact same database, where one resolver uses software that has not implemented the changes introduced in this document, would not be the same. Therefore, for consumers of the returned data, the presence of the <spanx style="verb">excl-members</spanx> attribute indicates that data may have been excluded if any matches to the excluded primary keys were found during the resolving process.</t>
 
 </section>
 <section anchor="security-considerations"><name>Security Considerations</name>
 
-<t>This document adds the ability to specify that IRR derived prefix and AS path filter lists may exclude specific entries, which may be the cause of security issues, that are presently included by the existing greedy inclusion logic.</t>
+<t>This document adds the ability to specify that IRR-derived prefix and AS-path filter lists may exclude specific entries that are presently included by the existing greedy inclusion logic, which may otherwise create security issues.</t>
 
-<t>It is possible that the operator of an including set includes the wrong primary key in the <spanx style="verb">excl-members</spanx> attribute. However, this is not a new issue, it has long been possible to include the unintended primary keys in set objects. This document doesn't change this existing behaviour. It does limit the scope of the unintended inclusion by requiring registry scoped keys only in the <spanx style="verb">excl-members</spanx> attribute.</t>
+<t>It is possible that the operator of an including set includes the wrong primary key in the <spanx style="verb">excl-members</spanx> attribute. However, this is not a new issue; it has long been possible to include unintended primary keys in set objects. This document does not change this existing behaviour. It does limit the scope of unintended inclusion by requiring registry-scoped keys only in the <spanx style="verb">excl-members</spanx> attribute.</t>
 
-<t>Great progress has been made with the deployment of Route Origin Authorizations (ROAs) as defined in <xref target="RFC9582"/>, and the ongoing development of Autonomous System Provider Authorization (ASPA) objects as defined in <xref target="draft-ietf-sidrops-aspa-verification"/>. The method proposed in this document is intended to complement those existing developments, further enriching the operator toolkit, and not work against them or be mutually exclusive.</t>
+<t>Great progress has been made recently in relation to BGP route filtering, specifically with the deployment of Route Origin Authorizations (ROAs) as defined in <xref target="RFC9582"/>, the ongoing development of Autonomous System Provider Authorizations (ASPAs) as defined in <xref target="draft-ietf-sidrops-aspa-verification"/>, and the publication of <xref target="RFC9234"/>. The method proposed in this document is intended to complement those existing developments, further enriching the operator toolkit, and not to work against them or be mutually exclusive.</t>
 
 </section>
 
@@ -483,6 +504,22 @@ members: AS65005
 
 
 
+<reference anchor="RFC9234">
+  <front>
+    <title>Route Leak Prevention and Detection Using Roles in UPDATE and OPEN Messages</title>
+    <author fullname="A. Azimov" initials="A." surname="Azimov"/>
+    <author fullname="E. Bogomazov" initials="E." surname="Bogomazov"/>
+    <author fullname="R. Bush" initials="R." surname="Bush"/>
+    <author fullname="K. Patel" initials="K." surname="Patel"/>
+    <author fullname="K. Sriram" initials="K." surname="Sriram"/>
+    <date month="May" year="2022"/>
+    <abstract>
+      <t>Route leaks are the propagation of BGP prefixes that violate assumptions of BGP topology relationships, e.g., announcing a route learned from one transit provider to another transit provider or a lateral (i.e., non-transit) peer or announcing a route learned from one lateral peer to another lateral peer or a transit provider. These are usually the result of misconfigured or absent BGP route filtering or lack of coordination between autonomous systems (ASes). Existing approaches to leak prevention rely on marking routes by operator configuration, with no check that the configuration corresponds to that of the External BGP (eBGP) neighbor, or enforcement of the two eBGP speakers agreeing on the peering relationship. This document enhances the BGP OPEN message to establish an agreement of the peering relationship on each eBGP session between autonomous systems in order to enforce appropriate configuration on both sides. Propagated routes are then marked according to the agreed relationship, allowing both prevention and detection of route leaks.</t>
+    </abstract>
+  </front>
+  <seriesInfo name="RFC" value="9234"/>
+  <seriesInfo name="DOI" value="10.17487/RFC9234"/>
+</reference>
 <reference anchor="RFC9582">
   <front>
     <title>A Profile for Route Origin Authorizations (ROAs)</title>
@@ -509,7 +546,7 @@ members: AS65005
     <author initials="J." surname="Bensley" fullname="James Bensley">
       <organization>Inter.link GmbH</organization>
     </author>
-    <date year="2025" month="February" day="21"/>
+    <date year="2025" month="August" day="25"/>
   </front>
   <format type="HTML" target="https://www.ietf.org/archive/id/draft-romijn-grow-rpsl-registry-scoped-members-01.html"/>
   <format type="TXT" target="https://www.ietf.org/archive/id/draft-romijn-grow-rpsl-registry-scoped-members-01.txt"/>
@@ -535,10 +572,24 @@ members: AS65005
     <author initials="K." surname="Sriram" fullname="Kotikalapudi Sriram">
       <organization>USA NIST</organization>
     </author>
-    <date year="2025" month="March" day="23"/>
+    <date year="2025" month="October" day="19"/>
   </front>
-  <format type="HTML" target="https://www.ietf.org/archive/id/draft-ietf-sidrops-aspa-verification-22.html"/>
-  <format type="TXT" target="https://www.ietf.org/archive/id/draft-ietf-sidrops-aspa-verification-22.txt"/>
+  <format type="HTML" target="https://www.ietf.org/archive/id/draft-ietf-sidrops-aspa-verification-24.html"/>
+  <format type="TXT" target="https://www.ietf.org/archive/id/draft-ietf-sidrops-aspa-verification-24.txt"/>
+</reference>
+<reference anchor="draft-ietf-grow-routing-ops-terms" target="https://datatracker.ietf.org/doc/draft-ietf-grow-routing-ops-terms/">
+  <front>
+    <title>Currently Used Terminology in Global Routing Operations</title>
+    <author initials="T." surname="Fiebig" fullname="Tobias Fiebig">
+      <organization>TUW</organization>
+    </author>
+    <author initials="W." surname="Tremmel" fullname="Wolfgang Tremmel">
+      <organization>TDE-CIX</organization>
+    </author>
+    <date year="2026" month="April" day="03"/>
+  </front>
+  <format type="HTML" target="https://www.ietf.org/archive/id/draft-ietf-grow-routing-ops-terms-02.html"/>
+  <format type="TXT" target="https://www.ietf.org/archive/id/draft-ietf-grow-routing-ops-terms-02.txt"/>
 </reference>
 
 
@@ -551,202 +602,226 @@ members: AS65005
   </back>
 
 <!-- ##markdown-source:
-H4sIAAAAAAAAA+1deZPbxpX/n58Cq1StZrIkNZcce5LNLiXLtmxdmZHjpFJZ
-TxNoDtsDAgwaGIp2eT/Lfpb9ZPuOPnFwOJKSTbZWZUskCPTxzt97/boxmUxG
-uhZF9r3Iy0KeJ3XVyFGt6hw+P3u3zlUKn7eJfJfmTaaK66Sc/yDTWieLqlwl
-F28uXyRa1nok5vNK3t7vmaxMC7GCjrJKLOrJXBY6l9tJtdb5hB+Wk5VczWWl
-J0dHo0zUcO/J0cknk9PJya9GKXy/LqvteaKKRTlS64qGr+uTo6PPjk5Gupmv
-lNaqLOrtGp58/uztFyPR1MuyOh8lk1ECf1Shz5Ovp8kT7puu8Zi+hr91dL2s
-rkWhfhQ1tAitFbWsprkqbpIvV/Ov6A65Eio/T37AR/9duRvoN11XUtbnyZPy
-3VJcy0JWyWVdTZNPj+hnIBlM5Ims4AG+UGYwigfHRydnjx+YK01R43S/lNVK
-FNtRUcK/tbqVMJ3k4ounJ8fHn9mPn5ycmI9nR8fwEUkU3/3Z40/pFiY+cEb9
-UEyuq3LDDKjktYIxbyc6Ldcys4w4p6HUorrGySzreq3PHz0C1oi6EukNzFjJ
-ejEFWj0C9j66X+OPuHGWvgtzT8L3JOaeBObhZMhKFj3nWEt/JuZfw+PLaXJB
-o3CXmc2XQi9F+ycYPfafKzEHOX4KnMj6W21Jzi7pce32CY4T7ceTo5PJyTFd
-ZIbZ+Xz19uULT/DNZuMJLap0CXx9pLJ70ntydDxd1qvcdPH2D2//Gj3U72on
-ZtjiRKusKtd6IvRaTG5lpRYqZa16H+Ha3WQkUk++fJPMLr9/M3v7VfL74Kbk
-idAgYfBh1tRlUa7KRieXW13LVfKmKm9VBto6I/Ey+p8czC7fzA6T1/vK32ya
-zH5Uq/K2JSizXL4D84vtxz+TrPwRf3rX3+IzkL3yulyJHzuNPmvQwPT8TI3+
-rhI16NALMdf9LV9Ay41ethq9gLFs4x9Ynp9/nfxzMquqtBlo75tp8gYEPG81
-+I3cNlXrF2pxV1ugcZeF+gEIptsqV867P2F7g4O6rFQlVu1RlbW6EblYg+tq
-30Gj+/Zylrx6fvm2o7jglE4/UHF3y/Lk5OQ91fXudlFJR5PJJAGpQGWDb2+X
-SiegZ81KFnXSrHGuOvnpJ+Nefv45AYng7+hj4Pt8m2RyoQr0+fVSJlfoxa0p
-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
-iMl487Zb9GWj/wH5Wzli7YAAAA==
+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
 
 -->
 
