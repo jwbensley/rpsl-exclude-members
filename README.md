@@ -21,3 +21,9 @@ docker compose up
 ...
 render-1  | Open your browser to: http://127.0.0.1:4343/draft-bensley-rpsl-exclude-members.html
 ```
+
+## Pull Requests
+
+A pull request only needs to change the Markdown file. A CI job renders the XML and HTML files, and if they are out of date, commits them to the PR branch.
+
+For pull requests from a fork, CI cannot push to the fork's branch. Instead the job fails and uploads the rendered files as a `rendered-draft` artifact, which must be committed to the PR (or render them locally with docker as above and include them in the fork branch).
