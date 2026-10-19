@@ -125,7 +125,7 @@ Attribute:
 : `excl-members`
 
 Value:
-: list of (`<as-number>` or `<registry-name>::<as-set-name>`)
+: list of (\[`as-number`\] or \[`registry-name`\]::\[`as-set-name`\])
 
 Type:
 : optional, multi-valued
@@ -139,7 +139,7 @@ Attribute:
 : `excl-members`
 
 Value:
-: list of (`<registry-name>::<route-set-name>` or `<registry-name>::<as-set-name>` or `<as-number>` or `<registry-name>::<route-set-name><range-operator>`)
+: list of (\[`registry-name`\]::\[`route-set-name`\] or \[`registry-name`\]::\[`as-set-name`\] or \[`as-number`\] or \[`registry-name`\]::\[`route-set-name`\]\[`range-operator`\])
 
 Type:
 : optional, multi-valued

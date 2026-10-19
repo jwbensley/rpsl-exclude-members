@@ -10,23 +10,23 @@
 <meta content="
        This document updates RFC 2622 and RFC 4012 by defining the  excl-members  attribute on the as-set and route-set classes in the Routing Policy Specification Language (RPSL). A set that references another set includes everything the referenced set contains, however deeply nested. RPSL currently has no way for the set owner to make an exception. The  excl-members  attribute lets a set owner exclude specific members, including ones brought in by a referenced set. 
     " name="description">
-<meta content="xml2rfc 3.34.0" name="generator">
+<meta content="xml2rfc 3.34.1" name="generator">
 <meta content="rpsl" name="keyword">
 <meta content="draft-bensley-rpsl-exclude-members-00" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.34.0
+  xml2rfc 3.34.1
     Python 3.12.3
-    ConfigArgParse 1.7.5
+    ConfigArgParse 1.8.0
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
-    lxml 6.1.1
+    lxml 6.1.3
     natsort 8.4.0
-    platformdirs 4.11.2
+    platformdirs 4.13.5
     pycountry 26.2.16
     PyYAML 6.0.3
     requests 2.34.2
-    wcwidth 0.8.2
+    wcwidth 0.9.2
 -->
 <link href="draft-bensley-rpsl-exclude-members.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -351,6 +351,10 @@ table p {
   /* XXX to avoid bottom margin on table row signifiers. If paragraphs should
      be allowed within tables more generally, it would be far better to select on a class. */
   margin: 0;
+}
+sub,
+sup {
+ white-space: nowrap;
 }
 
 /* pilcrow */
@@ -1059,6 +1063,9 @@ aside > p {
   figcaption, table caption {
     page-break-before: avoid;
   }
+  table {
+    page-break-inside: avoid;
+  }
 }
 /* Font size adjustments for print */
 @media print {
@@ -1217,11 +1224,11 @@ li > p:last-of-type:only-child {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Excluding objects from RPSL sets</td>
-<td class="right">August 2026</td>
+<td class="right">October 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Bensley &amp; Romijn</td>
-<td class="center">Expires 18 February 2027</td>
+<td class="center">Expires 22 April 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1237,12 +1244,12 @@ li > p:last-of-type:only-child {
 <a href="https://www.rfc-editor.org/rfc/rfc2622" class="eref">2622</a>, <a href="https://www.rfc-editor.org/rfc/rfc4012" class="eref">4012</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-08-17" class="published">17 August 2026</time>
+<time datetime="2026-10-19" class="published">19 October 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-02-18">18 February 2027</time></dd>
+<dd class="expires"><time datetime="2027-04-22">22 April 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1280,7 +1287,7 @@ li > p:last-of-type:only-child {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 18 February 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 22 April 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1522,7 +1529,7 @@ appear in all capitals, as shown here.<a href="#section-1.5-1" class="pilcrow">�
           <dd class="break"></dd>
 <dt id="section-2.1-2.3">Value:</dt>
           <dd style="margin-left: 1.5em" id="section-2.1-2.4">
-            <p id="section-2.1-2.4.1">list of (<code>&lt;as-number&gt;</code> or <code>&lt;registry-name&gt;::&lt;as-set-name&gt;</code>)<a href="#section-2.1-2.4.1" class="pilcrow">¶</a></p>
+            <p id="section-2.1-2.4.1">list of ([<code>as-number</code>] or [<code>registry-name</code>]::[<code>as-set-name</code>])<a href="#section-2.1-2.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-2.1-2.5">Type:</dt>
@@ -1547,7 +1554,7 @@ appear in all capitals, as shown here.<a href="#section-1.5-1" class="pilcrow">�
           <dd class="break"></dd>
 <dt id="section-2.2-2.3">Value:</dt>
           <dd style="margin-left: 1.5em" id="section-2.2-2.4">
-            <p id="section-2.2-2.4.1">list of (<code>&lt;registry-name&gt;::&lt;route-set-name&gt;</code> or <code>&lt;registry-name&gt;::&lt;as-set-name&gt;</code> or <code>&lt;as-number&gt;</code> or <code>&lt;registry-name&gt;::&lt;route-set-name&gt;&lt;range-operator&gt;</code>)<a href="#section-2.2-2.4.1" class="pilcrow">¶</a></p>
+            <p id="section-2.2-2.4.1">list of ([<code>registry-name</code>]::[<code>route-set-name</code>] or [<code>registry-name</code>]::[<code>as-set-name</code>] or [<code>as-number</code>] or [<code>registry-name</code>]::[<code>route-set-name</code>][<code>range-operator</code>])<a href="#section-2.2-2.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-2.2-2.5">Type:</dt>
@@ -1852,11 +1859,11 @@ source: RIPE
 <dd class="break"></dd>
 <dt id="I-D.ietf-sidrops-aspa-verification">[I-D.ietf-sidrops-aspa-verification]</dt>
         <dd>
-<span class="refAuthor">Azimov, A.</span>, <span class="refAuthor">Bogomazov, E.</span>, <span class="refAuthor">Bush, R.</span>, <span class="refAuthor">Patel, K.</span>, <span class="refAuthor">Snijders, J.</span>, and <span class="refAuthor">K. Sriram</span>, <span class="refTitle">"BGP AS_PATH Verification Based on Autonomous System Provider Authorization (ASPA) Objects"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-sidrops-aspa-verification-27</span>, <time datetime="2026-07-20" class="refDate">20 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-verification-27">https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-verification-27</a>&gt;</span>. </dd>
+<span class="refAuthor">Azimov, A.</span>, <span class="refAuthor">Bogomazov, E.</span>, <span class="refAuthor">Bush, R.</span>, <span class="refAuthor">Patel, K.</span>, <span class="refAuthor">Snijders, J.</span>, and <span class="refAuthor">K. Sriram</span>, <span class="refTitle">"BGP AS_PATH Verification Based on Autonomous System Provider Authorization (ASPA) Objects"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-sidrops-aspa-verification-29</span>, <time datetime="2026-10-16" class="refDate">16 October 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-verification-29">https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-verification-29</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-grow-routing-ops-terms">[I-D.ietf-grow-routing-ops-terms]</dt>
       <dd>
-<span class="refAuthor">Fiebig, T.</span> and <span class="refAuthor">W. Tremmel</span>, <span class="refTitle">"Currently Used Terminology in Global Routing Operations"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-grow-routing-ops-terms-02</span>, <time datetime="2026-04-03" class="refDate">3 April 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-grow-routing-ops-terms-02">https://datatracker.ietf.org/doc/html/draft-ietf-grow-routing-ops-terms-02</a>&gt;</span>. </dd>
+<span class="refAuthor">Fiebig, T.</span> and <span class="refAuthor">W. Tremmel</span>, <span class="refTitle">"Currently Used Terminology in Global Routing Operations"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-grow-routing-ops-terms-03</span>, <time datetime="2026-10-02" class="refDate">2 October 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-grow-routing-ops-terms-03">https://datatracker.ietf.org/doc/html/draft-ietf-grow-routing-ops-terms-03</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
