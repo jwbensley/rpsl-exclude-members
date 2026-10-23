@@ -26,7 +26,7 @@
     pycountry 26.2.16
     PyYAML 6.0.3
     requests 2.34.2
-    wcwidth 0.9.2
+    wcwidth 0.9.3
 -->
 <link href="draft-bensley-rpsl-exclude-members.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1228,7 +1228,7 @@ li > p:last-of-type:only-child {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Bensley &amp; Romijn</td>
-<td class="center">Expires 22 April 2027</td>
+<td class="center">Expires 26 April 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1244,12 +1244,12 @@ li > p:last-of-type:only-child {
 <a href="https://www.rfc-editor.org/rfc/rfc2622" class="eref">2622</a>, <a href="https://www.rfc-editor.org/rfc/rfc4012" class="eref">4012</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-10-19" class="published">19 October 2026</time>
+<time datetime="2026-10-23" class="published">23 October 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-04-22">22 April 2027</time></dd>
+<dd class="expires"><time datetime="2027-04-26">26 April 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1287,7 +1287,7 @@ li > p:last-of-type:only-child {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 22 April 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 26 April 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1372,6 +1372,9 @@ li > p:last-of-type:only-child {
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
                 <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-multiple-paths-to-a-set" class="internal xref">Multiple Paths to a Set</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4">
+                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-disabling-exclusions-in-que" class="internal xref">Disabling Exclusions in Queries</a></p>
 </li>
             </ul>
 </li>
@@ -1786,6 +1789,19 @@ source: RIPE
         </ul>
 <p id="section-3.3-6">AS-EXAMPLE-A1 resolves to AS64503 and AS64504. AS-EXAMPLE-C2 is still reached through AS-EXAMPLE-B2.<a href="#section-3.3-6" class="pilcrow">¶</a></p>
 <p id="section-3.3-7">Implementations <span class="bcp14">MUST NOT</span> apply an exclusion to objects other than the object that contains it and those reached through it. If they did, the owner of an included set could add keys to its own <code>excl-members</code> and remove members from unrelated parts of the hierarchy.<a href="#section-3.3-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="disabling-exclusions-in-queries">
+<section id="section-3.4">
+        <h3 id="name-disabling-exclusions-in-que">
+<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-disabling-exclusions-in-que" class="section-name selfRef">Disabling Exclusions in Queries</a>
+        </h3>
+<p id="section-3.4-1">IRR software <span class="bcp14">MAY</span> provide a query option to disable the
+processing of <code>excl-members</code>. With that option, sets are resolved
+without applying any exclusions, as software without
+support for <code>excl-members</code> would.
+This option helps users to compare results with those from software that does
+not support <code>excl-members</code>, and debug unexpected resolving results.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
