@@ -1595,21 +1595,21 @@ excl-members: RIPE::AS-EXAMPLE, ARIN::AS-EXAMPLE
             </figcaption></figure>
 </div>
 <p id="section-2.3.1-3">If this were allowed, the two entries would refer to two different sets, whereas <code>(mp-)members</code> can only hold one <code>AS-EXAMPLE</code>, leaving it ambiguous which set the exclusion refers to.<a href="#section-2.3.1-3" class="pilcrow">¶</a></p>
-<p id="section-2.3.1-4">IRR registry software <span class="bcp14">MUST</span> also reject an object where <code>excl-members</code> and <code>src-members</code> name the same key with different registry scopes:<a href="#section-2.3.1-4" class="pilcrow">¶</a></p>
-<span id="name-invalid-object-fragment-usin"></span><div id="fig-invalid-scope-mismatch">
+<p id="section-2.3.1-4">IRR registry software <span class="bcp14">MUST</span> also reject an object where <code>excl-members</code> and <code>src-members</code> contain an identical key with an identical registry scope:<a href="#section-2.3.1-4" class="pilcrow">¶</a></p>
+<span id="name-invalid-object-fragment-inc"></span><div id="fig-invalid-same-key">
 <figure id="figure-3">
             <div class="lang-rpsl sourcecode" id="section-2.3.1-5.1">
 <pre>
 members: AS-EXAMPLE
-src-members: ARIN::AS-EXAMPLE
+src-members: RIPE::AS-EXAMPLE
 excl-members: RIPE::AS-EXAMPLE
 </pre>
 </div>
 <figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
-<a href="#name-invalid-object-fragment-usin" class="selfRef">Invalid object fragment using different registry scopes with the same RPSL primary key across attributes</a>
+<a href="#name-invalid-object-fragment-inc" class="selfRef">Invalid object fragment including and excluding the same scoped key</a>
             </figcaption></figure>
 </div>
-<p id="section-2.3.1-6">Here <code>src-members</code> takes precedence over <code>members</code>, so <code>ARIN::AS-EXAMPLE</code> would be included, yet the <code>excl-members</code> value <code>RIPE::AS-EXAMPLE</code> would not match it.<a href="#section-2.3.1-6" class="pilcrow">¶</a></p>
+<p id="section-2.3.1-6">This object would include a member and immediately exclude it again, which is meaningless and likely a mistake. The same key with different registry scopes is permitted, e.g. <code>src-members: RIPE::AS-EXAMPLE</code> with <code>excl-members: ARIN::AS-EXAMPLE</code>.<a href="#section-2.3.1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="no-membership-scope-or-existence-requirement">
@@ -1710,13 +1710,13 @@ source: RIPE
 <pre>
 route-set: RS-EXAMPLE-A1
 members: 192.0.2.0/25, RS-EXAMPLE-B1
+excl-members: RIPE::RS-EXAMPLE-C2
 source: ARIN
 
 route-set: RS-EXAMPLE-B1
 mp-members: 2001:db8::/33
 mp-members: RS-EXAMPLE-C1, RS-EXAMPLE-C2
 src-members: RIPE::RS-EXAMPLE-C2
-excl-members: RIPE::RS-EXAMPLE-C2
 source: RIPE
 
 route-set: RS-EXAMPLE-C1
@@ -1732,10 +1732,10 @@ source: RIPE
 <a href="#name-an-example-route-set-hierar" class="selfRef">An example route-set hierarchy</a>
           </figcaption></figure>
 </div>
-<p id="section-3.2-5">The members of AS-EXAMPLE-A1, accounting for <code>excl-members</code>, are 192.0.2.0/25, 192.0.2.128/25 and 2001:db8::/33.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
+<p id="section-3.2-5">The members of RS-EXAMPLE-A1, accounting for <code>excl-members</code>, are 192.0.2.0/25, 192.0.2.128/25 and 2001:db8::/33.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.2-6.1">
-            <p id="section-3.2-6.1.1">2001:db8:8000::/33 is not included, because RS-EXAMPLE-B1 scopes its own reference with <code>src-members: RIPE::RS-EXAMPLE-C2</code> and excludes exactly that scoped key.<a href="#section-3.2-6.1.1" class="pilcrow">¶</a></p>
+            <p id="section-3.2-6.1.1">2001:db8:8000::/33 is not included. RS-EXAMPLE-B1 scopes its reference with <code>src-members: RIPE::RS-EXAMPLE-C2</code>, which matches the <code>excl-members</code> entry on RS-EXAMPLE-A1 exactly, with both registry scopes present.<a href="#section-3.2-6.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.2-6.2">
             <p id="section-3.2-6.2.1">RS-EXAMPLE-C1 references RS-EXAMPLE-C2 as well, without a scope. That reference is compared against the <code>excl-members</code> entry with the registry scope removed, so it matches and is excluded too.<a href="#section-3.2-6.2.1" class="pilcrow">¶</a></p>
