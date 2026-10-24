@@ -304,6 +304,15 @@ AS-EXAMPLE-A1 resolves to AS64503 and AS64504. AS-EXAMPLE-C2 is still reached th
 
 Implementations MUST NOT apply an exclusion to objects other than the object that contains it and those reached through it. If they did, the owner of an included set could add keys to its own `excl-members` and remove members from unrelated parts of the hierarchy.
 
+## Disabling Exclusions in Queries
+
+IRR software MAY provide a query option to disable the
+processing of `excl-members`. With that option, sets are resolved
+without applying any exclusions, as software without
+support for `excl-members` would.
+This option helps users to compare results with those from software that does
+not support `excl-members`, and debug unexpected resolving results.
+
 # IANA Considerations {#IANA}
 
 This memo includes no request to IANA.
