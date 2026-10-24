@@ -1,11 +1,11 @@
 name: Render draft
 
-# Render the XML and HTML versions of the draft from the Markdown source, and
-# commit them to the PR branch if they are out of date.
+# Render the XML and HTML versions of the draft from the Markdown source when
+# changes are merged into main, and commit them to main if they are out of date.
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
     paths:
       - "draft/**"
       - "docker/Dockerfile"
@@ -14,8 +14,10 @@ on:
 permissions:
   contents: write
 
+# A newer merge supersedes an in-progress render, since it renders the latest
+# Markdown source anyway.
 concurrency:
-  group: render-${{ github.event.pull_request.number }}
+  group: render-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -25,13 +27,8 @@ jobs:
   render:
     runs-on: ubuntu-latest
     steps:
-      # Check out the PR branch itself (not the default merge commit) so that
-      # rendered files can be pushed back to it.
-      - name: Check out PR branch
+      - name: Check out main
         uses: actions/checkout@v7
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Build render image
         run: docker build -t rfc-render docker/
@@ -53,34 +50,15 @@ jobs:
             echo "Rendered files are up to date"
           fi
 
+      # Pushes made with the workflow token do not trigger workflow runs, so
+      # this commit does not re-run this workflow. Rebase first in case main
+      # has moved on (e.g. a merge outside the paths above) since checkout.
       - name: Commit rendered files
-        if: >-
-          steps.diff.outputs.changed == 'true' &&
-          github.event.pull_request.head.repo.full_name == github.repository
+        if: steps.diff.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
           git add "draft/$DRAFT.xml" "draft/$DRAFT.html"
           git commit -m "Render XML and HTML from Markdown"
+          git pull --rebase
           git push
-
-      # The workflow token cannot push to branches in forks, so for PRs from a
-      # fork, publish the rendered files as an artifact and fail the check.
-      - name: Upload rendered files
-        if: >-
-          steps.diff.outputs.changed == 'true' &&
-          github.event.pull_request.head.repo.full_name != github.repository
-        uses: actions/upload-artifact@v7
-        with:
-          name: rendered-draft
-          path: |
-            draft/${{ env.DRAFT }}.xml
-            draft/${{ env.DRAFT }}.html
-
-      - name: Fail for out of date fork PR
-        if: >-
-          steps.diff.outputs.changed == 'true' &&
-          github.event.pull_request.head.repo.full_name != github.repository
-        run: |
-          echo "::error::The XML and HTML files are out of date. Download the rendered-draft artifact from this run, or render them locally with 'docker compose up', and commit them to this PR."
-          exit 1
