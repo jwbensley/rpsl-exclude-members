@@ -159,16 +159,16 @@ excl-members: RIPE::AS-EXAMPLE, ARIN::AS-EXAMPLE
 
 If this were allowed, the two entries would refer to two different sets, whereas `(mp-)members` can only hold one `AS-EXAMPLE`, leaving it ambiguous which set the exclusion refers to.
 
-IRR registry software MUST also reject an object where `excl-members` and `src-members` name the same key with different registry scopes:
+IRR registry software MUST also reject an object where `excl-members` and `src-members` contain an identical key with an identical registry scope:
 
 ~~~~ rpsl
 members: AS-EXAMPLE
-src-members: ARIN::AS-EXAMPLE
+src-members: RIPE::AS-EXAMPLE
 excl-members: RIPE::AS-EXAMPLE
 ~~~~
-{: #fig-invalid-scope-mismatch title='Invalid object fragment using different registry scopes with the same RPSL primary key across attributes'}
+{: #fig-invalid-same-key title='Invalid object fragment including and excluding the same scoped key'}
 
-Here `src-members` takes precedence over `members`, so `ARIN::AS-EXAMPLE` would be included, yet the `excl-members` value `RIPE::AS-EXAMPLE` would not match it.
+This object would include a member and immediately exclude it again, which is meaningless and likely a mistake. The same key with different registry scopes is permitted, e.g. `src-members: RIPE::AS-EXAMPLE` with `excl-members: ARIN::AS-EXAMPLE`.
 
 ### No Membership, Scope or Existence Requirement
 
@@ -240,13 +240,13 @@ Consider the route-sets in {{fig-route-set-unresolved}}:
 ~~~~ rpsl
 route-set: RS-EXAMPLE-A1
 members: 192.0.2.0/25, RS-EXAMPLE-B1
+excl-members: RIPE::RS-EXAMPLE-C2
 source: ARIN
 
 route-set: RS-EXAMPLE-B1
 mp-members: 2001:db8::/33
 mp-members: RS-EXAMPLE-C1, RS-EXAMPLE-C2
 src-members: RIPE::RS-EXAMPLE-C2
-excl-members: RIPE::RS-EXAMPLE-C2
 source: RIPE
 
 route-set: RS-EXAMPLE-C1
@@ -259,9 +259,9 @@ source: RIPE
 ~~~~
 {: #fig-route-set-unresolved title='An example route-set hierarchy'}
 
-The members of AS-EXAMPLE-A1, accounting for `excl-members`, are 192.0.2.0/25, 192.0.2.128/25 and 2001:db8::/33.
+The members of RS-EXAMPLE-A1, accounting for `excl-members`, are 192.0.2.0/25, 192.0.2.128/25 and 2001:db8::/33.
 
-* 2001:db8:8000::/33 is not included, because RS-EXAMPLE-B1 scopes its own reference with `src-members: RIPE::RS-EXAMPLE-C2` and excludes exactly that scoped key.
+* 2001:db8:8000::/33 is not included. RS-EXAMPLE-B1 scopes its reference with `src-members: RIPE::RS-EXAMPLE-C2`, which matches the `excl-members` entry on RS-EXAMPLE-A1 exactly, with both registry scopes present.
 * RS-EXAMPLE-C1 references RS-EXAMPLE-C2 as well, without a scope. That reference is compared against the `excl-members` entry with the registry scope removed, so it matches and is excluded too.
 
 ## Multiple Paths to a Set
