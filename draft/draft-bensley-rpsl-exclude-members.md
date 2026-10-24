@@ -327,4 +327,10 @@ A set owner cannot verify through the IRR that an exclusion has taken effect for
 
 Resolving a set with exclusions costs more than resolving one without. An implementation has to track what is excluded separately for each part of the hierarchy. Combined with circular references, which resolvers must already detect, this can be used to consume resources. Implementations are RECOMMENDED to limit the depth or size of a resolution.
 
+# Acknowledgments
+
+The authors would like to thank Jeffrey Haas, Nick Hilliard and
+Job Snijders for their helpful suggestions and review of this
+document.
+
 --- back
