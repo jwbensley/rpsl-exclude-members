@@ -150,14 +150,14 @@ When an authoritative IRR registry processes the creation or update of an as-set
 
 ### Registry Scopes and Duplicate Keys
 
-Every reference to an as-set or route-set in `excl-members` MUST contain a registry scope. AS numbers are globally unique and are written without one. IRR registry software MUST reject an `excl-members` attribute containing two keys that are identical once their registry scopes are removed:
+Every reference to an as-set or route-set in `excl-members` MUST contain a registry scope. AS numbers are globally unique and are written without one. An `excl-members` attribute MAY contain multiple keys that are identical with their registry scopes removed:
 
 ~~~~ rpsl
 excl-members: RIPE::AS-EXAMPLE, ARIN::AS-EXAMPLE
 ~~~~
-{: #fig-invalid-duplicate-keys title='Invalid object fragment using multiple registry scopes with the same RPSL primary key'}
+{: #fig-scoped-duplicate-keys title='Valid object fragment using multiple registry scopes with the same RPSL primary key'}
 
-If this were allowed, the two entries would refer to two different sets, whereas `(mp-)members` can only hold one `AS-EXAMPLE`, leaving it ambiguous which set the exclusion refers to.
+Each exclusion applies only to the named registry. Resolvers compare an `excl-members` key against the registry and primary key of the object a reference resolves to, as described in {{resolver}}.
 
 IRR registry software MUST also reject an object where `excl-members` and `src-members` contain an identical key with an identical registry scope:
 
@@ -178,7 +178,7 @@ IRR registry software also MUST NOT require the registry scope on an `excl-membe
 
 An `excl-members` entry may name an object that a resolver cannot retrieve, because no such object exists or because that registry is not among those it has data for. Exclusions are matched against during resolution, not during creation of the object.
 
-# Resolver Behaviour
+# Resolver Behaviour {#resolver}
 
 The `excl-members` value applies to everything reached through the set that contains it, down the tree. That means a set is resolved under its own exclusions and those of every object on the way to it, from the viewpoint of the set requested by the consumer. A member named by any of the exclusions MUST be ignored by the resolver.
 
@@ -188,13 +188,15 @@ A member that joined a set through `mbrs-by-ref` and `member-of` MUST be treated
 
 The result of resolving a set MUST NOT depend on the order in which an implementation follows references.
 
-An `excl-members` key that names an as-set or route-set contains a registry scope.
+When considering if an as-set or route-set is excluded, a resolver compares the registry and primary key:
 
-1. A key that contains no registry scope, in `members` or `mp-members`, MUST be compared against the `excl-members` key with that key's scope removed.
-1. A registry-scoped key in `src-members` ({{I-D.ietf-grow-rpsl-registry-scoped-members}}) MUST match a registry-scoped `excl-members` key exactly, with neither scope removed.
-1. Where `src-members` and `members` or `mp-members` on the same object define the same key, once the scope is stripped from the `src-members` entry, the `src-members` key MUST be compared against `excl-members` with both scopes present, and takes precedence over the `members` or `mp-members` entry.
+1. A registry-scoped key in `src-members` ({{I-D.ietf-grow-rpsl-registry-scoped-members}}) MUST match a registry-scoped `excl-members` key exactly.
+1. An `(mp-)members` entry has no registry scope. To match it, a resolver MUST follow its established source preference to determine from which source it would include it, and then compare that to the exclusions.
+1. Where `src-members` and `(mp-)members` on the same object list the same primary key, only the `src-members` entry is included, as required by {{I-D.ietf-grow-rpsl-registry-scoped-members}}, and only it is compared against `excl-members`.
 
-Where a reference names a set without a registry scope and an exclusion matches it, that reference MUST NOT be followed. The resolver MUST NOT instead resolve that reference in another registry. Doing so could contribute members that would otherwise not have been included.
+When a reference matches an exclusion, it MUST NOT be followed. The resolver MUST NOT instead attempt to resolve that reference in another registry.
+
+A set that exists under the same primary key in several registries is therefore only excluded for the registries that `excl-members` explicitly lists. An exclusion of `IRR-A::AS-EXAMPLE` has no effect on a reference that, under the resolver's source order, resolves to `AS-EXAMPLE` in IRR-B.
 
 ## Exclusions on an as-set
 
@@ -262,7 +264,7 @@ source: RIPE
 The members of RS-EXAMPLE-A1, accounting for `excl-members`, are 192.0.2.0/25, 192.0.2.128/25 and 2001:db8::/33.
 
 * 2001:db8:8000::/33 is not included. RS-EXAMPLE-B1 scopes its reference with `src-members: RIPE::RS-EXAMPLE-C2`, which matches the `excl-members` entry on RS-EXAMPLE-A1 exactly, with both registry scopes present.
-* RS-EXAMPLE-C1 references RS-EXAMPLE-C2 as well, without a scope. That reference is compared against the `excl-members` entry with the registry scope removed, so it matches and is excluded too.
+* RS-EXAMPLE-C1 references RS-EXAMPLE-C2 as well, without a scope. That reference resolves to the RS-EXAMPLE-C2 object in RIPE, which matches the `excl-members` entry, so it is excluded too. Had the resolver preferred an RS-EXAMPLE-C2 in another registry, that reference would not have been excluded.
 
 ## Multiple Paths to a Set
 
