@@ -5,7 +5,7 @@ abbrev: Excluding objects from RPSL sets
 lang: en
 kw:
   - rpsl
-docname: draft-bensley-rpsl-exclude-members-00
+docname: draft-bensley-rpsl-exclude-members-01
 updates: 2622, 4012
 category: std
 ipr: trust200902
