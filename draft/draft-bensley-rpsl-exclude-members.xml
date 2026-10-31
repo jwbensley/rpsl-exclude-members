@@ -48,7 +48,7 @@
     <abstract>
 
 
-<?line 42?>
+<?line 43?>
 
 <t>This document updates RFC 2622 and RFC 4012 by defining the <spanx style="verb">excl-members</spanx> attribute on the as-set and route-set classes in the Routing Policy Specification Language (RPSL). A set that references another set includes everything the referenced set contains, however deeply nested. RPSL currently has no way for the set owner to make an exception. The <spanx style="verb">excl-members</spanx> attribute lets a set owner exclude specific members, including ones brought in by a referenced set.</t>
 
@@ -63,11 +63,11 @@
   <middle>
 
 
-<?line 46?>
+<?line 47?>
 
 <section anchor="introduction"><name>Introduction</name>
 
-<t>The Routing Policy Specification Language (RPSL) <xref target="RFC2622"/> defines the as-set and route-set classes, whose objects are held in the Internet Routing Registry (IRR). A set can reference direct members, such as an AS number or IP prefix, and it can reference other sets. Those sets can reference further sets, recursively. Server and client software resolve a set by following these references until it is reduced to a set of prefixes or AS numbers. The result is used mainly to build filters on routers.</t>
+<t>The Routing Policy Specification Language (RPSL) <xref target="RFC2622"/> defines the as-set and route-set classes, whose objects are held in the Internet Routing Registry (IRR). A set can reference direct members, such as an AS number or address prefix, and it can reference other sets. Those sets can reference further sets, recursively. Server and client software resolve a set by following these references until it is reduced to a set of prefixes or AS numbers. The result is used mainly to build filters on routers.</t>
 
 <section anchor="existing-methods-of-inclusion"><name>Existing Methods of Inclusion</name>
 
@@ -115,7 +115,7 @@ However, this does not affect other sets in the hierarchy.</t>
 </section>
 <section anchor="missing-exclusion-options"><name>Missing Exclusion Options</name>
 
-<t>None of the existing options gives a set owner a way to exclude an AS number, as-set or route-set that was included recursively through <spanx style="verb">(src/mp-)members</spanx>. An owner can only control the members the object lists directly.</t>
+<t>None of the existing options gives a set owner a way to exclude an AS number, address prefix, as-set or route-set that was included recursively through <spanx style="verb">(src/mp-)members</spanx>. An owner can only control the members the object lists directly.</t>
 
 <t>Consumers encounter problems such as:</t>
 
@@ -125,7 +125,7 @@ However, this does not affect other sets in the hierarchy.</t>
   <t>A member is added whose actions violate a law, a geo-political agreement, sanctions, or a peer or upstream's terms. Peers and upstreams of the including set's owner may now forward traffic for that member. If the including set belongs to a direct peer of the consumer, the two can discuss an alternative between themselves. If the member instead sits many levels down under a peer, that peer usually cannot help, having no relationship with the member itself, and the consumer is left with fragile manual workarounds. The same applies where a peer or upstream already serves the added member directly and a regulation forbids that peer or upstream from serving it via a third party.</t>
 </list></t>
 
-<t>The <spanx style="verb">excl-members</spanx> attribute lets a set owner name AS numbers, as-sets and route-sets to exclude when its own set is resolved, including ones an included set brings in. The included set itself is unchanged. Because the attribute is published with the object rather than chosen by the consumer, every resolver that implements this document applies the same exclusions.</t>
+<t>The <spanx style="verb">excl-members</spanx> attribute lets a set owner name AS numbers, address prefixes, as-sets and route-sets to exclude when its own set is resolved, including ones an included set brings in. The included set itself is unchanged. Because the attribute is published with the object rather than chosen by the consumer, every resolver that implements this document applies the same exclusions.</t>
 
 <t><spanx style="verb">excl-members</spanx> does not change how a route is validated against a Route Origin Authorization <xref target="RFC9582"/> or an Autonomous System Provider Authorization <xref target="I-D.ietf-sidrops-aspa-verification"/>, or how the roles defined in <xref target="RFC9234"/> apply.</t>
 
@@ -153,7 +153,7 @@ appear in all capitals, as shown here.</t>
 
 <section anchor="the-as-set-class"><name>The as-set Class</name>
 
-<t>On an as-set, <spanx style="verb">excl-members</spanx> uses almost the same syntax as <spanx style="verb">members</spanx> (<xref section="5.1" sectionFormat="of" target="RFC2622"/>): one or more AS numbers or as-set primary keys. The only difference is that an as-set key <bcp14>MUST</bcp14> be prefixed with a registry name and a double colon, for example <spanx style="verb">EXAMPLE::</spanx>. This removes the ambiguity of unscoped as-set primary keys, described in <xref target="I-D.ietf-grow-rpsl-registry-scoped-members"/>.</t>
+<t>On an as-set, <spanx style="verb">excl-members</spanx> uses almost the same syntax as <spanx style="verb">members</spanx> (<xref section="5.1" sectionFormat="of" target="RFC2622"/>): one or more AS numbers or as-set primary keys. The only difference is that an as-set key <bcp14>MUST</bcp14> be prefixed with a registry name and a double colon, for example <spanx style="verb">EXAMPLE::</spanx>. This removes the ambiguity of as-set primary keys without a registry scope, described in <xref target="I-D.ietf-grow-rpsl-registry-scoped-members"/>.</t>
 
 <dl newline="true">
   <dt>Attribute:</dt>
@@ -173,7 +173,7 @@ appear in all capitals, as shown here.</t>
 </section>
 <section anchor="the-route-set-class"><name>The route-set Class</name>
 
-<t>On a route-set, <spanx style="verb">excl-members</spanx> uses syntax similar to <spanx style="verb">members</spanx> (Sections <xref target="RFC2622" section="5.2" sectionFormat="bare"/> and <xref target="RFC2622" section="5.3" sectionFormat="bare"/> of <xref target="RFC2622"/>): one or more AS numbers, as-set primary keys, or route-set primary keys. Unlike <spanx style="verb">(mp-)members</spanx>, it does not accept address prefixes, with or without a range operator. Any as-set or route-set key <bcp14>MUST</bcp14> be prefixed with a registry name and a double colon, for example <spanx style="verb">EXAMPLE::</spanx>, for the same reason as on the as-set class.</t>
+<t>On a route-set, <spanx style="verb">excl-members</spanx> uses almost the same syntax as <spanx style="verb">mp-members</spanx> (<xref section="4.2" sectionFormat="of" target="RFC4012"/>, which extends Sections <xref target="RFC2622" section="5.2" sectionFormat="bare"/> and <xref target="RFC2622" section="5.3" sectionFormat="bare"/> of <xref target="RFC2622"/>): one or more IPv4 or IPv6 address prefixes, AS numbers, as-set primary keys, or route-set primary keys. An address prefix or route-set key may be followed by a range operator. An as-set or route-set key <bcp14>MUST</bcp14> be prefixed with a registry name and a double colon, for example <spanx style="verb">EXAMPLE::</spanx>, for the same reason as on the as-set class.</t>
 
 <dl newline="true">
   <dt>Attribute:</dt>
@@ -182,7 +182,7 @@ appear in all capitals, as shown here.</t>
   </dd>
   <dt>Value:</dt>
   <dd>
-    <t>list of ([<spanx style="verb">registry-name</spanx>]::[<spanx style="verb">route-set-name</spanx>] or [<spanx style="verb">registry-name</spanx>]::[<spanx style="verb">as-set-name</spanx>] or [<spanx style="verb">as-number</spanx>] or [<spanx style="verb">registry-name</spanx>]::[<spanx style="verb">route-set-name</spanx>][<spanx style="verb">range-operator</spanx>])</t>
+    <t>list of ([<spanx style="verb">ipv4-address-prefix-range</spanx>] or [<spanx style="verb">ipv6-address-prefix-range</spanx>] or [<spanx style="verb">registry-name</spanx>]::[<spanx style="verb">route-set-name</spanx>] or [<spanx style="verb">registry-name</spanx>]::[<spanx style="verb">as-set-name</spanx>] or [<spanx style="verb">as-number</spanx>] or [<spanx style="verb">registry-name</spanx>]::[<spanx style="verb">route-set-name</spanx>][<spanx style="verb">range-operator</spanx>])</t>
   </dd>
   <dt>Type:</dt>
   <dd>
@@ -233,7 +233,7 @@ excl-members: RIPE::AS-EXAMPLE
 
 <t>Because more than one set may reference the same object, the same object can be excluded on one path and still included through a different path, where that exclusion does not exist.</t>
 
-<t>A member that joined a set through <spanx style="verb">mbrs-by-ref</spanx> and <spanx style="verb">member-of</spanx> <bcp14>MUST</bcp14> be treated the same as one listed in <spanx style="verb">members</spanx> or <spanx style="verb">mp-members</spanx>. On an as-set an excluded AS number <bcp14>MUST NOT</bcp14> be included. On a route-set this has no effect, because <spanx style="verb">excl-members</spanx> cannot name a prefix.</t>
+<t>A member that joined a set through <spanx style="verb">mbrs-by-ref</spanx> and <spanx style="verb">member-of</spanx> <bcp14>MUST</bcp14> be treated the same as one listed in <spanx style="verb">members</spanx> or <spanx style="verb">mp-members</spanx>. On an as-set, an excluded AS number <bcp14>MUST NOT</bcp14> be included. On a route-set, the resolver <bcp14>MUST NOT</bcp14> include such a prefix if there is an <spanx style="verb">excl-members</spanx> entry that names that prefix without a range operator.</t>
 
 <t>The result of resolving a set <bcp14>MUST NOT</bcp14> depend on the order in which an implementation follows references.</t>
 
@@ -247,6 +247,13 @@ excl-members: RIPE::AS-EXAMPLE
 
 <t>Where a reference names a set without a registry scope and an exclusion matches it, that reference <bcp14>MUST NOT</bcp14> be followed. The resolver <bcp14>MUST NOT</bcp14> instead resolve that reference in another registry. Doing so could contribute members that would otherwise not have been included.</t>
 
+<section anchor="matching-address-prefixes-and-range-operators"><name>Matching Address Prefixes and Range Operators</name>
+
+<t>An <spanx style="verb">excl-members</spanx> entry containing address prefix, is compared with each member as written, including any range operator. The address <bcp14>MUST</bcp14> be compared after converting it to the text representation of <xref target="RFC5952"/>, so that <spanx style="verb">2001:DB8:0::/32</spanx> and <spanx style="verb">2001:db8::/32</spanx> are equal. The prefix length and the range operator <bcp14>MUST</bcp14> be compared as written. A resolver <bcp14>MUST NOT</bcp14> evaluate range operators when comparing. This means an <spanx style="verb">excl-members</spanx> entry <spanx style="verb">192.0.2.0/24^+</spanx> excludes a member <spanx style="verb">192.0.2.0/24^+</spanx>, but not <spanx style="verb">192.0.2.0/24</spanx>, <spanx style="verb">192.0.2.0/25</spanx> or <spanx style="verb">192.0.2.0/24^24-32</spanx>, even though some of these are an equivalent notation.</t>
+
+<t>A range operator on a route-set key in <spanx style="verb">excl-members</spanx> is compared in the same way. <spanx style="verb">RIPE::RS-EXAMPLE^+</spanx> excludes a <spanx style="verb">src-members</spanx> reference written as <spanx style="verb">RIPE::RS-EXAMPLE^+</spanx>, but not one written as <spanx style="verb">RIPE::RS-EXAMPLE</spanx>.</t>
+
+</section>
 <section anchor="exclusions-on-an-as-set"><name>Exclusions on an as-set</name>
 
 <t>When <spanx style="verb">excl-members</spanx> is populated on an as-set, a resolver <bcp14>MUST NOT</bcp14> follow a reference to any as-set that <spanx style="verb">excl-members</spanx> names, and <bcp14>MUST NOT</bcp14> include any AS number it names. The exclusion covers <spanx style="verb">members</spanx> and <spanx style="verb">src-members</spanx>, on the as-set that contains it and on every as-set reached through it.</t>
@@ -284,7 +291,7 @@ source: RIPE
 </section>
 <section anchor="exclusions-on-a-route-set"><name>Exclusions on a route-set</name>
 
-<t>When <spanx style="verb">excl-members</spanx> is populated on a route-set, a resolver <bcp14>MUST NOT</bcp14> follow a reference to any as-set or route-set that <spanx style="verb">excl-members</spanx> names. A route-set reaches sets of both classes, so the exclusion covers <spanx style="verb">(mp-)members</spanx> and <spanx style="verb">src-members</spanx> on the route-set that contains it and on every route-set reached through it, and <spanx style="verb">members</spanx> and <spanx style="verb">src-members</spanx> on every as-set reached through it.</t>
+<t>When <spanx style="verb">excl-members</spanx> is populated on a route-set, a resolver <bcp14>MUST NOT</bcp14> follow a reference to any as-set or route-set that <spanx style="verb">excl-members</spanx> names, and <bcp14>MUST NOT</bcp14> include any address prefix it names. The exclusion covers <spanx style="verb">(mp-)members</spanx> and <spanx style="verb">src-members</spanx> on the route-set that contains it and on every route-set reached through it, and <spanx style="verb">members</spanx> and <spanx style="verb">src-members</spanx> on every as-set reached through it.</t>
 
 <t>Per <xref section="5.3" sectionFormat="of" target="RFC2622"/>, a <spanx style="verb">(mp-)members</spanx> or <spanx style="verb">src-members</spanx> entry naming an AS number stands for the routes originated by that AS. Where <spanx style="verb">excl-members</spanx> lists that AS number, a resolver <bcp14>MUST NOT</bcp14> expand such an entry. The resolver does not re-examine the origin of prefixes reached by other references.</t>
 
@@ -293,7 +300,7 @@ source: RIPE
 <figure title="An example route-set hierarchy" anchor="fig-route-set-unresolved"><sourcecode type="rpsl"><![CDATA[
 route-set: RS-EXAMPLE-A1
 members: 192.0.2.0/25, RS-EXAMPLE-B1
-excl-members: RIPE::RS-EXAMPLE-C2
+excl-members: RIPE::RS-EXAMPLE-C2, 192.0.2.128/25
 source: ARIN
 
 route-set: RS-EXAMPLE-B1
@@ -311,11 +318,12 @@ mp-members: 2001:db8:8000::/33
 source: RIPE
 ]]></sourcecode></figure>
 
-<t>The members of RS-EXAMPLE-A1, accounting for <spanx style="verb">excl-members</spanx>, are 192.0.2.0/25, 192.0.2.128/25 and 2001:db8::/33.</t>
+<t>The members of RS-EXAMPLE-A1, accounting for <spanx style="verb">excl-members</spanx>, are 192.0.2.0/25 and 2001:db8::/33.</t>
 
 <t><list style="symbols">
   <t>2001:db8:8000::/33 is not included. RS-EXAMPLE-B1 scopes its reference with <spanx style="verb">src-members: RIPE::RS-EXAMPLE-C2</spanx>, which matches the <spanx style="verb">excl-members</spanx> entry on RS-EXAMPLE-A1 exactly, with both registry scopes present.</t>
   <t>RS-EXAMPLE-C1 references RS-EXAMPLE-C2 as well, without a scope. That reference is compared against the <spanx style="verb">excl-members</spanx> entry with the registry scope removed, so it matches and is excluded too.</t>
+  <t>192.0.2.128/25 is not included. RS-EXAMPLE-C1 lists it as a member, written exactly as the <spanx style="verb">excl-members</spanx> entry on RS-EXAMPLE-A1. Had RS-EXAMPLE-C1 written it as <spanx style="verb">192.0.2.128/25^+</spanx>, or covered it in a <spanx style="verb">192.0.2.0/24^+</spanx> entry, the exclusion would not have matched.</t>
 </list></t>
 
 </section>
@@ -441,6 +449,19 @@ document.</t>
   </front>
   <seriesInfo name="RFC" value="4012"/>
   <seriesInfo name="DOI" value="10.17487/RFC4012"/>
+</reference>
+<reference anchor="RFC5952">
+  <front>
+    <title>A Recommendation for IPv6 Address Text Representation</title>
+    <author fullname="S. Kawamura" initials="S." surname="Kawamura"/>
+    <author fullname="M. Kawashima" initials="M." surname="Kawashima"/>
+    <date month="August" year="2010"/>
+    <abstract>
+      <t>As IPv6 deployment increases, there will be a dramatic increase in the need to use IPv6 addresses in text. While the IPv6 address architecture in Section 2.2 of RFC 4291 describes a flexible model for text representation of an IPv6 address, this flexibility has been causing problems for operators, system engineers, and users. This document defines a canonical textual representation format. It does not define a format for internal storage, such as within an application or database. It is expected that the canonical format will be followed by humans and systems when representing IPv6 addresses as text, but all implementations must accept and be able to handle any legitimate RFC 4291 format. [STANDARDS-TRACK]</t>
+    </abstract>
+  </front>
+  <seriesInfo name="RFC" value="5952"/>
+  <seriesInfo name="DOI" value="10.17487/RFC5952"/>
 </reference>
 
 <reference anchor="I-D.ietf-grow-rpsl-registry-scoped-members">
@@ -612,155 +633,164 @@ document.</t>
   </back>
 
 <!-- ##markdown-source:
-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
+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
+YM+oVQAA
 
 -->
 

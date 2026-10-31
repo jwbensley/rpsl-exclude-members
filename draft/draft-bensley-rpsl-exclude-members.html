@@ -1365,16 +1365,19 @@ li > p:last-of-type:only-child {
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-resolver-behaviour" class="internal xref">Resolver Behaviour</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
-                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-exclusions-on-an-as-set" class="internal xref">Exclusions on an as-set</a></p>
+                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-matching-address-prefixes-a" class="internal xref">Matching Address Prefixes and Range Operators</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
-                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-exclusions-on-a-route-set" class="internal xref">Exclusions on a route-set</a></p>
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-exclusions-on-an-as-set" class="internal xref">Exclusions on an as-set</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
-                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-multiple-paths-to-a-set" class="internal xref">Multiple Paths to a Set</a></p>
+                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-exclusions-on-a-route-set" class="internal xref">Exclusions on a route-set</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4">
-                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-disabling-exclusions-in-que" class="internal xref">Disabling Exclusions in Queries</a></p>
+                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-multiple-paths-to-a-set" class="internal xref">Multiple Paths to a Set</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5">
+                <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="auto internal xref">3.5</a>.  <a href="#name-disabling-exclusions-in-que" class="internal xref">Disabling Exclusions in Queries</a></p>
 </li>
             </ul>
 </li>
@@ -1410,7 +1413,7 @@ li > p:last-of-type:only-child {
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">The Routing Policy Specification Language (RPSL) <span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> defines the as-set and route-set classes, whose objects are held in the Internet Routing Registry (IRR). A set can reference direct members, such as an AS number or IP prefix, and it can reference other sets. Those sets can reference further sets, recursively. Server and client software resolve a set by following these references until it is reduced to a set of prefixes or AS numbers. The result is used mainly to build filters on routers.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-1">The Routing Policy Specification Language (RPSL) <span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> defines the as-set and route-set classes, whose objects are held in the Internet Routing Registry (IRR). A set can reference direct members, such as an AS number or address prefix, and it can reference other sets. Those sets can reference further sets, recursively. Server and client software resolve a set by following these references until it is reduced to a set of prefixes or AS numbers. The result is used mainly to build filters on routers.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <div id="existing-methods-of-inclusion">
 <section id="section-1.1">
         <h3 id="name-existing-methods-of-inclusi">
@@ -1477,7 +1480,7 @@ However, this does not affect other sets in the hierarchy.<a href="#section-1.3-
         <h3 id="name-missing-exclusion-options">
 <a href="#section-1.4" class="section-number selfRef">1.4. </a><a href="#name-missing-exclusion-options" class="section-name selfRef">Missing Exclusion Options</a>
         </h3>
-<p id="section-1.4-1">None of the existing options gives a set owner a way to exclude an AS number, as-set or route-set that was included recursively through <code>(src/mp-)members</code>. An owner can only control the members the object lists directly.<a href="#section-1.4-1" class="pilcrow">¶</a></p>
+<p id="section-1.4-1">None of the existing options gives a set owner a way to exclude an AS number, address prefix, as-set or route-set that was included recursively through <code>(src/mp-)members</code>. An owner can only control the members the object lists directly.<a href="#section-1.4-1" class="pilcrow">¶</a></p>
 <p id="section-1.4-2">Consumers encounter problems such as:<a href="#section-1.4-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-1.4-3">
 <li id="section-1.4-3.1">
@@ -1490,7 +1493,7 @@ However, this does not affect other sets in the hierarchy.<a href="#section-1.3-
             <p id="section-1.4-3.3.1">A member is added whose actions violate a law, a geo-political agreement, sanctions, or a peer or upstream's terms. Peers and upstreams of the including set's owner may now forward traffic for that member. If the including set belongs to a direct peer of the consumer, the two can discuss an alternative between themselves. If the member instead sits many levels down under a peer, that peer usually cannot help, having no relationship with the member itself, and the consumer is left with fragile manual workarounds. The same applies where a peer or upstream already serves the added member directly and a regulation forbids that peer or upstream from serving it via a third party.<a href="#section-1.4-3.3.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<p id="section-1.4-4">The <code>excl-members</code> attribute lets a set owner name AS numbers, as-sets and route-sets to exclude when its own set is resolved, including ones an included set brings in. The included set itself is unchanged. Because the attribute is published with the object rather than chosen by the consumer, every resolver that implements this document applies the same exclusions.<a href="#section-1.4-4" class="pilcrow">¶</a></p>
+<p id="section-1.4-4">The <code>excl-members</code> attribute lets a set owner name AS numbers, address prefixes, as-sets and route-sets to exclude when its own set is resolved, including ones an included set brings in. The included set itself is unchanged. Because the attribute is published with the object rather than chosen by the consumer, every resolver that implements this document applies the same exclusions.<a href="#section-1.4-4" class="pilcrow">¶</a></p>
 <p id="section-1.4-5"><code>excl-members</code> does not change how a route is validated against a Route Origin Authorization <span>[<a href="#RFC9582" class="cite xref">RFC9582</a>]</span> or an Autonomous System Provider Authorization <span>[<a href="#I-D.ietf-sidrops-aspa-verification" class="cite xref">I-D.ietf-sidrops-aspa-verification</a>]</span>, or how the roles defined in <span>[<a href="#RFC9234" class="cite xref">RFC9234</a>]</span> apply.<a href="#section-1.4-5" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1526,7 +1529,7 @@ appear in all capitals, as shown here.<a href="#section-1.5-1" class="pilcrow">�
         <h3 id="name-the-as-set-class">
 <a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-the-as-set-class" class="section-name selfRef">The as-set Class</a>
         </h3>
-<p id="section-2.1-1">On an as-set, <code>excl-members</code> uses almost the same syntax as <code>members</code> (<span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.1" class="relref">Section 5.1</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span>): one or more AS numbers or as-set primary keys. The only difference is that an as-set key <span class="bcp14">MUST</span> be prefixed with a registry name and a double colon, for example <code>EXAMPLE::</code>. This removes the ambiguity of unscoped as-set primary keys, described in <span>[<a href="#I-D.ietf-grow-rpsl-registry-scoped-members" class="cite xref">I-D.ietf-grow-rpsl-registry-scoped-members</a>]</span>.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.1-1">On an as-set, <code>excl-members</code> uses almost the same syntax as <code>members</code> (<span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.1" class="relref">Section 5.1</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span>): one or more AS numbers or as-set primary keys. The only difference is that an as-set key <span class="bcp14">MUST</span> be prefixed with a registry name and a double colon, for example <code>EXAMPLE::</code>. This removes the ambiguity of as-set primary keys without a registry scope, described in <span>[<a href="#I-D.ietf-grow-rpsl-registry-scoped-members" class="cite xref">I-D.ietf-grow-rpsl-registry-scoped-members</a>]</span>.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlNewline" id="section-2.1-2">
           <dt id="section-2.1-2.1">Attribute:</dt>
           <dd style="margin-left: 1.5em" id="section-2.1-2.2">
@@ -1551,7 +1554,7 @@ appear in all capitals, as shown here.<a href="#section-1.5-1" class="pilcrow">�
         <h3 id="name-the-route-set-class">
 <a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-the-route-set-class" class="section-name selfRef">The route-set Class</a>
         </h3>
-<p id="section-2.2-1">On a route-set, <code>excl-members</code> uses syntax similar to <code>members</code> (Sections <a href="https://rfc-editor.org/rfc/rfc2622#section-5.2" class="relref">5.2</a> and <a href="https://rfc-editor.org/rfc/rfc2622#section-5.3" class="relref">5.3</a> of <span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span>): one or more AS numbers, as-set primary keys, or route-set primary keys. Unlike <code>(mp-)members</code>, it does not accept address prefixes, with or without a range operator. Any as-set or route-set key <span class="bcp14">MUST</span> be prefixed with a registry name and a double colon, for example <code>EXAMPLE::</code>, for the same reason as on the as-set class.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.2-1">On a route-set, <code>excl-members</code> uses almost the same syntax as <code>mp-members</code> (<span><a href="https://rfc-editor.org/rfc/rfc4012#section-4.2" class="relref">Section 4.2</a> of [<a href="#RFC4012" class="cite xref">RFC4012</a>]</span>, which extends Sections <a href="https://rfc-editor.org/rfc/rfc2622#section-5.2" class="relref">5.2</a> and <a href="https://rfc-editor.org/rfc/rfc2622#section-5.3" class="relref">5.3</a> of <span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span>): one or more IPv4 or IPv6 address prefixes, AS numbers, as-set primary keys, or route-set primary keys. An address prefix or route-set key may be followed by a range operator. An as-set or route-set key <span class="bcp14">MUST</span> be prefixed with a registry name and a double colon, for example <code>EXAMPLE::</code>, for the same reason as on the as-set class.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlNewline" id="section-2.2-2">
           <dt id="section-2.2-2.1">Attribute:</dt>
           <dd style="margin-left: 1.5em" id="section-2.2-2.2">
@@ -1560,7 +1563,7 @@ appear in all capitals, as shown here.<a href="#section-1.5-1" class="pilcrow">�
           <dd class="break"></dd>
 <dt id="section-2.2-2.3">Value:</dt>
           <dd style="margin-left: 1.5em" id="section-2.2-2.4">
-            <p id="section-2.2-2.4.1">list of ([<code>registry-name</code>]::[<code>route-set-name</code>] or [<code>registry-name</code>]::[<code>as-set-name</code>] or [<code>as-number</code>] or [<code>registry-name</code>]::[<code>route-set-name</code>][<code>range-operator</code>])<a href="#section-2.2-2.4.1" class="pilcrow">¶</a></p>
+            <p id="section-2.2-2.4.1">list of ([<code>ipv4-address-prefix-range</code>] or [<code>ipv6-address-prefix-range</code>] or [<code>registry-name</code>]::[<code>route-set-name</code>] or [<code>registry-name</code>]::[<code>as-set-name</code>] or [<code>as-number</code>] or [<code>registry-name</code>]::[<code>route-set-name</code>][<code>range-operator</code>])<a href="#section-2.2-2.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-2.2-2.5">Type:</dt>
@@ -1633,7 +1636,7 @@ excl-members: RIPE::AS-EXAMPLE
       </h2>
 <p id="section-3-1">The <code>excl-members</code> value applies to everything reached through the set that contains it, down the tree. That means a set is resolved under its own exclusions and those of every object on the way to it, from the viewpoint of the set requested by the consumer. A member named by any of the exclusions <span class="bcp14">MUST</span> be ignored by the resolver.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <p id="section-3-2">Because more than one set may reference the same object, the same object can be excluded on one path and still included through a different path, where that exclusion does not exist.<a href="#section-3-2" class="pilcrow">¶</a></p>
-<p id="section-3-3">A member that joined a set through <code>mbrs-by-ref</code> and <code>member-of</code> <span class="bcp14">MUST</span> be treated the same as one listed in <code>members</code> or <code>mp-members</code>. On an as-set an excluded AS number <span class="bcp14">MUST NOT</span> be included. On a route-set this has no effect, because <code>excl-members</code> cannot name a prefix.<a href="#section-3-3" class="pilcrow">¶</a></p>
+<p id="section-3-3">A member that joined a set through <code>mbrs-by-ref</code> and <code>member-of</code> <span class="bcp14">MUST</span> be treated the same as one listed in <code>members</code> or <code>mp-members</code>. On an as-set, an excluded AS number <span class="bcp14">MUST NOT</span> be included. On a route-set, the resolver <span class="bcp14">MUST NOT</span> include such a prefix if there is an <code>excl-members</code> entry that names that prefix without a range operator.<a href="#section-3-3" class="pilcrow">¶</a></p>
 <p id="section-3-4">The result of resolving a set <span class="bcp14">MUST NOT</span> depend on the order in which an implementation follows references.<a href="#section-3-4" class="pilcrow">¶</a></p>
 <p id="section-3-5">An <code>excl-members</code> key that names an as-set or route-set contains a registry scope.<a href="#section-3-5" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-3-6">
@@ -1648,16 +1651,25 @@ excl-members: RIPE::AS-EXAMPLE
 </li>
       </ol>
 <p id="section-3-7">Where a reference names a set without a registry scope and an exclusion matches it, that reference <span class="bcp14">MUST NOT</span> be followed. The resolver <span class="bcp14">MUST NOT</span> instead resolve that reference in another registry. Doing so could contribute members that would otherwise not have been included.<a href="#section-3-7" class="pilcrow">¶</a></p>
-<div id="exclusions-on-an-as-set">
+<div id="matching-address-prefixes-and-range-operators">
 <section id="section-3.1">
-        <h3 id="name-exclusions-on-an-as-set">
-<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-exclusions-on-an-as-set" class="section-name selfRef">Exclusions on an as-set</a>
+        <h3 id="name-matching-address-prefixes-a">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-matching-address-prefixes-a" class="section-name selfRef">Matching Address Prefixes and Range Operators</a>
         </h3>
-<p id="section-3.1-1">When <code>excl-members</code> is populated on an as-set, a resolver <span class="bcp14">MUST NOT</span> follow a reference to any as-set that <code>excl-members</code> names, and <span class="bcp14">MUST NOT</span> include any AS number it names. The exclusion covers <code>members</code> and <code>src-members</code>, on the as-set that contains it and on every as-set reached through it.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
-<p id="section-3.1-2">Consider the as-sets in <a href="#fig-as-set-unresolved" class="auto internal xref">Figure 4</a>:<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+<p id="section-3.1-1">An <code>excl-members</code> entry containing address prefix, is compared with each member as written, including any range operator. The address <span class="bcp14">MUST</span> be compared after converting it to the text representation of <span>[<a href="#RFC5952" class="cite xref">RFC5952</a>]</span>, so that <code>2001:DB8:0::/32</code> and <code>2001:db8::/32</code> are equal. The prefix length and the range operator <span class="bcp14">MUST</span> be compared as written. A resolver <span class="bcp14">MUST NOT</span> evaluate range operators when comparing. This means an <code>excl-members</code> entry <code>192.0.2.0/24^+</code> excludes a member <code>192.0.2.0/24^+</code>, but not <code>192.0.2.0/24</code>, <code>192.0.2.0/25</code> or <code>192.0.2.0/24^24-32</code>, even though some of these are an equivalent notation.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-2">A range operator on a route-set key in <code>excl-members</code> is compared in the same way. <code>RIPE::RS-EXAMPLE^+</code> excludes a <code>src-members</code> reference written as <code>RIPE::RS-EXAMPLE^+</code>, but not one written as <code>RIPE::RS-EXAMPLE</code>.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="exclusions-on-an-as-set">
+<section id="section-3.2">
+        <h3 id="name-exclusions-on-an-as-set">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-exclusions-on-an-as-set" class="section-name selfRef">Exclusions on an as-set</a>
+        </h3>
+<p id="section-3.2-1">When <code>excl-members</code> is populated on an as-set, a resolver <span class="bcp14">MUST NOT</span> follow a reference to any as-set that <code>excl-members</code> names, and <span class="bcp14">MUST NOT</span> include any AS number it names. The exclusion covers <code>members</code> and <code>src-members</code>, on the as-set that contains it and on every as-set reached through it.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">Consider the as-sets in <a href="#fig-as-set-unresolved" class="auto internal xref">Figure 4</a>:<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 <span id="name-an-example-as-set-hierarchy"></span><div id="fig-as-set-unresolved">
 <figure id="figure-4">
-          <div class="lang-rpsl sourcecode" id="section-3.1-3.1">
+          <div class="lang-rpsl sourcecode" id="section-3.2-3.1">
 <pre>
 as-set: AS-EXAMPLE-A1
 members: AS-EXAMPLE-B1, AS64500
@@ -1682,35 +1694,35 @@ source: RIPE
 <a href="#name-an-example-as-set-hierarchy" class="selfRef">An example as-set hierarchy</a>
           </figcaption></figure>
 </div>
-<p id="section-3.1-4">The members of AS-EXAMPLE-A1, accounting for <code>excl-members</code>, are AS64500 and AS64502.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.2-4">The members of AS-EXAMPLE-A1, accounting for <code>excl-members</code>, are AS64500 and AS64502.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.1-5.1">
-            <p id="section-3.1-5.1.1">AS64501 is not included, because it is listed in both <code>members</code> and <code>excl-members</code> on AS-EXAMPLE-B1. An exclusion also takes effect on the same object.<a href="#section-3.1-5.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.2-5.1">
+            <p id="section-3.2-5.1.1">AS64501 is not included, because it is listed in both <code>members</code> and <code>excl-members</code> on AS-EXAMPLE-B1. An exclusion also takes effect on the same object.<a href="#section-3.2-5.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-3.1-5.2">
-            <p id="section-3.1-5.2.1">AS64504 is not included either, even though it is a member of AS-EXAMPLE-C1, one level below the object that excludes it. The exclusion applies to everything reached through AS-EXAMPLE-B1.<a href="#section-3.1-5.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.2-5.2">
+            <p id="section-3.2-5.2.1">AS64504 is not included either, even though it is a member of AS-EXAMPLE-C1, one level below the object that excludes it. The exclusion applies to everything reached through AS-EXAMPLE-B1.<a href="#section-3.2-5.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-3.1-5.3">
-            <p id="section-3.1-5.3.1">AS64503 is the only member of AS-EXAMPLE-D1, and is not included. AS-EXAMPLE-C1 references that set in <code>src-members</code> as <code>RIPE::AS-EXAMPLE-D1</code>, which matches the <code>excl-members</code> entry on AS-EXAMPLE-B1 exactly, with both registry scopes present.<a href="#section-3.1-5.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.2-5.3">
+            <p id="section-3.2-5.3.1">AS64503 is the only member of AS-EXAMPLE-D1, and is not included. AS-EXAMPLE-C1 references that set in <code>src-members</code> as <code>RIPE::AS-EXAMPLE-D1</code>, which matches the <code>excl-members</code> entry on AS-EXAMPLE-B1 exactly, with both registry scopes present.<a href="#section-3.2-5.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="exclusions-on-a-route-set">
-<section id="section-3.2">
+<section id="section-3.3">
         <h3 id="name-exclusions-on-a-route-set">
-<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-exclusions-on-a-route-set" class="section-name selfRef">Exclusions on a route-set</a>
+<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-exclusions-on-a-route-set" class="section-name selfRef">Exclusions on a route-set</a>
         </h3>
-<p id="section-3.2-1">When <code>excl-members</code> is populated on a route-set, a resolver <span class="bcp14">MUST NOT</span> follow a reference to any as-set or route-set that <code>excl-members</code> names. A route-set reaches sets of both classes, so the exclusion covers <code>(mp-)members</code> and <code>src-members</code> on the route-set that contains it and on every route-set reached through it, and <code>members</code> and <code>src-members</code> on every as-set reached through it.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.2-2">Per <span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.3" class="relref">Section 5.3</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span>, a <code>(mp-)members</code> or <code>src-members</code> entry naming an AS number stands for the routes originated by that AS. Where <code>excl-members</code> lists that AS number, a resolver <span class="bcp14">MUST NOT</span> expand such an entry. The resolver does not re-examine the origin of prefixes reached by other references.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
-<p id="section-3.2-3">Consider the route-sets in <a href="#fig-route-set-unresolved" class="auto internal xref">Figure 5</a>:<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.3-1">When <code>excl-members</code> is populated on a route-set, a resolver <span class="bcp14">MUST NOT</span> follow a reference to any as-set or route-set that <code>excl-members</code> names, and <span class="bcp14">MUST NOT</span> include any address prefix it names. The exclusion covers <code>(mp-)members</code> and <code>src-members</code> on the route-set that contains it and on every route-set reached through it, and <code>members</code> and <code>src-members</code> on every as-set reached through it.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3-2">Per <span><a href="https://rfc-editor.org/rfc/rfc2622#section-5.3" class="relref">Section 5.3</a> of [<a href="#RFC2622" class="cite xref">RFC2622</a>]</span>, a <code>(mp-)members</code> or <code>src-members</code> entry naming an AS number stands for the routes originated by that AS. Where <code>excl-members</code> lists that AS number, a resolver <span class="bcp14">MUST NOT</span> expand such an entry. The resolver does not re-examine the origin of prefixes reached by other references.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
+<p id="section-3.3-3">Consider the route-sets in <a href="#fig-route-set-unresolved" class="auto internal xref">Figure 5</a>:<a href="#section-3.3-3" class="pilcrow">¶</a></p>
 <span id="name-an-example-route-set-hierar"></span><div id="fig-route-set-unresolved">
 <figure id="figure-5">
-          <div class="lang-rpsl sourcecode" id="section-3.2-4.1">
+          <div class="lang-rpsl sourcecode" id="section-3.3-4.1">
 <pre>
 route-set: RS-EXAMPLE-A1
 members: 192.0.2.0/25, RS-EXAMPLE-B1
-excl-members: RIPE::RS-EXAMPLE-C2
+excl-members: RIPE::RS-EXAMPLE-C2, 192.0.2.128/25
 source: ARIN
 
 route-set: RS-EXAMPLE-B1
@@ -1732,27 +1744,30 @@ source: RIPE
 <a href="#name-an-example-route-set-hierar" class="selfRef">An example route-set hierarchy</a>
           </figcaption></figure>
 </div>
-<p id="section-3.2-5">The members of RS-EXAMPLE-A1, accounting for <code>excl-members</code>, are 192.0.2.0/25, 192.0.2.128/25 and 2001:db8::/33.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
+<p id="section-3.3-5">The members of RS-EXAMPLE-A1, accounting for <code>excl-members</code>, are 192.0.2.0/25 and 2001:db8::/33.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.2-6.1">
-            <p id="section-3.2-6.1.1">2001:db8:8000::/33 is not included. RS-EXAMPLE-B1 scopes its reference with <code>src-members: RIPE::RS-EXAMPLE-C2</code>, which matches the <code>excl-members</code> entry on RS-EXAMPLE-A1 exactly, with both registry scopes present.<a href="#section-3.2-6.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.3-6.1">
+            <p id="section-3.3-6.1.1">2001:db8:8000::/33 is not included. RS-EXAMPLE-B1 scopes its reference with <code>src-members: RIPE::RS-EXAMPLE-C2</code>, which matches the <code>excl-members</code> entry on RS-EXAMPLE-A1 exactly, with both registry scopes present.<a href="#section-3.3-6.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-3.2-6.2">
-            <p id="section-3.2-6.2.1">RS-EXAMPLE-C1 references RS-EXAMPLE-C2 as well, without a scope. That reference is compared against the <code>excl-members</code> entry with the registry scope removed, so it matches and is excluded too.<a href="#section-3.2-6.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.3-6.2">
+            <p id="section-3.3-6.2.1">RS-EXAMPLE-C1 references RS-EXAMPLE-C2 as well, without a scope. That reference is compared against the <code>excl-members</code> entry with the registry scope removed, so it matches and is excluded too.<a href="#section-3.3-6.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.3-6.3">
+            <p id="section-3.3-6.3.1">192.0.2.128/25 is not included. RS-EXAMPLE-C1 lists it as a member, written exactly as the <code>excl-members</code> entry on RS-EXAMPLE-A1. Had RS-EXAMPLE-C1 written it as <code>192.0.2.128/25^+</code>, or covered it in a <code>192.0.2.0/24^+</code> entry, the exclusion would not have matched.<a href="#section-3.3-6.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="multiple-paths-to-a-set">
-<section id="section-3.3">
+<section id="section-3.4">
         <h3 id="name-multiple-paths-to-a-set">
-<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-multiple-paths-to-a-set" class="section-name selfRef">Multiple Paths to a Set</a>
+<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-multiple-paths-to-a-set" class="section-name selfRef">Multiple Paths to a Set</a>
         </h3>
-<p id="section-3.3-1">The exclusions of each object on the way accumulate as resolution descends. An implementation may therefore have to track several collections of exclusions at once, one for each path it is currently following, rather than a single one for the whole resolution.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
-<p id="section-3.3-2">Consider the as-sets in <a href="#fig-scope-unresolved" class="auto internal xref">Figure 6</a>, in which AS-EXAMPLE-C2 can be reached both through AS-EXAMPLE-B1 and through AS-EXAMPLE-B2:<a href="#section-3.3-2" class="pilcrow">¶</a></p>
+<p id="section-3.4-1">The exclusions of each object on the way accumulate as resolution descends. An implementation may therefore have to track several collections of exclusions at once, one for each path it is currently following, rather than a single one for the whole resolution.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.4-2">Consider the as-sets in <a href="#fig-scope-unresolved" class="auto internal xref">Figure 6</a>, in which AS-EXAMPLE-C2 can be reached both through AS-EXAMPLE-B1 and through AS-EXAMPLE-B2:<a href="#section-3.4-2" class="pilcrow">¶</a></p>
 <span id="name-an-as-set-hierarchy-in-whic"></span><div id="fig-scope-unresolved">
 <figure id="figure-6">
-          <div class="lang-rpsl sourcecode" id="section-3.3-3.1">
+          <div class="lang-rpsl sourcecode" id="section-3.4-3.1">
 <pre>
 as-set: AS-EXAMPLE-A1
 members: AS-EXAMPLE-B1, AS-EXAMPLE-B2
@@ -1781,30 +1796,30 @@ source: RIPE
 <a href="#name-an-as-set-hierarchy-in-whic" class="selfRef">An as-set hierarchy in which AS-EXAMPLE-C2 can be reached two ways</a>
           </figcaption></figure>
 </div>
-<p id="section-3.3-4">Resolving AS-EXAMPLE-A1 reaches AS-EXAMPLE-C2 in two ways:<a href="#section-3.3-4" class="pilcrow">¶</a></p>
+<p id="section-3.4-4">Resolving AS-EXAMPLE-A1 reaches AS-EXAMPLE-C2 in two ways:<a href="#section-3.4-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.3-5.1">
-            <p id="section-3.3-5.1.1">Through AS-EXAMPLE-B1 and then AS-EXAMPLE-C1. AS64505 is excluded by AS-EXAMPLE-A1, and AS-EXAMPLE-C2 by AS-EXAMPLE-B1, though AS-EXAMPLE-C2 is not a member of AS-EXAMPLE-B1 itself. This path contributes only AS64503.<a href="#section-3.3-5.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.4-5.1">
+            <p id="section-3.4-5.1.1">Through AS-EXAMPLE-B1 and then AS-EXAMPLE-C1. AS64505 is excluded by AS-EXAMPLE-A1, and AS-EXAMPLE-C2 by AS-EXAMPLE-B1, though AS-EXAMPLE-C2 is not a member of AS-EXAMPLE-B1 itself. This path contributes only AS64503.<a href="#section-3.4-5.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-3.3-5.2">
-            <p id="section-3.3-5.2.1">Through AS-EXAMPLE-B2. Only the exclusion of AS64505 applies here, so the reference to AS-EXAMPLE-C2 is followed. This path contributes AS64504.<a href="#section-3.3-5.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.4-5.2">
+            <p id="section-3.4-5.2.1">Through AS-EXAMPLE-B2. Only the exclusion of AS64505 applies here, so the reference to AS-EXAMPLE-C2 is followed. This path contributes AS64504.<a href="#section-3.4-5.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-3.3-6">AS-EXAMPLE-A1 resolves to AS64503 and AS64504. AS-EXAMPLE-C2 is still reached through AS-EXAMPLE-B2.<a href="#section-3.3-6" class="pilcrow">¶</a></p>
-<p id="section-3.3-7">Implementations <span class="bcp14">MUST NOT</span> apply an exclusion to objects other than the object that contains it and those reached through it. If they did, the owner of an included set could add keys to its own <code>excl-members</code> and remove members from unrelated parts of the hierarchy.<a href="#section-3.3-7" class="pilcrow">¶</a></p>
+<p id="section-3.4-6">AS-EXAMPLE-A1 resolves to AS64503 and AS64504. AS-EXAMPLE-C2 is still reached through AS-EXAMPLE-B2.<a href="#section-3.4-6" class="pilcrow">¶</a></p>
+<p id="section-3.4-7">Implementations <span class="bcp14">MUST NOT</span> apply an exclusion to objects other than the object that contains it and those reached through it. If they did, the owner of an included set could add keys to its own <code>excl-members</code> and remove members from unrelated parts of the hierarchy.<a href="#section-3.4-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="disabling-exclusions-in-queries">
-<section id="section-3.4">
+<section id="section-3.5">
         <h3 id="name-disabling-exclusions-in-que">
-<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-disabling-exclusions-in-que" class="section-name selfRef">Disabling Exclusions in Queries</a>
+<a href="#section-3.5" class="section-number selfRef">3.5. </a><a href="#name-disabling-exclusions-in-que" class="section-name selfRef">Disabling Exclusions in Queries</a>
         </h3>
-<p id="section-3.4-1">IRR software <span class="bcp14">MAY</span> provide a query option to disable the
+<p id="section-3.5-1">IRR software <span class="bcp14">MAY</span> provide a query option to disable the
 processing of <code>excl-members</code>. With that option, sets are resolved
 without applying any exclusions, as software without
 support for <code>excl-members</code> would.
 This option helps users to compare results with those from software that does
-not support <code>excl-members</code>, and debug unexpected resolving results.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+not support <code>excl-members</code>, and debug unexpected resolving results.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1856,6 +1871,10 @@ document.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <dt id="RFC4012">[RFC4012]</dt>
         <dd>
 <span class="refAuthor">Blunk, L.</span>, <span class="refAuthor">Damas, J.</span>, <span class="refAuthor">Parent, F.</span>, and <span class="refAuthor">A. Robachevsky</span>, <span class="refTitle">"Routing Policy Specification Language next generation (RPSLng)"</span>, <span class="seriesInfo">RFC 4012</span>, <span class="seriesInfo">DOI 10.17487/RFC4012</span>, <time datetime="2005-03" class="refDate">March 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc4012">https://www.rfc-editor.org/rfc/rfc4012</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5952">[RFC5952]</dt>
+        <dd>
+<span class="refAuthor">Kawamura, S.</span> and <span class="refAuthor">M. Kawashima</span>, <span class="refTitle">"A Recommendation for IPv6 Address Text Representation"</span>, <span class="seriesInfo">RFC 5952</span>, <span class="seriesInfo">DOI 10.17487/RFC5952</span>, <time datetime="2010-08" class="refDate">August 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5952">https://www.rfc-editor.org/rfc/rfc5952</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-grow-rpsl-registry-scoped-members">[I-D.ietf-grow-rpsl-registry-scoped-members]</dt>
         <dd>
