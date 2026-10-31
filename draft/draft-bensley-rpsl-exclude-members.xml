@@ -12,7 +12,7 @@
 ]>
 
 
-<rfc ipr="trust200902" docName="draft-bensley-rpsl-exclude-members-00" category="std" consensus="true" submissionType="IETF" xml:lang="en" updates="2622, 4012">
+<rfc ipr="trust200902" docName="draft-bensley-rpsl-exclude-members-01" category="std" consensus="true" submissionType="IETF" xml:lang="en" updates="2622, 4012">
   <front>
     <title abbrev="Excluding objects from RPSL sets">Explicitly excluding objects from RPSL sets</title>
 
@@ -637,7 +637,7 @@ H4sIAAAAAAAAA7U863bbxpn/8RSzzo/YXZCVZDnr8HTb0rJTK/VFlZy2OW13
 NSSG5MQgwGAA0ayP91n2WfbJ9rvMFYBkOXs25yShgLl8891vg8lkkplWVsV/
 yrKu1Ey0TaeyVrcl/H7xYVfqJfw+CPVhWXaFrtaiXvyklq0Rq6beisuLq1fC
 qNZkcrFo1A3O+czAUlbrmVBV9n4/y4SYiGZnyqyol5Xcwp5FI1ftZKEqU6rD
-BN9NeG812artQjVmcnSUdbtCtsrMxMk3Jye5OD06PsmW8GRdN4eZMG2R6V1D
+BN9NeG812artQjVmcnScdbtCtsrMxMk3Jye5OD06PsmW8GRdN4eZMG2R6V1D
 hzHtydHRt0cnmekWW22Mrqv2sIONzl+8+y6TjZKzbL+eZbJrN3UDEE0AKCF0
 BYt/PxXPGBB6xgB+D/81yfO6WctK/1O2sDasW7WqmZa6ei/+sF28pBFqK3U5
 Ez/h1N9rP4DembZRqp2JZ/WHjVyrSjXiqm2m4ukRvQb0w4meqQYm8IO6ACge
@@ -789,8 +789,8 @@ sgNdca9Ch8nw6zxcZgsEWNaGrpC4tpHAi1S6YBEaczQJBOdZ8vc6IgtnFEgN
 N/dFbmTTDjUO8OV2QW0fBNpSN0vweeP8g4u/QrfVtsPLdvauJn8rx34Mwhr9
 zl4Ut4igqehq4D2enqZH2Y3uROEs+goGgclf5IEDGP1P7rBOvdivxHz5vqr3
 pSqoV9IwP3InmWt8xZZFLjnK6r34HijWAMO8lBJO9kYD9l6CNGm8+Qtsk31f
-L8RVpX+ii0DWgdYNqSW84Gy69RpE3PcoNQqbjhit2mTubpz9CuECiJP9Lyko
-YM+oVQAA
+L8RVpX+ii0DWgdYNqSW84Gy69RpE3PcoNQqbjhit2mTubpz9CuECiJP9L8dH
+8hWoVQAA
 
 -->
 
