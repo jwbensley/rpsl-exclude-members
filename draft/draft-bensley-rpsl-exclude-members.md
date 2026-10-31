@@ -7,7 +7,7 @@ kw:
   - rpsl
 docname: draft-bensley-rpsl-exclude-members-00
 updates: 2622, 4012
-category: info
+category: std
 ipr: trust200902
 submissiontype: IETF
 area:
