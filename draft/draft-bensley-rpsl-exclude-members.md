@@ -32,6 +32,7 @@ author:
 normative:
   RFC2622:
   RFC4012:
+  RFC5952:
   I-D.ietf-grow-rpsl-registry-scoped-members:
 informative:
   RFC9234:
@@ -47,7 +48,7 @@ This document updates RFC 2622 and RFC 4012 by defining the `excl-members` attri
 
 # Introduction
 
-The Routing Policy Specification Language (RPSL) {{RFC2622}} defines the as-set and route-set classes, whose objects are held in the Internet Routing Registry (IRR). A set can reference direct members, such as an AS number or IP prefix, and it can reference other sets. Those sets can reference further sets, recursively. Server and client software resolve a set by following these references until it is reduced to a set of prefixes or AS numbers. The result is used mainly to build filters on routers.
+The Routing Policy Specification Language (RPSL) {{RFC2622}} defines the as-set and route-set classes, whose objects are held in the Internet Routing Registry (IRR). A set can reference direct members, such as an AS number or address prefix, and it can reference other sets. Those sets can reference further sets, recursively. Server and client software resolve a set by following these references until it is reduced to a set of prefixes or AS numbers. The result is used mainly to build filters on routers.
 
 ## Existing Methods of Inclusion
 
@@ -92,7 +93,7 @@ Consumers of a set, meaning the operators and tools that resolve it to build fil
 
 ## Missing Exclusion Options
 
-None of the existing options gives a set owner a way to exclude an AS number, as-set or route-set that was included recursively through `(src/mp-)members`. An owner can only control the members the object lists directly.
+None of the existing options gives a set owner a way to exclude an AS number, address prefix, as-set or route-set that was included recursively through `(src/mp-)members`. An owner can only control the members the object lists directly.
 
 Consumers encounter problems such as:
 
@@ -100,7 +101,7 @@ Consumers encounter problems such as:
 1. A member intended to be a downstream is instead a peer or upstream. The IRR now shows the including set's owner as that member's transit provider. Filters can then expand massively, even to the whole global routing table. They become too large to program onto devices and too broad to offer useful protection.
 1. A member is added whose actions violate a law, a geo-political agreement, sanctions, or a peer or upstream's terms. Peers and upstreams of the including set's owner may now forward traffic for that member. If the including set belongs to a direct peer of the consumer, the two can discuss an alternative between themselves. If the member instead sits many levels down under a peer, that peer usually cannot help, having no relationship with the member itself, and the consumer is left with fragile manual workarounds. The same applies where a peer or upstream already serves the added member directly and a regulation forbids that peer or upstream from serving it via a third party.
 
-The `excl-members` attribute lets a set owner name AS numbers, as-sets and route-sets to exclude when its own set is resolved, including ones an included set brings in. The included set itself is unchanged. Because the attribute is published with the object rather than chosen by the consumer, every resolver that implements this document applies the same exclusions.
+The `excl-members` attribute lets a set owner name AS numbers, address prefixes, as-sets and route-sets to exclude when its own set is resolved, including ones an included set brings in. The included set itself is unchanged. Because the attribute is published with the object rather than chosen by the consumer, every resolver that implements this document applies the same exclusions.
 
 `excl-members` does not change how a route is validated against a Route Origin Authorization {{RFC9582}} or an Autonomous System Provider Authorization {{I-D.ietf-sidrops-aspa-verification}}, or how the roles defined in {{RFC9234}} apply.
 
@@ -118,7 +119,7 @@ The terms upstream, downstream, peer and transit provider are used as defined in
 
 ## The as-set Class
 
-On an as-set, `excl-members` uses almost the same syntax as `members` ({{Section 5.1 of RFC2622}}): one or more AS numbers or as-set primary keys. The only difference is that an as-set key MUST be prefixed with a registry name and a double colon, for example `EXAMPLE::`. This removes the ambiguity of unscoped as-set primary keys, described in {{I-D.ietf-grow-rpsl-registry-scoped-members}}.
+On an as-set, `excl-members` uses almost the same syntax as `members` ({{Section 5.1 of RFC2622}}): one or more AS numbers or as-set primary keys. The only difference is that an as-set key MUST be prefixed with a registry name and a double colon, for example `EXAMPLE::`. This removes the ambiguity of as-set primary keys without a registry scope, described in {{I-D.ietf-grow-rpsl-registry-scoped-members}}.
 
 {:vspace}
 Attribute:
@@ -132,14 +133,14 @@ Type:
 
 ## The route-set Class
 
-On a route-set, `excl-members` uses syntax similar to `members` ({{Sections 5.2 and 5.3 of RFC2622}}): one or more AS numbers, as-set primary keys, or route-set primary keys. Unlike `(mp-)members`, it does not accept address prefixes, with or without a range operator. Any as-set or route-set key MUST be prefixed with a registry name and a double colon, for example `EXAMPLE::`, for the same reason as on the as-set class.
+On a route-set, `excl-members` uses almost the same syntax as `mp-members` ({{Section 4.2 of RFC4012}}, which extends {{Sections 5.2 and 5.3 of RFC2622}}): one or more IPv4 or IPv6 address prefixes, AS numbers, as-set primary keys, or route-set primary keys. An address prefix or route-set key may be followed by a range operator. An as-set or route-set key MUST be prefixed with a registry name and a double colon, for example `EXAMPLE::`, for the same reason as on the as-set class.
 
 {:vspace}
 Attribute:
 : `excl-members`
 
 Value:
-: list of (\[`registry-name`\]::\[`route-set-name`\] or \[`registry-name`\]::\[`as-set-name`\] or \[`as-number`\] or \[`registry-name`\]::\[`route-set-name`\]\[`range-operator`\])
+: list of (\[`ipv4-address-prefix-range`\] or \[`ipv6-address-prefix-range`\] or \[`registry-name`\]::\[`route-set-name`\] or \[`registry-name`\]::\[`as-set-name`\] or \[`as-number`\] or \[`registry-name`\]::\[`route-set-name`\]\[`range-operator`\])
 
 Type:
 : optional, multi-valued
@@ -184,7 +185,7 @@ The `excl-members` value applies to everything reached through the set that cont
 
 Because more than one set may reference the same object, the same object can be excluded on one path and still included through a different path, where that exclusion does not exist.
 
-A member that joined a set through `mbrs-by-ref` and `member-of` MUST be treated the same as one listed in `members` or `mp-members`. On an as-set an excluded AS number MUST NOT be included. On a route-set this has no effect, because `excl-members` cannot name a prefix.
+A member that joined a set through `mbrs-by-ref` and `member-of` MUST be treated the same as one listed in `members` or `mp-members`. On an as-set, an excluded AS number MUST NOT be included. On a route-set, the resolver MUST NOT include such a prefix if there is an `excl-members` entry that names that prefix without a range operator.
 
 The result of resolving a set MUST NOT depend on the order in which an implementation follows references.
 
@@ -195,6 +196,12 @@ An `excl-members` key that names an as-set or route-set contains a registry scop
 1. Where `src-members` and `members` or `mp-members` on the same object define the same key, once the scope is stripped from the `src-members` entry, the `src-members` key MUST be compared against `excl-members` with both scopes present, and takes precedence over the `members` or `mp-members` entry.
 
 Where a reference names a set without a registry scope and an exclusion matches it, that reference MUST NOT be followed. The resolver MUST NOT instead resolve that reference in another registry. Doing so could contribute members that would otherwise not have been included.
+
+## Matching Address Prefixes and Range Operators
+
+An `excl-members` entry containing address prefix, is compared with each member as written, including any range operator. The address MUST be compared after converting it to the text representation of {{RFC5952}}, so that `2001:DB8:0::/32` and `2001:db8::/32` are equal. The prefix length and the range operator MUST be compared as written. A resolver MUST NOT evaluate range operators when comparing. This means an `excl-members` entry `192.0.2.0/24^+` excludes a member `192.0.2.0/24^+`, but not `192.0.2.0/24`, `192.0.2.0/25` or `192.0.2.0/24^24-32`, even though some of these are an equivalent notation.
+
+A range operator on a route-set key in `excl-members` is compared in the same way. `RIPE::RS-EXAMPLE^+` excludes a `src-members` reference written as `RIPE::RS-EXAMPLE^+`, but not one written as `RIPE::RS-EXAMPLE`.
 
 ## Exclusions on an as-set
 
@@ -231,7 +238,7 @@ The members of AS-EXAMPLE-A1, accounting for `excl-members`, are AS64500 and AS6
 
 ## Exclusions on a route-set
 
-When `excl-members` is populated on a route-set, a resolver MUST NOT follow a reference to any as-set or route-set that `excl-members` names. A route-set reaches sets of both classes, so the exclusion covers `(mp-)members` and `src-members` on the route-set that contains it and on every route-set reached through it, and `members` and `src-members` on every as-set reached through it.
+When `excl-members` is populated on a route-set, a resolver MUST NOT follow a reference to any as-set or route-set that `excl-members` names, and MUST NOT include any address prefix it names. The exclusion covers `(mp-)members` and `src-members` on the route-set that contains it and on every route-set reached through it, and `members` and `src-members` on every as-set reached through it.
 
 Per {{Section 5.3 of RFC2622}}, a `(mp-)members` or `src-members` entry naming an AS number stands for the routes originated by that AS. Where `excl-members` lists that AS number, a resolver MUST NOT expand such an entry. The resolver does not re-examine the origin of prefixes reached by other references.
 
@@ -240,7 +247,7 @@ Consider the route-sets in {{fig-route-set-unresolved}}:
 ~~~~ rpsl
 route-set: RS-EXAMPLE-A1
 members: 192.0.2.0/25, RS-EXAMPLE-B1
-excl-members: RIPE::RS-EXAMPLE-C2
+excl-members: RIPE::RS-EXAMPLE-C2, 192.0.2.128/25
 source: ARIN
 
 route-set: RS-EXAMPLE-B1
@@ -259,10 +266,11 @@ source: RIPE
 ~~~~
 {: #fig-route-set-unresolved title='An example route-set hierarchy'}
 
-The members of RS-EXAMPLE-A1, accounting for `excl-members`, are 192.0.2.0/25, 192.0.2.128/25 and 2001:db8::/33.
+The members of RS-EXAMPLE-A1, accounting for `excl-members`, are 192.0.2.0/25 and 2001:db8::/33.
 
 * 2001:db8:8000::/33 is not included. RS-EXAMPLE-B1 scopes its reference with `src-members: RIPE::RS-EXAMPLE-C2`, which matches the `excl-members` entry on RS-EXAMPLE-A1 exactly, with both registry scopes present.
 * RS-EXAMPLE-C1 references RS-EXAMPLE-C2 as well, without a scope. That reference is compared against the `excl-members` entry with the registry scope removed, so it matches and is excluded too.
+* 192.0.2.128/25 is not included. RS-EXAMPLE-C1 lists it as a member, written exactly as the `excl-members` entry on RS-EXAMPLE-A1. Had RS-EXAMPLE-C1 written it as `192.0.2.128/25^+`, or covered it in a `192.0.2.0/24^+` entry, the exclusion would not have matched.
 
 ## Multiple Paths to a Set
 
